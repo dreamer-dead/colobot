@@ -22,7 +22,8 @@
 #include "common/logger.h"
 #include "common/image.h"
 
-#include "graphics/engine/modelfile.h"
+#include "graphics/engine/model.h"
+#include "graphics/engine/model_io.h"
 #include "graphics/opengl/gldevice.h"
 
 #include "math/geometry.h"
@@ -97,9 +98,10 @@ void LoadTexture(Gfx::CGLDevice *device, const std::string &name)
     TEXS[name] = tex;
 }
 
-void Init(Gfx::CGLDevice *device, Gfx::CModelFile *model)
+void Init(Gfx::CGLDevice* device, Gfx::CModel* model)
 {
-    const std::vector<Gfx::ModelTriangle> &triangles = model->GetTriangles();
+    std::vector<Gfx::RawModelTriangle> triangles;
+    model->GetRawTriangles(triangles);
 
     for (int i = 0; i < static_cast<int>( triangles.size() ); ++i)
     {
@@ -124,7 +126,7 @@ void Init(Gfx::CGLDevice *device, Gfx::CModelFile *model)
     device->SetLightEnabled(0, true);
 }
 
-void Render(Gfx::CGLDevice *device, Gfx::CModelFile *modelFile)
+void Render(Gfx::CGLDevice* device, Gfx::CModel* model)
 {
     device->BeginScene();
 
@@ -143,7 +145,8 @@ void Render(Gfx::CGLDevice *device, Gfx::CModelFile *modelFile)
     viewMat = Math::MultiplyMatrices(viewMat, rot);
     device->SetTransform(Gfx::TRANSFORM_VIEW, viewMat);
 
-    const std::vector<Gfx::ModelTriangle> &triangles = modelFile->GetTriangles();
+    std::vector<Gfx::RawModelTriangle> triangles;
+    model->GetRawTriangles(triangles);
 
     Gfx::VertexTex2 tri[3];
 
@@ -298,10 +301,10 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
         return 1;
     }
 
-    Gfx::CModelFile *modelFile = new Gfx::CModelFile();
+    Gfx::CModel* model = new Gfx::CModel();
     if (std::string(argv[1]) == "old")
     {
-        if (! modelFile->ReadModel(argv[2]))
+        if (! Gfx::CModelIO::ReadModel(argv[2], *model))
         {
             std::cerr << "Error reading model file" << std::endl;
             return 1;
@@ -309,7 +312,7 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
     }
     else if (std::string(argv[1]) == "new_txt")
     {
-        if (! modelFile->ReadTextModel(argv[2]))
+        if (! Gfx::CModelIO::ReadTextModel(argv[2], *model))
         {
             std::cerr << "Error reading model file" << std::endl;
             return 1;
@@ -317,7 +320,7 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
     }
     else if (std::string(argv[1]) == "new_bin")
     {
-        if (! modelFile->ReadBinaryModel(argv[2]))
+        if (! Gfx::CModelIO::ReadBinaryModel(argv[2], *model))
         {
             std::cerr << "Error reading model file" << std::endl;
             return 1;
@@ -365,12 +368,12 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
     Gfx::CGLDevice *device = new Gfx::CGLDevice(Gfx::GLDeviceConfig());
     device->Create();
 
-    Init(device, modelFile);
+    Init(device, model);
 
     bool done = false;
     while (! done)
     {
-        Render(device, modelFile);
+        Render(device, model);
         Update();
 
         SDL_GL_SwapBuffers();
@@ -387,7 +390,7 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
         usleep(FRAME_DELAY);
     }
 
-    delete modelFile;
+    delete model;
 
     device->Destroy();
     delete device;

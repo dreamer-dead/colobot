@@ -73,6 +73,25 @@ struct Vertex
 };
 
 /**
+ * \struct VertexNor
+ * \brief Vertex and normal
+ *
+ * It contains
+ *  - vertex coordinates (x,y,z) as Math::Vector,
+ *  - normal coordinates (nx,ny,nz) as Math::Vector
+ */
+struct VertexNor
+{
+    Math::Vector coord;
+    Math::Vector normal;
+
+    explicit VertexNor(Math::Vector aCoord = Math::Vector(),
+                       Math::Vector aNormal = Math::Vector())
+     : coord(aCoord), normal(aNormal)
+     {}
+};
+
+/**
  * \struct VertexCol
  * \brief Colored vertex
  *

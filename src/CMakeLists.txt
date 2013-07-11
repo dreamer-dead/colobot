@@ -86,7 +86,8 @@ set(BASE_SOURCES
     graphics/engine/engine.cpp
     graphics/engine/lightman.cpp
     graphics/engine/lightning.cpp
-    graphics/engine/modelfile.cpp
+    graphics/engine/model.cpp
+    graphics/engine/model_io.cpp
     graphics/engine/modelmanager.cpp
     graphics/engine/particle.cpp
     graphics/engine/planet.cpp

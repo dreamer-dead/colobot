@@ -21,7 +21,7 @@
 
 #include "common/singleton.h"
 
-#include "graphics/engine/modelfile.h"
+#include "graphics/engine/model.h"
 
 #include <string>
 #include <vector>
@@ -81,16 +81,13 @@ public:
     void UnloadAllModels();
 
 protected:
-    //! Returns the height of model -- closest point to X and Z coords of \a pos
-    float GetHeight(std::vector<ModelTriangle>& triangles, Math::Vector pos);
-
     //! Mirrors the model along the Z axis
-    void Mirror(std::vector<ModelTriangle>& triangles);
+    void Mirror(std::vector<RawModelTriangle>& triangles);
 
 private:
     struct ModelInfo
     {
-        std::vector<ModelTriangle> triangles;
+        std::vector<RawModelTriangle> triangles;
         int baseObjRank;
     };
     struct FileInfo

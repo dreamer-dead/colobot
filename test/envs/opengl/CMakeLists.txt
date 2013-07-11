@@ -13,7 +13,8 @@ texture_test.cpp
 set(MODEL_SOURCES
 ${SRC_DIR}/graphics/core/color.cpp
 ${SRC_DIR}/graphics/opengl/gldevice.cpp
-${SRC_DIR}/graphics/engine/modelfile.cpp
+${SRC_DIR}/graphics/engine/model.cpp
+${SRC_DIR}/graphics/engine/model_io.cpp
 ${SRC_DIR}/common/logger.cpp
 ${SRC_DIR}/common/image.cpp
 ${SRC_DIR}/common/stringutils.cpp

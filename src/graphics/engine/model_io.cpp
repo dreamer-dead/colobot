@@ -18,7 +18,7 @@
  */
 
 
-#include "graphics/engine/modelfile.h"
+#include "graphics/engine/model_io.h"
 
 #include "common/ioutils.h"
 #include "common/logger.h"
@@ -42,6 +42,7 @@
 // Graphics module namespace
 namespace Gfx {
 
+bool CModelIO::m_printDebugInfo = false;
 
 bool ReadBinaryVertex(std::istream& stream, Vertex& vertex)
 {
@@ -315,16 +316,6 @@ bool ReadLineString(std::istream& stream, const std::string& prefix, std::string
 }
 
 
-CModelFile::CModelFile()
- : m_printDebugInfo(false)
-{
-}
-
-CModelFile::~CModelFile()
-{
-}
-
-
 /*******************************************************
                       Deprecated formats
  *******************************************************/
@@ -434,9 +425,9 @@ struct OldModelTriangle3
     }
 };
 
-bool CModelFile::ReadModel(const std::string& fileName)
+bool CModelIO::ReadModel(const std::string& fileName, CModel& model)
 {
-    m_triangles.clear();
+    model.Clear();
 
     #ifndef MODELFILE_NO_ENGINE
     CInputStream stream;
@@ -456,12 +447,14 @@ bool CModelFile::ReadModel(const std::string& fileName)
     }
     #endif
 
-    return ReadModel(stream);
+    return ReadModel(stream, model);
 }
 
-bool CModelFile::ReadModel(std::istream& stream)
+bool CModelIO::ReadModel(std::istream& stream, CModel& model)
 {
-    m_triangles.clear();
+    model.Clear();
+
+    std::vector<RawModelTriangle> triangles;
 
     OldModelHeader header;
 
@@ -471,12 +464,13 @@ bool CModelFile::ReadModel(std::istream& stream)
     for (int i = 0; i < 10; ++i)
         header.reserved[i] = IOUtils::ReadBinary<4, int>(stream);
 
-
     if (!stream.good())
     {
         GetLogger()->Error("Error reading model file header\n");
         return false;
     }
+
+    triangles.reserve(header.totalTriangles);
 
     // Old model version #1
     if ( (header.revision == 1) && (header.version == 0) )
@@ -504,7 +498,7 @@ bool CModelFile::ReadModel(std::istream& stream)
                 return false;
             }
 
-            ModelTriangle triangle;
+            RawModelTriangle triangle;
             triangle.p1.FromVertex(t.p1);
             triangle.p2.FromVertex(t.p2);
             triangle.p3.FromVertex(t.p3);
@@ -513,7 +507,7 @@ bool CModelFile::ReadModel(std::istream& stream)
             triangle.tex1Name = std::string(t.texName);
             triangle.lodLevel = MinMaxToLodLevel(t.min, t.max);
 
-            m_triangles.push_back(triangle);
+            triangles.push_back(triangle);
         }
     }
     else if ( header.revision == 1 && header.version == 1 )
@@ -547,7 +541,7 @@ bool CModelFile::ReadModel(std::istream& stream)
                 return false;
             }
 
-            ModelTriangle triangle;
+            RawModelTriangle triangle;
             triangle.p1.FromVertex(t.p1);
             triangle.p2.FromVertex(t.p2);
             triangle.p3.FromVertex(t.p3);
@@ -557,7 +551,7 @@ bool CModelFile::ReadModel(std::istream& stream)
             triangle.lodLevel = MinMaxToLodLevel(t.min, t.max);
             triangle.state = t.state;
 
-            m_triangles.push_back(triangle);
+            triangles.push_back(triangle);
         }
     }
     else
@@ -591,7 +585,7 @@ bool CModelFile::ReadModel(std::istream& stream)
                 return false;
             }
 
-            ModelTriangle triangle;
+            RawModelTriangle triangle;
             triangle.p1 = t.p1;
             triangle.p2 = t.p2;
             triangle.p3 = t.p3;
@@ -615,49 +609,51 @@ bool CModelFile::ReadModel(std::istream& stream)
                 triangle.tex2Name = tex2Name;
             }
 
-            m_triangles.push_back(triangle);
+            triangles.push_back(triangle);
        }
     }
 
-    for (int i = 0; i < static_cast<int>( m_triangles.size() ); ++i)
+    for (int i = 0; i < static_cast<int>( triangles.size() ); ++i)
     {
         // All extensions are now png
-        m_triangles[i].tex1Name = StrUtils::Replace(m_triangles[i].tex1Name, "bmp", "png");
-        m_triangles[i].tex1Name = StrUtils::Replace(m_triangles[i].tex1Name, "tga", "png");
+        triangles[i].tex1Name = StrUtils::Replace(triangles[i].tex1Name, "bmp", "png");
+        triangles[i].tex1Name = StrUtils::Replace(triangles[i].tex1Name, "tga", "png");
 
-        m_triangles[i].tex2Name = StrUtils::Replace(m_triangles[i].tex2Name, "bmp", "png");
-        m_triangles[i].tex2Name = StrUtils::Replace(m_triangles[i].tex2Name, "tga", "png");
+        triangles[i].tex2Name = StrUtils::Replace(triangles[i].tex2Name, "bmp", "png");
+        triangles[i].tex2Name = StrUtils::Replace(triangles[i].tex2Name, "tga", "png");
 
         // TODO: fix this in model files
-        if (m_triangles[i].tex1Name == "plant.png")
-            m_triangles[i].state |= ENG_RSTATE_ALPHA;
+        if (triangles[i].tex1Name == "plant.png")
+            triangles[i].state |= ENG_RSTATE_ALPHA;
 
         if (m_printDebugInfo)
         {
             GetLogger()->Trace("ModelTriangle %d\n", i+1);
-            std::string s1 = m_triangles[i].p1.ToString();
+            std::string s1 = triangles[i].p1.ToString();
             GetLogger()->Trace(" p1: %s\n", s1.c_str());
-            std::string s2 = m_triangles[i].p2.ToString();
+            std::string s2 = triangles[i].p2.ToString();
             GetLogger()->Trace(" p2: %s\n", s2.c_str());
-            std::string s3 = m_triangles[i].p3.ToString();
+            std::string s3 = triangles[i].p3.ToString();
             GetLogger()->Trace(" p3: %s\n", s3.c_str());
 
-            std::string d = m_triangles[i].material.diffuse.ToString();
-            std::string a = m_triangles[i].material.ambient.ToString();
-            std::string s = m_triangles[i].material.specular.ToString();
+            std::string d = triangles[i].material.diffuse.ToString();
+            std::string a = triangles[i].material.ambient.ToString();
+            std::string s = triangles[i].material.specular.ToString();
             GetLogger()->Trace(" mat: d: %s  a: %s  s: %s\n", d.c_str(), a.c_str(), s.c_str());
 
-            GetLogger()->Trace(" tex1: %s  tex2: %s\n", m_triangles[i].tex1Name.c_str(),
-                            m_triangles[i].variableTex2 ? "(variable)" : m_triangles[i].tex2Name.c_str());
-            GetLogger()->Trace(" lod level: %d\n", m_triangles[i].lodLevel);
-            GetLogger()->Trace(" state: %ld\n", m_triangles[i].state);
+            GetLogger()->Trace(" tex1: %s  tex2: %s\n", triangles[i].tex1Name.c_str(),
+                            triangles[i].variableTex2 ? "(variable)" : triangles[i].tex2Name.c_str());
+            GetLogger()->Trace(" lod level: %d\n", triangles[i].lodLevel);
+            GetLogger()->Trace(" state: %ld\n", triangles[i].state);
         }
     }
+
+    model.SetRawTriangles(triangles);
 
     return true;
 }
 
-bool CModelFile::WriteModel(const std::string& fileName)
+bool CModelIO::WriteModel(const std::string& fileName, const CModel& model)
 {
     std::ofstream stream;
     stream.open(fileName.c_str(), std::ios_base::out | std::ios_base::binary);
@@ -667,12 +663,15 @@ bool CModelFile::WriteModel(const std::string& fileName)
         return false;
     }
 
-    return WriteModel(stream);
+    return WriteModel(stream, model);
 }
 
-bool CModelFile::WriteModel(std::ostream& stream)
+bool CModelIO::WriteModel(std::ostream& stream, const CModel& model)
 {
-    if (m_triangles.size() == 0)
+    std::vector<RawModelTriangle> triangles;
+    model.GetRawTriangles(triangles);
+
+    if (triangles.size() == 0)
     {
         GetLogger()->Error("Empty model\n");
         return false;
@@ -681,7 +680,7 @@ bool CModelFile::WriteModel(std::ostream& stream)
     OldModelHeader header;
     header.revision   = 1;
     header.version  = 2;
-    header.totalTriangles = m_triangles.size();
+    header.totalTriangles = triangles.size();
 
     IOUtils::WriteBinary<4, int>(header.revision,      stream);
     IOUtils::WriteBinary<4, int>(header.version,       stream);
@@ -689,26 +688,26 @@ bool CModelFile::WriteModel(std::ostream& stream)
     for (int i = 0; i < 10; ++i)
         IOUtils::WriteBinary<4, int>(header.reserved[i], stream);
 
-    for (int i = 0; i < static_cast<int>( m_triangles.size() ); ++i)
+    for (int i = 0; i < static_cast<int>( triangles.size() ); ++i)
     {
         OldModelTriangle3 t;
 
         t.used = true;
 
-        t.p1 = m_triangles[i].p1;
-        t.p2 = m_triangles[i].p2;
-        t.p3 = m_triangles[i].p3;
+        t.p1 = triangles[i].p1;
+        t.p2 = triangles[i].p2;
+        t.p3 = triangles[i].p3;
 
-        t.material = m_triangles[i].material;
-        strncpy(t.texName, m_triangles[i].tex1Name.c_str(), 20);
-        LODLevelToMinMax(m_triangles[i].lodLevel, t.min, t.max);
-        t.state = m_triangles[i].state;
+        t.material = triangles[i].material;
+        strncpy(t.texName, triangles[i].tex1Name.c_str(), 20);
+        LODLevelToMinMax(triangles[i].lodLevel, t.min, t.max);
+        t.state = triangles[i].state;
 
         int no = 0;
-        if (m_triangles[i].variableTex2)
+        if (triangles[i].variableTex2)
             no = 1;
         else
-            sscanf(m_triangles[i].tex2Name.c_str(), "dirty%d.png", &no); // hardcoded as in the original code
+            sscanf(triangles[i].tex2Name.c_str(), "dirty%d.png", &no); // hardcoded as in the original code
 
         t.texNum2 = no;
 
@@ -737,7 +736,7 @@ bool CModelFile::WriteModel(std::ostream& stream)
     return true;
 }
 
-LODLevel CModelFile::MinMaxToLodLevel(float min, float max)
+LODLevel CModelIO::MinMaxToLodLevel(float min, float max)
 {
     if (min == 0.0f && max == 100.0f)
         return LOD_High;
@@ -751,7 +750,7 @@ LODLevel CModelFile::MinMaxToLodLevel(float min, float max)
     return LOD_Constant;
 }
 
-void CModelFile::LODLevelToMinMax(LODLevel lodLevel, float& min, float& max)
+void CModelIO::LODLevelToMinMax(LODLevel lodLevel, float& min, float& max)
 {
     switch (lodLevel)
     {
@@ -837,7 +836,7 @@ struct NewModelTriangle1
 };
 
 
-bool CModelFile::ReadTextModel(const std::string& fileName)
+bool CModelIO::ReadTextModel(const std::string& fileName, CModel& model)
 {
     #ifndef MODELFILE_NO_ENGINE
     CInputStream stream;
@@ -857,12 +856,14 @@ bool CModelFile::ReadTextModel(const std::string& fileName)
     }
     #endif
 
-    return ReadTextModel(stream);
+    return ReadTextModel(stream, model);
 }
 
-bool CModelFile::ReadTextModel(std::istream& stream)
+bool CModelIO::ReadTextModel(std::istream& stream, CModel& model)
 {
-    m_triangles.clear();
+    model.Clear();
+
+    std::vector<RawModelTriangle> triangles;
 
     NewModelHeader header;
 
@@ -909,7 +910,7 @@ bool CModelFile::ReadTextModel(std::istream& stream)
             t.variableTex2 = varTex2Ch == 'Y';
 
 
-            ModelTriangle triangle;
+            RawModelTriangle triangle;
             triangle.p1 = t.p1;
             triangle.p2 = t.p2;
             triangle.p3 = t.p3;
@@ -928,7 +929,7 @@ bool CModelFile::ReadTextModel(std::istream& stream)
                 default: break;
             }
 
-            m_triangles.push_back(triangle);
+            triangles.push_back(triangle);
 
             continue;
         }
@@ -939,30 +940,32 @@ bool CModelFile::ReadTextModel(std::istream& stream)
         return false;
     }
 
-    for (int i = 0; i < static_cast<int>( m_triangles.size() ); ++i)
+    for (int i = 0; i < static_cast<int>( triangles.size() ); ++i)
     {
         GetLogger()->Trace("ModelTriangle %d\n", i+1);
-        std::string s1 = m_triangles[i].p1.ToString();
+        std::string s1 = triangles[i].p1.ToString();
         GetLogger()->Trace(" p1: %s\n", s1.c_str());
-        std::string s2 = m_triangles[i].p2.ToString();
+        std::string s2 = triangles[i].p2.ToString();
         GetLogger()->Trace(" p2: %s\n", s2.c_str());
-        std::string s3 = m_triangles[i].p3.ToString();
+        std::string s3 = triangles[i].p3.ToString();
         GetLogger()->Trace(" p3: %s\n", s3.c_str());
 
-        std::string d = m_triangles[i].material.diffuse.ToString();
-        std::string a = m_triangles[i].material.ambient.ToString();
-        std::string s = m_triangles[i].material.specular.ToString();
+        std::string d = triangles[i].material.diffuse.ToString();
+        std::string a = triangles[i].material.ambient.ToString();
+        std::string s = triangles[i].material.specular.ToString();
         GetLogger()->Trace(" mat: d: %s  a: %s  s: %s\n", d.c_str(), a.c_str(), s.c_str());
 
-        GetLogger()->Trace(" tex1: %s  tex2: %s\n", m_triangles[i].tex1Name.c_str(), m_triangles[i].tex2Name.c_str());
-        GetLogger()->Trace(" lod level: %d\n", m_triangles[i].lodLevel);
-        GetLogger()->Trace(" state: %ld\n", m_triangles[i].state);
+        GetLogger()->Trace(" tex1: %s  tex2: %s\n", triangles[i].tex1Name.c_str(), triangles[i].tex2Name.c_str());
+        GetLogger()->Trace(" lod level: %d\n", triangles[i].lodLevel);
+        GetLogger()->Trace(" state: %ld\n", triangles[i].state);
     }
+
+    model.SetRawTriangles(triangles);
 
     return true;
 }
 
-bool CModelFile::WriteTextModel(const std::string &fileName)
+bool CModelIO::WriteTextModel(const std::string &fileName, const CModel& model)
 {
     std::ofstream stream;
     stream.open(fileName.c_str(), std::ios_base::out);
@@ -972,12 +975,15 @@ bool CModelFile::WriteTextModel(const std::string &fileName)
         return false;
     }
 
-    return WriteTextModel(stream);
+    return WriteTextModel(stream, model);
 }
 
-bool CModelFile::WriteTextModel(std::ostream& stream)
+bool CModelIO::WriteTextModel(std::ostream& stream, const CModel& model)
 {
-    if (m_triangles.size() == 0)
+    std::vector<RawModelTriangle> triangles;
+    model.GetRawTriangles(triangles);
+
+    if (triangles.size() == 0)
     {
         GetLogger()->Error("Empty model\n");
         return false;
@@ -986,7 +992,7 @@ bool CModelFile::WriteTextModel(std::ostream& stream)
     NewModelHeader header;
 
     header.version        = 1;
-    header.totalTriangles = m_triangles.size();
+    header.totalTriangles = triangles.size();
 
     stream << "# Colobot text model" << std::endl;
     stream << std::endl;
@@ -996,20 +1002,20 @@ bool CModelFile::WriteTextModel(std::ostream& stream)
     stream << std::endl;
     stream << "### TRIANGLES" << std::endl;
 
-    for (int i = 0; i < static_cast<int>( m_triangles.size() ); ++i)
+    for (int i = 0; i < static_cast<int>( triangles.size() ); ++i)
     {
         NewModelTriangle1 t;
 
-        t.p1 = m_triangles[i].p1;
-        t.p2 = m_triangles[i].p2;
-        t.p3 = m_triangles[i].p3;
-        t.material = m_triangles[i].material;
-        t.tex1Name = m_triangles[i].tex1Name;
-        t.tex2Name = m_triangles[i].tex2Name;
-        t.variableTex2 = m_triangles[i].variableTex2;
-        t.state = m_triangles[i].state;
+        t.p1 = triangles[i].p1;
+        t.p2 = triangles[i].p2;
+        t.p3 = triangles[i].p3;
+        t.material = triangles[i].material;
+        t.tex1Name = triangles[i].tex1Name;
+        t.tex2Name = triangles[i].tex2Name;
+        t.variableTex2 = triangles[i].variableTex2;
+        t.state = triangles[i].state;
 
-        switch (m_triangles[i].lodLevel)
+        switch (triangles[i].lodLevel)
         {
             case LOD_Constant: t.lodLevel = 0; break;
             case LOD_Low:      t.lodLevel = 1; break;
@@ -1044,7 +1050,7 @@ bool CModelFile::WriteTextModel(std::ostream& stream)
     return true;
 }
 
-bool CModelFile::ReadBinaryModel(const std::string& fileName)
+bool CModelIO::ReadBinaryModel(const std::string& fileName, CModel& model)
 {
     #ifndef MODELFILE_NO_ENGINE
     CInputStream stream;
@@ -1064,12 +1070,14 @@ bool CModelFile::ReadBinaryModel(const std::string& fileName)
     }
     #endif
 
-    return ReadBinaryModel(stream);
+    return ReadBinaryModel(stream, model);
 }
 
-bool CModelFile::ReadBinaryModel(std::istream& stream)
+bool CModelIO::ReadBinaryModel(std::istream& stream, CModel& model)
 {
-    m_triangles.clear();
+    model.Clear();
+
+    std::vector<RawModelTriangle> triangles;
 
     NewModelHeader header;
 
@@ -1105,7 +1113,7 @@ bool CModelFile::ReadBinaryModel(std::istream& stream)
                 return false;
             }
 
-            ModelTriangle triangle;
+            RawModelTriangle triangle;
             triangle.p1 = t.p1;
             triangle.p2 = t.p2;
             triangle.p3 = t.p3;
@@ -1124,7 +1132,7 @@ bool CModelFile::ReadBinaryModel(std::istream& stream)
                 default: break;
             }
 
-            m_triangles.push_back(triangle);
+            triangles.push_back(triangle);
         }
     }
     else
@@ -1135,31 +1143,33 @@ bool CModelFile::ReadBinaryModel(std::istream& stream)
 
     if (m_printDebugInfo)
     {
-        for (int i = 0; i < static_cast<int>( m_triangles.size() ); ++i)
+        for (int i = 0; i < static_cast<int>( triangles.size() ); ++i)
         {
             GetLogger()->Trace("ModelTriangle %d\n", i+1);
-            std::string s1 = m_triangles[i].p1.ToString();
+            std::string s1 = triangles[i].p1.ToString();
             GetLogger()->Trace(" p1: %s\n", s1.c_str());
-            std::string s2 = m_triangles[i].p2.ToString();
+            std::string s2 = triangles[i].p2.ToString();
             GetLogger()->Trace(" p2: %s\n", s2.c_str());
-            std::string s3 = m_triangles[i].p3.ToString();
+            std::string s3 = triangles[i].p3.ToString();
             GetLogger()->Trace(" p3: %s\n", s3.c_str());
 
-            std::string d = m_triangles[i].material.diffuse.ToString();
-            std::string a = m_triangles[i].material.ambient.ToString();
-            std::string s = m_triangles[i].material.specular.ToString();
+            std::string d = triangles[i].material.diffuse.ToString();
+            std::string a = triangles[i].material.ambient.ToString();
+            std::string s = triangles[i].material.specular.ToString();
             GetLogger()->Trace(" mat: d: %s  a: %s  s: %s\n", d.c_str(), a.c_str(), s.c_str());
 
-            GetLogger()->Trace(" tex1: %s  tex2: %s\n", m_triangles[i].tex1Name.c_str(), m_triangles[i].tex2Name.c_str());
-            GetLogger()->Trace(" lod level: %d\n", m_triangles[i].lodLevel);
-            GetLogger()->Trace(" state: %ld\n", m_triangles[i].state);
+            GetLogger()->Trace(" tex1: %s  tex2: %s\n", triangles[i].tex1Name.c_str(), triangles[i].tex2Name.c_str());
+            GetLogger()->Trace(" lod level: %d\n", triangles[i].lodLevel);
+            GetLogger()->Trace(" state: %ld\n", triangles[i].state);
         }
     }
+
+    model.SetRawTriangles(triangles);
 
     return true;
 }
 
-bool CModelFile::WriteBinaryModel(const std::string& fileName)
+bool CModelIO::WriteBinaryModel(const std::string& fileName, const CModel& model)
 {
     std::ofstream stream;
     stream.open(fileName.c_str(), std::ios_base::out | std::ios_base::binary);
@@ -1169,12 +1179,16 @@ bool CModelFile::WriteBinaryModel(const std::string& fileName)
         return false;
     }
 
-    return WriteBinaryModel(stream);
+    return WriteBinaryModel(stream, model);
 }
 
-bool CModelFile::WriteBinaryModel(std::ostream& stream)
+bool CModelIO::WriteBinaryModel(std::ostream& stream, const CModel& model)
 {
-    if (m_triangles.size() == 0)
+    std::vector<RawModelTriangle> triangles;
+
+    model.GetRawTriangles(triangles);
+
+    if (triangles.size() == 0)
     {
         GetLogger()->Error("Empty model\n");
         return false;
@@ -1183,25 +1197,25 @@ bool CModelFile::WriteBinaryModel(std::ostream& stream)
     NewModelHeader header;
 
     header.version        = 1;
-    header.totalTriangles = m_triangles.size();
+    header.totalTriangles = triangles.size();
 
     IOUtils::WriteBinary<4, int>(header.version, stream);
     IOUtils::WriteBinary<4, int>(header.totalTriangles, stream);
 
-    for (int i = 0; i < static_cast<int>( m_triangles.size() ); ++i)
+    for (int i = 0; i < static_cast<int>( triangles.size() ); ++i)
     {
         NewModelTriangle1 t;
 
-        t.p1 = m_triangles[i].p1;
-        t.p2 = m_triangles[i].p2;
-        t.p3 = m_triangles[i].p3;
-        t.material = m_triangles[i].material;
-        t.tex1Name = m_triangles[i].tex1Name;
-        t.tex2Name = m_triangles[i].tex2Name;
-        t.variableTex2 = m_triangles[i].variableTex2;
-        t.state = m_triangles[i].state;
+        t.p1 = triangles[i].p1;
+        t.p2 = triangles[i].p2;
+        t.p3 = triangles[i].p3;
+        t.material = triangles[i].material;
+        t.tex1Name = triangles[i].tex1Name;
+        t.tex2Name = triangles[i].tex2Name;
+        t.variableTex2 = triangles[i].variableTex2;
+        t.state = triangles[i].state;
 
-        switch (m_triangles[i].lodLevel)
+        switch (triangles[i].lodLevel)
         {
             case LOD_Constant: t.lodLevel = 0; break;
             case LOD_Low:      t.lodLevel = 1; break;
@@ -1229,18 +1243,7 @@ bool CModelFile::WriteBinaryModel(std::ostream& stream)
     return true;
 }
 
-
-const std::vector<ModelTriangle>& CModelFile::GetTriangles()
-{
-    return m_triangles;
-}
-
-int CModelFile::GetTriangleCount()
-{
-    return m_triangles.size();
-}
-
-void CModelFile::SetPrintDebugInfo(bool printDebugInfo)
+void CModelIO::SetPrintDebugInfo(bool printDebugInfo)
 {
     m_printDebugInfo = printDebugInfo;
 }

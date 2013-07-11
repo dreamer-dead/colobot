@@ -1049,6 +1049,32 @@ void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int
     glDisableClientState(GL_COLOR_ARRAY);
 }
 
+BufferId CGLDevice::AllocateBuffer(BufferType bufferType, int elementCount)
+{
+    // TODO
+    return 0;
+}
+
+void CGLDevice::UpdateGeometryBuffer(BufferId geometryBufferId, VertexNor* data, int elementCount)
+{
+    // TODO
+}
+
+void CGLDevice::UpdateUvMapBuffer(BufferId uvMapBufferId, Math::Point* data, int elementCount)
+{
+    // TODO
+}
+
+void CGLDevice::DrawBuffer(BufferId geometryBufferId, BufferId uvMapBufferId, BufferId secondaryUvMapBufferId, PrimitiveType primitiveType, int vertexCount)
+{
+    // TODO
+}
+
+void CGLDevice::DestroyBuffer(BufferId bufferId)
+{
+    // TODO
+}
+
 unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
 {
     unsigned int id = 0;

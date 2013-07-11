@@ -70,6 +70,12 @@ public:
     MOCK_METHOD4(DrawPrimitive, void(Gfx::PrimitiveType type, const Gfx::VertexTex2 *vertices, int vertexCount, Gfx::Color color));
     MOCK_METHOD3(DrawPrimitive, void(Gfx::PrimitiveType type, const Gfx::VertexCol *vertices, int vertexCount));
 
+    MOCK_METHOD2(AllocateBuffer, Gfx::BufferId(Gfx::BufferType bufferType, int elementCount));
+    MOCK_METHOD3(UpdateGeometryBuffer, void(Gfx::BufferId geometryBufferId, Gfx::VertexNor* data, int elementCount));
+    MOCK_METHOD3(UpdateUvMapBuffer, void(Gfx::BufferId uvMapBufferId, Math::Point* data, int elementCount));
+    MOCK_METHOD5(DrawBuffer, void(Gfx::BufferId geometryBufferId, Gfx::BufferId uvMapBufferId, Gfx::BufferId secondaryUvMapBufferId, Gfx::PrimitiveType primitiveType, int vertexCount));
+    MOCK_METHOD1(DestroyBuffer, void(Gfx::BufferId bufferId));
+
     MOCK_METHOD3(CreateStaticBuffer, unsigned int(Gfx::PrimitiveType primitiveType, const Gfx::Vertex* vertices, int vertexCount));
     MOCK_METHOD3(CreateStaticBuffer, unsigned int(Gfx::PrimitiveType primitiveType, const Gfx::VertexTex2* vertices, int vertexCount));
     MOCK_METHOD3(CreateStaticBuffer, unsigned int(Gfx::PrimitiveType primitiveType, const Gfx::VertexCol* vertices, int vertexCount));

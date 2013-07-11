@@ -204,6 +204,12 @@ enum PrimitiveType
     PRIMITIVE_TRIANGLE_STRIP
 };
 
+enum BufferType
+{
+    BUFFER_GEOMETRY, //! Buffer for geometry (coords + normal)
+    BUFFER_UV_MAP    //! Buffer for texture UV map (uv coords)
+};
+
 /**
  * \enum FrustumPlane
  * \brief Planes of frustum space
@@ -222,6 +228,10 @@ enum FrustumPlane
                         FRUSTUM_PLANE_TOP    | FRUSTUM_PLANE_BOTTOM |
                         FRUSTUM_PLANE_FRONT  | FRUSTUM_PLANE_BACK
 };
+
+typedef unsigned int BufferId;
+
+const int INVALID_BUFFER_ID = 0;
 
 /**
  * \class CDevice
@@ -304,27 +314,50 @@ public:
     //! Renders primitive composed of vertices with solid color
     virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) = 0;
 
+    //! Allocates buffer of given type and size and returns its id
+    virtual BufferId AllocateBuffer(BufferType bufferType, int elementCount) = 0;
+
+    //! Updates geometry buffer with new data
+    virtual void UpdateGeometryBuffer(BufferId geometryBufferId, VertexNor* data, int elementCount) = 0;
+
+    //! Updates UV map buffer with new data
+    virtual void UpdateUvMapBuffer(BufferId uvMapBufferId, Math::Point* data, int elementCount) = 0;
+
+    //! Draws geometry using given buffers for geometry and UV maps
+    virtual void DrawBuffer(BufferId geometryBufferId, BufferId uvMapBufferId, BufferId secondaryUvMapBufferId, PrimitiveType primitiveType, int vertexCount) = 0;
+
+    //! Destroys buffer, freeing all its resources
+    virtual void DestroyBuffer(BufferId bufferId) = 0;
+
+    //!@deprecated
     //! Creates a static buffer composed of given primitives with single texture vertices
     virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) = 0;
 
+    //!@deprecated
     //! Creates a static buffer composed of given primitives with multitexturing
     virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) = 0;
 
+    //!@deprecated
     //! Creates a static buffer composed of given primitives with solid color
     virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) = 0;
 
+    //!@deprecated
     //! Updates the static buffer composed of given primitives with single texture vertices
     virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) = 0;
 
+    //!@deprecated
     //! Updates the static buffer composed of given primitives with multitexturing
     virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) = 0;
 
+    //!@deprecated
     //! Updates the static buffer composed of given primitives with solid color
     virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) = 0;
 
+    //!@deprecated
     //! Draws a static buffer
     virtual void DrawStaticBuffer(unsigned int bufferId) = 0;
 
+    //!@deprecated
     //! Deletes a static buffer
     virtual void DestroyStaticBuffer(unsigned int bufferId) = 0;
 

@@ -36,7 +36,7 @@
 #include "graphics/core/texture.h"
 #include "graphics/core/vertex.h"
 
-#include "graphics/engine/modelfile.h"
+#include "graphics/engine/model.h"
 
 #include "math/intpoint.h"
 #include "math/matrix.h"

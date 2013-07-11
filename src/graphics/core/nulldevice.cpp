@@ -190,6 +190,27 @@ void CNullDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
 {
 }
 
+BufferId CNullDevice::AllocateBuffer(BufferType bufferType, int elementCount)
+{
+    return BufferId();
+}
+
+void CNullDevice::UpdateGeometryBuffer(BufferId geometryBufferId, VertexNor* data, int elementCount)
+{
+}
+
+void CNullDevice::UpdateUvMapBuffer(BufferId uvMapBufferId, Math::Point* data, int elementCount)
+{
+}
+
+void CNullDevice::DrawBuffer(BufferId geometryBufferId, BufferId uvMapBufferId, BufferId secondaryUvMapBufferId, PrimitiveType primitiveType, int vertexCount)
+{
+}
+
+void CNullDevice::DestroyBuffer(BufferId bufferId)
+{
+}
+
 unsigned int CNullDevice::CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
 {
     return 0;
