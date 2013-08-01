@@ -82,10 +82,10 @@ int CModel::GetTriangleCount() const
     return m_rawTriangles.size();
 }
 
-void CModel::GetRawTriangles(std::vector<RawModelTriangle>& triangles) const
+std::vector<RawModelTriangle> CModel::GetRawTriangles() const
 {
     // TODO
-    triangles = m_rawTriangles;
+    return m_rawTriangles;
 }
 
 void CModel::SetRawTriangles(const std::vector<RawModelTriangle>& triangles)
@@ -101,7 +101,7 @@ int CModel::GetNumberOfParts() const
 
 CModelPart* CModel::GetPart(int partNumber)
 {
-    if (partNumber < 0 || partNumber >= m_parts.size())
+    if (partNumber < 0 || partNumber >= static_cast<int>( m_parts.size() ))
         return nullptr;
 
     return m_parts[partNumber];

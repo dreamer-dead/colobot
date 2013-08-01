@@ -100,8 +100,7 @@ void LoadTexture(Gfx::CGLDevice *device, const std::string &name)
 
 void Init(Gfx::CGLDevice* device, Gfx::CModel* model)
 {
-    std::vector<Gfx::RawModelTriangle> triangles;
-    model->GetRawTriangles(triangles);
+    std::vector<Gfx::RawModelTriangle> triangles = model->GetRawTriangles();
 
     for (int i = 0; i < static_cast<int>( triangles.size() ); ++i)
     {
@@ -145,8 +144,7 @@ void Render(Gfx::CGLDevice* device, Gfx::CModel* model)
     viewMat = Math::MultiplyMatrices(viewMat, rot);
     device->SetTransform(Gfx::TRANSFORM_VIEW, viewMat);
 
-    std::vector<Gfx::RawModelTriangle> triangles;
-    model->GetRawTriangles(triangles);
+    std::vector<Gfx::RawModelTriangle> triangles = model->GetRawTriangles();
 
     Gfx::VertexTex2 tri[3];
 

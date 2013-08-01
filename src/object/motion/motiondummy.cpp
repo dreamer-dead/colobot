@@ -20,7 +20,7 @@
 
 #include "object/motion/motiondummy.h"
 #include "physics/physics.h"
-#include "graphics/engine/modelmanager.h"
+#include "graphics/engine/model_manager.h"
 
 #include <stdio.h>
 #include <string.h>

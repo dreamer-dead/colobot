@@ -1,7 +1,8 @@
 set(CONVERT_MODEL_SOURCES
 ../common/logger.cpp
 ../common/stringutils.cpp
-../graphics/engine/modelfile.cpp
+../graphics/engine/model.cpp
+../graphics/engine/model_io.cpp
 convert_model.cpp
 )
 

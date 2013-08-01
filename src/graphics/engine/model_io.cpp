@@ -668,8 +668,7 @@ bool CModelIO::WriteModel(const std::string& fileName, const CModel& model)
 
 bool CModelIO::WriteModel(std::ostream& stream, const CModel& model)
 {
-    std::vector<RawModelTriangle> triangles;
-    model.GetRawTriangles(triangles);
+    std::vector<RawModelTriangle> triangles = model.GetRawTriangles();
 
     if (triangles.size() == 0)
     {
@@ -980,8 +979,7 @@ bool CModelIO::WriteTextModel(const std::string &fileName, const CModel& model)
 
 bool CModelIO::WriteTextModel(std::ostream& stream, const CModel& model)
 {
-    std::vector<RawModelTriangle> triangles;
-    model.GetRawTriangles(triangles);
+    std::vector<RawModelTriangle> triangles = model.GetRawTriangles();
 
     if (triangles.size() == 0)
     {
@@ -1184,9 +1182,7 @@ bool CModelIO::WriteBinaryModel(const std::string& fileName, const CModel& model
 
 bool CModelIO::WriteBinaryModel(std::ostream& stream, const CModel& model)
 {
-    std::vector<RawModelTriangle> triangles;
-
-    model.GetRawTriangles(triangles);
+    std::vector<RawModelTriangle> triangles = model.GetRawTriangles();
 
     if (triangles.size() == 0)
     {

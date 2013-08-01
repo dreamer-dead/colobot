@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "graphics/engine/modelmanager.h"
+#include "graphics/engine/model_manager.h"
 
 #include "app/app.h"
 
@@ -58,7 +58,7 @@ bool CModelManager::LoadModel(const std::string& fileName, bool mirrored)
 
     ModelInfo modelInfo;
     modelInfo.baseObjRank = m_engine->CreateBaseObject();
-    model.GetRawTriangles(modelInfo.triangles);
+    modelInfo.triangles = model.GetRawTriangles();
 
     if (mirrored)
         Mirror(modelInfo.triangles);

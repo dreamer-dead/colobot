@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 #include "common/logger.h"
-#include "graphics/engine/modelfile.h"
+#include "graphics/engine/model_io.h"
 
 #include <iostream>
 #include <map>
@@ -186,21 +186,21 @@ int main(int argc, char *argv[])
     if (ARGS.usage)
         return 0;
 
-    Gfx::CModelFile model;
+    Gfx::CModel model;
 
     bool ok = true;
 
     if (ARGS.inputFormat == "old")
     {
-        ok = model.ReadModel(ARGS.inputFile);
+        ok = Gfx::CModelIO::ReadModel(ARGS.inputFile, model);
     }
     else if (ARGS.inputFormat == "new_bin")
     {
-        ok = model.ReadBinaryModel(ARGS.inputFile);
+        ok = Gfx::CModelIO::ReadBinaryModel(ARGS.inputFile, model);
     }
     else if (ARGS.inputFormat == "new_txt")
     {
-        ok = model.ReadTextModel(ARGS.inputFile);
+        ok = Gfx::CModelIO::ReadTextModel(ARGS.inputFile, model);
     }
     else
     {
@@ -216,7 +216,7 @@ int main(int argc, char *argv[])
 
     if (ARGS.dumpInfo)
     {
-        const std::vector<Gfx::ModelTriangle>& triangles = model.GetTriangles();
+        std::vector<Gfx::RawModelTriangle> triangles = model.GetRawTriangles();
 
         Math::Vector bboxMin( Math::HUGE_NUM,  Math::HUGE_NUM,  Math::HUGE_NUM);
         Math::Vector bboxMax(-Math::HUGE_NUM, -Math::HUGE_NUM, -Math::HUGE_NUM);
@@ -228,7 +228,7 @@ int main(int argc, char *argv[])
 
         for (int i = 0; i < static_cast<int>( triangles.size() ); ++i)
         {
-            const Gfx::ModelTriangle& t = triangles[i];
+            const Gfx::RawModelTriangle& t = triangles[i];
 
             bboxMin.x = Math::Min(t.p1.coord.x, t.p2.coord.x, t.p3.coord.x, bboxMin.x);
             bboxMin.y = Math::Min(t.p1.coord.y, t.p2.coord.y, t.p3.coord.y, bboxMin.y);
@@ -273,15 +273,15 @@ int main(int argc, char *argv[])
 
     if (ARGS.outputFormat == "old")
     {
-        ok = model.WriteModel(ARGS.outputFile);
+        ok = Gfx::CModelIO::WriteModel(ARGS.outputFile, model);
     }
     else if (ARGS.outputFormat == "new_bin")
     {
-        ok = model.WriteBinaryModel(ARGS.outputFile);
+        ok = Gfx::CModelIO::WriteBinaryModel(ARGS.outputFile, model);
     }
     else if (ARGS.outputFormat == "new_txt")
     {
-        ok = model.WriteTextModel(ARGS.outputFile);
+        ok = Gfx::CModelIO::WriteTextModel(ARGS.outputFile, model);
     }
     else
     {

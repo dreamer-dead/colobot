@@ -30,7 +30,7 @@
 
 #include "graphics/engine/lightman.h"
 #include "graphics/engine/lightning.h"
-#include "graphics/engine/modelmanager.h"
+#include "graphics/engine/model_manager.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/pyro.h"
 #include "graphics/engine/terrain.h"

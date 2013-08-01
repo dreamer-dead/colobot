@@ -24,7 +24,7 @@
 
 #include "math/geometry.h"
 
-#include "graphics/engine/modelmanager.h"
+#include "graphics/engine/model_manager.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
 
