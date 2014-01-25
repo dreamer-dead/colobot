@@ -355,7 +355,7 @@ public:
     void        StopPerformanceCounter(PerformanceCounter counter);
     float       GetPerformanceCounterData(PerformanceCounter counter) const;
     //@}
-    
+
     bool        GetSceneTestMode();
 
 protected:
@@ -491,7 +491,7 @@ protected:
     std::string     m_runSceneName;
     int             m_runSceneRank;
     //@}
-    
+
     //! Scene test mode
     bool            m_sceneTest;
 
@@ -506,5 +506,7 @@ protected:
     
     //! Headles mode
     bool            m_headless;
+
+    bool            m_useNewModels;
 };
 

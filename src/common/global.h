@@ -181,7 +181,6 @@ enum Language
     LANGUAGE_RUSSIAN = 4
 };
 
-
 /**
  * \enum BuildType
  * \brief Construction actions (buildings, etc.) available to user

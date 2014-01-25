@@ -175,6 +175,7 @@ CApplication::CApplication()
     m_language = LANGUAGE_ENV;
 
     m_lowCPU = true;
+    m_useNewModels = false;
 }
 
 CApplication::~CApplication()
@@ -231,7 +232,8 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         OPT_MOD,
         OPT_VBO,
         OPT_RESOLUTION,
-        OPT_HEADLESS
+        OPT_HEADLESS,
+        OPT_MODELS
     };
 
     option options[] =
@@ -249,6 +251,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "vbo", required_argument, nullptr, OPT_VBO },
         { "resolution", required_argument, nullptr, OPT_RESOLUTION },
         { "headless", no_argument, nullptr, OPT_HEADLESS },
+        { "models", required_argument, nullptr, OPT_MODELS },
         { nullptr, 0, nullptr, 0}
     };
 
@@ -292,6 +295,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -vbo mode           set OpenGL VBO mode (one of: auto, enable, disable)\n");
                 GetLogger()->Message("  -resolution WxH     set resolution\n");
                 GetLogger()->Message("  -headless           headless mode - disables graphics, sound and user interaction\n");
+                GetLogger()->Message("  -models type        set which models to use (one of: old, new)\n");
                 return PARSE_ARGS_HELP;
             }
             case OPT_DEBUG:
@@ -410,6 +414,26 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
             case OPT_HEADLESS:
             {
                 m_headless = true;
+                break;
+            }
+            case OPT_MODELS:
+            {
+                std::string models;
+                models = optarg;
+                if (models == "old")
+                {
+                    m_useNewModels = false;
+                }
+                else if (models == "new")
+                {
+                    m_useNewModels = true;
+                }
+                else
+                {
+                    GetLogger()->Error("Invalid models type: '%s'\n", optarg);
+                    return PARSE_ARGS_FAIL;
+                }
+
                 break;
             }
             default:
@@ -583,7 +607,7 @@ bool CApplication::Create()
     }
 
     // Create model manager
-    m_modelManager = new Gfx::CModelManager(m_engine);
+    m_modelManager = new Gfx::CModelManager(m_engine, m_useNewModels);
 
     // Create the robot application.
     m_robotMain = new CRobotMain(this, !defaultValues);
