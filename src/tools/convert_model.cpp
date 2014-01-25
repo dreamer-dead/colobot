@@ -151,18 +151,6 @@ bool ParseArgs(int argc, char *argv[])
     return true;
 }
 
-std::ostream& operator<<(std::ostream& stream, Gfx::LODLevel lodLevel)
-{
-    switch (lodLevel)
-    {
-        case Gfx::LOD_Constant: stream << "constant"; break;
-        case Gfx::LOD_High:     stream << "high";     break;
-        case Gfx::LOD_Medium:   stream << "medium";   break;
-        case Gfx::LOD_Low:      stream << "low";      break;
-    }
-    return stream;
-}
-
 template<typename T>
 void PrintStats(const std::map<T, int>& stats, int total)
 {
@@ -223,7 +211,6 @@ int main(int argc, char *argv[])
 
         std::map<std::string, int> texs1, texs2;
         std::map<int, int> states;
-        std::map<Gfx::LODLevel, int> lodLevels;
         int variableTexs2 = 0;
 
         for (int i = 0; i < static_cast<int>( triangles.size() ); ++i)
@@ -244,8 +231,6 @@ int main(int argc, char *argv[])
             if (t.variableTex2)
                 variableTexs2 += 1;
             states[t.state] += 1;
-
-            lodLevels[t.lodLevel] += 1;
         }
 
         std::cerr << "---- Info ----" << std::endl;
@@ -265,8 +250,6 @@ int main(int argc, char *argv[])
         std::cerr << "States:" << std::endl;
         PrintStats(states, triangles.size());
         std::cerr << std::endl;
-        std::cerr << "LOD:" << std::endl;
-        PrintStats(lodLevels, triangles.size());
 
         return 0;
     }

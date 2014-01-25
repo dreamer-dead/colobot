@@ -96,7 +96,7 @@ bool CModelManager::LoadModel(const std::string& fileName, bool mirrored)
         m_engine->AddBaseObjTriangles(modelInfo.baseObjRank, vs, ENG_TRIANGLE_TYPE_TRIANGLES,
                                       modelInfo.triangles[i].material, state,
                                       tex1Name, tex2Name,
-                                      modelInfo.triangles[i].lodLevel, false);
+                                      false);
     }
 
     return true;

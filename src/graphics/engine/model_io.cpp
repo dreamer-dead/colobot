@@ -470,11 +470,10 @@ bool CModelIO::ReadModel(std::istream& stream, CModel& model)
         return false;
     }
 
-    triangles.reserve(header.totalTriangles);
-
-    // Old model version #1
-    if ( (header.revision == 1) && (header.version == 0) )
+    if (header.revision == 1 && header.version == 0)
     {
+        triangles.reserve(header.totalTriangles);
+
         for (int i = 0; i < header.totalTriangles; ++i)
         {
             OldModelTriangle1 t;
@@ -494,8 +493,14 @@ bool CModelIO::ReadModel(std::istream& stream, CModel& model)
 
             if (stream.fail())
             {
-                GetLogger()->Error("Error reading model data\n");
+                GetLogger()->Error("Error reading model data at triangle %d\n", i+1);
                 return false;
+            }
+
+            // Skip low-LOD triangles
+            if (t.min != 0.0f)
+            {
+                continue;
             }
 
             RawModelTriangle triangle;
@@ -505,13 +510,14 @@ bool CModelIO::ReadModel(std::istream& stream, CModel& model)
 
             triangle.material = t.material;
             triangle.tex1Name = std::string(t.texName);
-            triangle.lodLevel = MinMaxToLodLevel(t.min, t.max);
 
             triangles.push_back(triangle);
         }
     }
-    else if ( header.revision == 1 && header.version == 1 )
+    else if (header.revision == 1 && header.version == 1)
     {
+        triangles.reserve(header.totalTriangles);
+
         for (int i = 0; i < header.totalTriangles; ++i)
         {
             OldModelTriangle2 t;
@@ -537,8 +543,14 @@ bool CModelIO::ReadModel(std::istream& stream, CModel& model)
 
             if (stream.fail())
             {
-                GetLogger()->Error("Error reading model data\n");
+                GetLogger()->Error("Error reading model data at triangle %d\n", i+1);
                 return false;
+            }
+
+            // Skip low-LOD triangles
+            if (t.min == 0.0f)
+            {
+                continue;
             }
 
             RawModelTriangle triangle;
@@ -548,14 +560,15 @@ bool CModelIO::ReadModel(std::istream& stream, CModel& model)
 
             triangle.material = t.material;
             triangle.tex1Name = std::string(t.texName);
-            triangle.lodLevel = MinMaxToLodLevel(t.min, t.max);
             triangle.state = t.state;
 
             triangles.push_back(triangle);
         }
     }
-    else
+    else if (header.revision == 1 && header.version == 2)
     {
+        triangles.reserve(header.totalTriangles);
+
         for (int i = 0; i < header.totalTriangles; ++i)
         {
             OldModelTriangle3 t;
@@ -581,8 +594,14 @@ bool CModelIO::ReadModel(std::istream& stream, CModel& model)
 
             if (stream.fail())
             {
-                GetLogger()->Error("Error reading model data\n");
+                GetLogger()->Error("Error reading model data at triangle %d\n", i+1);
                 return false;
+            }
+
+            // Skip low-LOD triangles
+            if (t.min != 0.0f)
+            {
+                continue;
             }
 
             RawModelTriangle triangle;
@@ -592,7 +611,6 @@ bool CModelIO::ReadModel(std::istream& stream, CModel& model)
 
             triangle.material = t.material;
             triangle.tex1Name = std::string(t.texName);
-            triangle.lodLevel = MinMaxToLodLevel(t.min, t.max);
             triangle.state = t.state;
             triangle.variableTex2 = t.texNum2 == 1;
 
@@ -611,6 +629,11 @@ bool CModelIO::ReadModel(std::istream& stream, CModel& model)
 
             triangles.push_back(triangle);
        }
+    }
+    else
+    {
+        GetLogger()->Error("Unknown model file revision: %d and version: %d\n", header.revision, header.version);
+        return false;
     }
 
     for (int i = 0; i < static_cast<int>( triangles.size() ); ++i)
@@ -643,7 +666,6 @@ bool CModelIO::ReadModel(std::istream& stream, CModel& model)
 
             GetLogger()->Trace(" tex1: %s  tex2: %s\n", triangles[i].tex1Name.c_str(),
                             triangles[i].variableTex2 ? "(variable)" : triangles[i].tex2Name.c_str());
-            GetLogger()->Trace(" lod level: %d\n", triangles[i].lodLevel);
             GetLogger()->Trace(" state: %ld\n", triangles[i].state);
         }
     }
@@ -699,7 +721,8 @@ bool CModelIO::WriteModel(std::ostream& stream, const CModel& model)
 
         t.material = triangles[i].material;
         strncpy(t.texName, triangles[i].tex1Name.c_str(), 20);
-        LODLevelToMinMax(triangles[i].lodLevel, t.min, t.max);
+        t.min = 0.0f;
+        t.max = 1000000.0f;
         t.state = triangles[i].state;
 
         int no = 0;
@@ -735,50 +758,13 @@ bool CModelIO::WriteModel(std::ostream& stream, const CModel& model)
     return true;
 }
 
-LODLevel CModelIO::MinMaxToLodLevel(float min, float max)
-{
-    if (min == 0.0f && max == 100.0f)
-        return LOD_High;
-    else if (min == 100.0f && max == 200.0f)
-        return LOD_Medium;
-    else if (min == 200.0f && max == 1000000.0f)
-        return LOD_Low;
-    else if (min == 0.0f && max == 1000000.0f)
-        return LOD_Constant;
-
-    return LOD_Constant;
-}
-
-void CModelIO::LODLevelToMinMax(LODLevel lodLevel, float& min, float& max)
-{
-    switch (lodLevel)
-    {
-        case LOD_High:
-            min = 0.0f;
-            max = 100.0f;
-            break;
-
-        case LOD_Medium:
-            min = 100.0f;
-            max = 200.0f;
-            break;
-
-        case LOD_Low:
-            min = 200.0f;
-            max = 1000000.0f;
-            break;
-
-        case LOD_Constant:
-            min = 0.0f;
-            max = 1000000.0f;
-            break;
-    }
-}
-
-
 /*******************************************************
                       New formats
  *******************************************************/
+
+namespace {
+    static const int CURRENT_NEW_MODEL_VERSION = 2;
+}
 
 /**
  * \struct NewModelHeader
@@ -821,15 +807,12 @@ struct NewModelTriangle1
     std::string      tex2Name;
     //! If true, 2nd texture will be taken from current engine setting
     bool             variableTex2;
-    //! LOD level
-    int              lodLevel;
     //! Rendering state to be set
     int              state;
 
     NewModelTriangle1()
     {
         variableTex2 = true;
-        lodLevel = 0;
         state = 0;
     }
 };
@@ -875,8 +858,12 @@ bool CModelIO::ReadTextModel(std::istream& stream, CModel& model)
         return false;
     }
 
-    // New model version 1
-    if (header.version == 1)
+    if (header.version < CURRENT_NEW_MODEL_VERSION)
+    {
+        GetLogger()->Error("Model file version %d < %d not supported any more\n", header.version, CURRENT_NEW_MODEL_VERSION);
+        return false;
+    }
+    else if (header.version == CURRENT_NEW_MODEL_VERSION)
     {
         for (int i = 0; i < header.totalTriangles; ++i)
         {
@@ -897,12 +884,11 @@ bool CModelIO::ReadTextModel(std::istream& stream, CModel& model)
                          ReadLineValue<std::string>(stream, "tex1", t.tex1Name) &&
                          ReadLineValue<std::string>(stream, "tex2", t.tex2Name) &&
                          ReadLineValue<char>(stream, "var_tex2", varTex2Ch) &&
-                         ReadLineValue<int>(stream, "lod_level", t.lodLevel) &&
                          ReadLineValue<int>(stream, "state", t.state);
 
             if (!triOk || stream.fail())
             {
-                GetLogger()->Error("Error reading model data\n");
+                GetLogger()->Error("Error reading model data at triangle %d\n", i+1);
                 return false;
             }
 
@@ -919,15 +905,6 @@ bool CModelIO::ReadTextModel(std::istream& stream, CModel& model)
             triangle.variableTex2 = t.variableTex2;
             triangle.state = t.state;
 
-            switch (t.lodLevel)
-            {
-                case 0: triangle.lodLevel = LOD_Constant; break;
-                case 1: triangle.lodLevel = LOD_Low;      break;
-                case 2: triangle.lodLevel = LOD_Medium;   break;
-                case 3: triangle.lodLevel = LOD_High;     break;
-                default: break;
-            }
-
             triangles.push_back(triangle);
 
             continue;
@@ -935,7 +912,7 @@ bool CModelIO::ReadTextModel(std::istream& stream, CModel& model)
     }
     else
     {
-        GetLogger()->Error("Unknown model file version\n");
+        GetLogger()->Error("Unknown model file version: %d\n", header.version);
         return false;
     }
 
@@ -955,7 +932,6 @@ bool CModelIO::ReadTextModel(std::istream& stream, CModel& model)
         GetLogger()->Trace(" mat: d: %s  a: %s  s: %s\n", d.c_str(), a.c_str(), s.c_str());
 
         GetLogger()->Trace(" tex1: %s  tex2: %s\n", triangles[i].tex1Name.c_str(), triangles[i].tex2Name.c_str());
-        GetLogger()->Trace(" lod level: %d\n", triangles[i].lodLevel);
         GetLogger()->Trace(" state: %ld\n", triangles[i].state);
     }
 
@@ -989,7 +965,7 @@ bool CModelIO::WriteTextModel(std::ostream& stream, const CModel& model)
 
     NewModelHeader header;
 
-    header.version        = 1;
+    header.version        = CURRENT_NEW_MODEL_VERSION;
     header.totalTriangles = triangles.size();
 
     stream << "# Colobot text model" << std::endl;
@@ -1013,14 +989,6 @@ bool CModelIO::WriteTextModel(std::ostream& stream, const CModel& model)
         t.variableTex2 = triangles[i].variableTex2;
         t.state = triangles[i].state;
 
-        switch (triangles[i].lodLevel)
-        {
-            case LOD_Constant: t.lodLevel = 0; break;
-            case LOD_Low:      t.lodLevel = 1; break;
-            case LOD_Medium:   t.lodLevel = 2; break;
-            case LOD_High:     t.lodLevel = 3; break;
-        }
-
         stream << "p1 ";
         WriteTextVertexTex2(t.p1, stream);
         stream << "p2 ";
@@ -1033,7 +1001,6 @@ bool CModelIO::WriteTextModel(std::ostream& stream, const CModel& model)
         stream << "tex1 " << t.tex1Name << std::endl;
         stream << "tex2 " << t.tex2Name << std::endl;
         stream << "var_tex2 " << (t.variableTex2 ? 'Y' : 'N') << std::endl;
-        stream << "lod_level " << t.lodLevel << std::endl;
         stream << "state " << t.state << std::endl;
 
         stream << std::endl;
@@ -1088,8 +1055,12 @@ bool CModelIO::ReadBinaryModel(std::istream& stream, CModel& model)
         return false;
     }
 
-    // New model version 1
-    if (header.version == 1)
+    if (header.version < CURRENT_NEW_MODEL_VERSION)
+    {
+        GetLogger()->Error("Model file version %d < %d not supported any more\n", header.version, CURRENT_NEW_MODEL_VERSION);
+        return false;
+    }
+    else if (header.version == CURRENT_NEW_MODEL_VERSION)
     {
         for (int i = 0; i < header.totalTriangles; ++i)
         {
@@ -1102,7 +1073,6 @@ bool CModelIO::ReadBinaryModel(std::istream& stream, CModel& model)
             t.tex1Name = IOUtils::ReadBinaryString<1>(stream);
             t.tex2Name = IOUtils::ReadBinaryString<1>(stream);
             t.variableTex2 = IOUtils::ReadBinaryBool(stream);
-            t.lodLevel = IOUtils::ReadBinary<4, int>(stream);
             t.state = IOUtils::ReadBinary<4, int>(stream);
 
             if (stream.fail())
@@ -1121,21 +1091,12 @@ bool CModelIO::ReadBinaryModel(std::istream& stream, CModel& model)
             triangle.variableTex2 = t.variableTex2;
             triangle.state = t.state;
 
-            switch (t.lodLevel)
-            {
-                case 0: triangle.lodLevel = LOD_Constant; break;
-                case 1: triangle.lodLevel = LOD_Low;      break;
-                case 2: triangle.lodLevel = LOD_Medium;   break;
-                case 3: triangle.lodLevel = LOD_High;     break;
-                default: break;
-            }
-
             triangles.push_back(triangle);
         }
     }
     else
     {
-        GetLogger()->Error("Unknown model file version\n");
+        GetLogger()->Error("Unknown model file version: %d\n", header.version);
         return false;
     }
 
@@ -1157,7 +1118,6 @@ bool CModelIO::ReadBinaryModel(std::istream& stream, CModel& model)
             GetLogger()->Trace(" mat: d: %s  a: %s  s: %s\n", d.c_str(), a.c_str(), s.c_str());
 
             GetLogger()->Trace(" tex1: %s  tex2: %s\n", triangles[i].tex1Name.c_str(), triangles[i].tex2Name.c_str());
-            GetLogger()->Trace(" lod level: %d\n", triangles[i].lodLevel);
             GetLogger()->Trace(" state: %ld\n", triangles[i].state);
         }
     }
@@ -1192,7 +1152,7 @@ bool CModelIO::WriteBinaryModel(std::ostream& stream, const CModel& model)
 
     NewModelHeader header;
 
-    header.version        = 1;
+    header.version        = CURRENT_NEW_MODEL_VERSION;
     header.totalTriangles = triangles.size();
 
     IOUtils::WriteBinary<4, int>(header.version, stream);
@@ -1211,14 +1171,6 @@ bool CModelIO::WriteBinaryModel(std::ostream& stream, const CModel& model)
         t.variableTex2 = triangles[i].variableTex2;
         t.state = triangles[i].state;
 
-        switch (triangles[i].lodLevel)
-        {
-            case LOD_Constant: t.lodLevel = 0; break;
-            case LOD_Low:      t.lodLevel = 1; break;
-            case LOD_Medium:   t.lodLevel = 2; break;
-            case LOD_High:     t.lodLevel = 3; break;
-        }
-
         WriteBinaryVertexTex2(t.p1, stream);
         WriteBinaryVertexTex2(t.p2, stream);
         WriteBinaryVertexTex2(t.p3, stream);
@@ -1226,7 +1178,6 @@ bool CModelIO::WriteBinaryModel(std::ostream& stream, const CModel& model)
         IOUtils::WriteBinaryString<1>(t.tex1Name, stream);
         IOUtils::WriteBinaryString<1>(t.tex2Name, stream);
         IOUtils::WriteBinaryBool(t.variableTex2, stream);
-        IOUtils::WriteBinary<4, int>(t.lodLevel, stream);
         IOUtils::WriteBinary<4, int>(t.state, stream);
 
         if (stream.fail())

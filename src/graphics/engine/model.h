@@ -27,20 +27,6 @@
 namespace Gfx {
 
 /**
- * \enum LODLevel
- * \brief Level-of-detail
- *
- * A quantified replacement for older values of min/max.
- */
-enum LODLevel
-{
-    LOD_Constant = -1, //!< triangle is always visible, no matter at what distance
-    LOD_Low      =  1, //!< triangle is visible at farthest distance (lowest quality)
-    LOD_Medium   =  2, //!< triangle is visible at medium distance (medium quality)
-    LOD_High     =  4  //!< triangle is visible at closest distance (highest quality)
-};
-
-/**
  * \struct RawModelTriangle
  * \brief Triangle of a 3D model as raw data read from model file
  */
@@ -60,8 +46,6 @@ struct RawModelTriangle
     std::string tex2Name;
     //! If true, 2nd texture will be taken from current engine setting
     bool variableTex2;
-    //! LOD level
-    LODLevel lodLevel;
     //! Rendering state to be set
     int state;
     //! Model part
@@ -70,7 +54,6 @@ struct RawModelTriangle
     RawModelTriangle()
     {
         variableTex2 = true;
-        lodLevel = LOD_Constant;
         state = 0;
         part = 0;
     }

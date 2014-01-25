@@ -85,13 +85,6 @@ public:
     static void SetPrintDebugInfo(bool printDebugInfo);
 
 private:
-    //@{
-    //! @deprecated min, max conversions
-    static LODLevel MinMaxToLodLevel(float min, float max);
-    static void LODLevelToMinMax(LODLevel lodLevel, float& min, float& max);
-    //@}
-
-private:
     static bool m_printDebugInfo;
 };
 

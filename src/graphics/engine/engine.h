@@ -214,12 +214,7 @@ struct EngineBaseObjDataTier
  */
 struct EngineBaseObjLODTier
 {
-    LODLevel                            lodLevel;
     std::vector<EngineBaseObjDataTier>  next;
-
-    inline EngineBaseObjLODTier(LODLevel _lodLevel = LOD_Constant)
-     : lodLevel(_lodLevel)
-    {}
 };
 
 /**
@@ -804,12 +799,12 @@ public:
                                         EngineTriangleType triangleType,
                                         const Material& material, int state,
                                         std::string tex1Name, std::string tex2Name,
-                                        LODLevel lodLevel, bool globalUpdate);
+                                        bool globalUpdate);
 
     //! Adds a tier 4 engine object directly
     void            AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buffer,
                                     std::string tex1Name, std::string tex2Name,
-                                    LODLevel lodLevel, bool globalUpdate);
+                                    bool globalUpdate);
 
     // Objects
 
@@ -857,11 +852,10 @@ public:
 
     //! Returns the first found tier 4 engine object for the given params or nullptr if not found
     EngineBaseObjDataTier* FindTriangles(int objRank, const Material& material,
-                                         int state, std::string tex1Name, std::string tex2Name,
-                                         int lodLevelMask);
+                                         int state, std::string tex1Name, std::string tex2Name);
 
     //! Returns a partial list of triangles for given object
-    int             GetPartialTriangles(int objRank, int lodLevelMask, float percent, int maxCount,
+    int             GetPartialTriangles(int objRank, float percent, int maxCount,
                                         std::vector<EngineTriangle>& triangles);
 
     //! Changes the 2nd texure for given object
@@ -870,13 +864,13 @@ public:
     //! Changes (recalculates) texture mapping for given object
     void            ChangeTextureMapping(int objRank, const Material& mat, int state,
                                          const std::string& tex1Name, const std::string& tex2Name,
-                                         int lodLevelMask, EngineTextureMapping mode,
+                                         EngineTextureMapping mode,
                                          float au, float bu, float av, float bv);
 
     //! Changes texture mapping for robot tracks
     void            TrackTextureMapping(int objRank, const Material& mat, int state,
                                         const std::string& tex1Name, const std::string& tex2Name,
-                                        int lodLevelMask, EngineTextureMapping mode,
+                                        EngineTextureMapping mode,
                                         float pos, float factor, float tl, float ts, float tt);
 
     //! Detects the target object that is selected with the mouse
@@ -1245,7 +1239,7 @@ protected:
     //! Creates a new tier 2 object (texture)
     EngineBaseObjTexTier&  AddLevel2(EngineBaseObject& p1, const std::string& tex1Name, const std::string& tex2Name);
     //! Creates a new tier 3 object (LOD)
-    EngineBaseObjLODTier&  AddLevel3(EngineBaseObjTexTier &p2, LODLevel lodLevel);
+    EngineBaseObjLODTier&  AddLevel3(EngineBaseObjTexTier &p2);
     //! Creates a new tier 4 object (data)
     EngineBaseObjDataTier& AddLevel4(EngineBaseObjLODTier &p3, EngineTriangleType type,
                                      const Material& mat, int state);
@@ -1255,9 +1249,6 @@ protected:
 
     //! Tests whether the given object is visible
     bool        IsVisible(int objRank);
-
-    //! Checks whether the given distance is within LOD min & max limit
-    bool        IsWithinLODLimit(float distance, LODLevel lodLevel);
 
     //! Detects whether an object is affected by the mouse
     bool        DetectBBox(int objRank, Math::Point mouse);
