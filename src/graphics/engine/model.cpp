@@ -16,82 +16,262 @@
 
 #include "graphics/engine/model.h"
 
+#include "graphics/engine/engine.h"
+
 
 // Graphics module namespace
 namespace Gfx {
 
-CModelSubpart::CModelSubpart()
+ModelMaterialTextureMode StateToPrimaryTextureMode(int state)
 {
-    // TODO
+    ModelMaterialTextureMode textureMode = ModelMaterialTextureMode::Normal;
+
+    if (state & ENG_RSTATE_ALPHA)
+    {
+        textureMode = ModelMaterialTextureMode::Alpha;
+    }
+    else if (state & ENG_RSTATE_TTEXTURE_BLACK)
+    {
+        textureMode = ModelMaterialTextureMode::BlackTransparent;
+    }
+    else if (state & ENG_RSTATE_TTEXTURE_WHITE)
+    {
+        textureMode = ModelMaterialTextureMode::WhiteTransparent;
+    }
+
+    return textureMode;
 }
 
-const ModelMaterial& CModelSubpart::GetMaterial() const
+ModelMaterialTextureMode StateToSecondaryTextureMode(int state)
 {
-    return m_material;
+    ModelMaterialTextureMode textureMode = ModelMaterialTextureMode::Normal;
+
+    if (state & ENG_RSTATE_DUAL_BLACK)
+    {
+        textureMode = ModelMaterialTextureMode::BlackTransparent;
+    }
+    else if (state & ENG_RSTATE_DUAL_WHITE)
+    {
+        textureMode = ModelMaterialTextureMode::WhiteTransparent;
+    }
+
+    return textureMode;
 }
 
-void CModelSubpart::SetMaterial(const ModelMaterial& material)
+int TextureModesToState(ModelMaterialTextureMode tex1Mode, ModelMaterialTextureMode tex2Mode)
 {
-    m_material = material;
-    // TODO
+    int state = 0;
+
+    if (tex1Mode == ModelMaterialTextureMode::Alpha)
+    {
+        state |= ENG_RSTATE_ALPHA;
+    }
+    else if (tex1Mode == ModelMaterialTextureMode::BlackTransparent)
+    {
+        state |= ENG_RSTATE_TTEXTURE_BLACK;
+    }
+    else if (tex1Mode == ModelMaterialTextureMode::WhiteTransparent)
+    {
+        state |= ENG_RSTATE_TTEXTURE_WHITE;
+    }
+
+    if (tex2Mode == ModelMaterialTextureMode::BlackTransparent)
+    {
+        state |= ENG_RSTATE_DUAL_BLACK;
+    }
+    else if (tex2Mode == ModelMaterialTextureMode::WhiteTransparent)
+    {
+        state |= ENG_RSTATE_DUAL_WHITE;
+    }
+
+    return state;
 }
 
 // --------------
 
-CModelPart::CModelPart()
+
+CModelBlock::CModelBlock(const ModelMaterial& material)
+ : m_material(material)
+ , m_geometryBufferId(0)
+ , m_primaryUvMapBufferId(0)
+ , m_secondaryUvMapBufferId(0)
+{}
+
+void CModelBlock::AddTriangle(const RawModelTriangle& triangle)
 {
-    // TODO
+    m_geometry.vertices.emplace_back(triangle.p1.coord, triangle.p1.normal);
+    m_geometry.vertices.emplace_back(triangle.p2.coord, triangle.p2.normal);
+    m_geometry.vertices.emplace_back(triangle.p3.coord, triangle.p3.normal);
+
+    m_primaryUvMap.uvs.emplace_back(triangle.p1.texCoord);
+    m_primaryUvMap.uvs.emplace_back(triangle.p2.texCoord);
+    m_primaryUvMap.uvs.emplace_back(triangle.p3.texCoord);
+
+    m_secondaryUvMap.uvs.emplace_back(triangle.p1.texCoord2);
+    m_secondaryUvMap.uvs.emplace_back(triangle.p2.texCoord2);
+    m_secondaryUvMap.uvs.emplace_back(triangle.p3.texCoord2);
 }
 
-int CModelPart::GetNumber() const
+int CModelBlock::GetTriangleCount() const
 {
-    return m_number;
+    return m_geometry.vertices.size() / 3;
 }
 
-std::vector<CModelSubpart*> CModelPart::GetSubparts()
+void CModelBlock::CollectRawTriangles(std::vector<RawModelTriangle>& rawTriangles, int partNumber) const
 {
-    return m_subparts;
+    const int triangleCount = GetTriangleCount();
+
+    for (int i = 0; i < triangleCount; ++i)
+    {
+        RawModelTriangle triangle;
+        triangle.p1 = VertexTex2(m_geometry.vertices[3*i+0].coord, m_geometry.vertices[3*i+0].normal,
+                                 m_primaryUvMap.uvs[3*i+0], m_secondaryUvMap.uvs[3*i+0]);
+        triangle.p2 = VertexTex2(m_geometry.vertices[3*i+1].coord, m_geometry.vertices[3*i+1].normal,
+                                 m_primaryUvMap.uvs[3*i+1], m_secondaryUvMap.uvs[3*i+1]);
+        triangle.p3 = VertexTex2(m_geometry.vertices[3*i+2].coord, m_geometry.vertices[3*i+2].normal,
+                                 m_primaryUvMap.uvs[3*i+2], m_secondaryUvMap.uvs[3*i+2]);
+
+        triangle.material = m_material.material;
+        triangle.tex1Name = m_material.tex1Name;
+        triangle.tex2Name = m_material.tex2Name;
+        triangle.variableTex2 = m_material.variableTex2;
+
+        triangle.state = TextureModesToState(m_material.tex1Mode, m_material.tex2Mode);
+
+        triangle.part = partNumber;
+
+        rawTriangles.push_back(triangle);
+    }
 }
 
+
+// --------------
+
+CModelPart::CModelPart(const RawModelPart& rawPart, const std::vector<RawModelTriangle>& rawTriangles)
+ : m_number(rawPart.partNumber)
+ , m_parentNumber(rawPart.parentPartNumber)
+{
+    for (const auto& triangle : rawTriangles)
+    {
+        if (triangle.part == rawPart.partNumber)
+        {
+            ModelMaterial material = ExtractMaterial(triangle);
+            CModelBlock* block = GetBlockForMaterial(material);
+            if (block == nullptr)
+            {
+                block = AddNewBlock(material);
+            }
+
+            block->AddTriangle(triangle);
+        }
+    }
+}
+
+void CModelPart::CollectRawTriangles(std::vector<RawModelTriangle>& rawTriangles) const
+{
+    for (auto* block : m_blocks)
+    {
+        block->CollectRawTriangles(rawTriangles, m_number);
+    }
+}
+
+CModelBlock* CModelPart::GetBlockForMaterial(const ModelMaterial& modelMaterial)
+{
+    for (auto* block : m_blocks)
+    {
+        if (block->GetMaterial() == modelMaterial)
+        {
+            return block;
+        }
+    }
+
+    return nullptr;
+}
+
+CModelBlock* CModelPart::AddNewBlock(const ModelMaterial& modelMaterial)
+{
+    CModelBlock* block = new CModelBlock(modelMaterial);
+    m_blocks.push_back(block);
+    return block;
+}
+
+int CModelPart::GetTriangleCount() const
+{
+    int triangleCount = 0;
+    for (auto* block : m_blocks)
+    {
+        triangleCount += block->GetTriangleCount();
+    }
+    return triangleCount;
+}
+
+ModelMaterial CModelPart::ExtractMaterial(const RawModelTriangle& triangle)
+{
+    ModelMaterial material;
+    material.material = triangle.material;
+    material.tex1Name = triangle.tex1Name;
+    material.tex2Name = triangle.tex2Name;
+    material.tex1Mode = StateToPrimaryTextureMode(triangle.state);
+    material.tex2Mode = StateToSecondaryTextureMode(triangle.state);
+    material.variableTex2 = triangle.variableTex2;
+    return material;
+}
 
 // --------------
 
 CModel::CModel()
 {
-    // TODO
 }
 
 CModel::~CModel()
 {
-    // TODO
+    Clear();
 }
 
 void CModel::Clear()
 {
-    // TODO
-}
-
-void CModel::Update()
-{
-    // TODO
+    for (auto* part : m_parts)
+    {
+        delete part;
+    }
+    m_parts.clear();
 }
 
 int CModel::GetTriangleCount() const
 {
-    // TODO
-    return m_rawTriangles.size();
+    int triangleCount = 0;
+    for (auto* part : m_parts)
+    {
+        triangleCount += part->GetTriangleCount();
+    }
+    return triangleCount;
 }
 
 std::vector<RawModelTriangle> CModel::GetRawTriangles() const
 {
-    // TODO
-    return m_rawTriangles;
+    std::vector<RawModelTriangle> rawTriangles;
+    for (auto* part : m_parts)
+    {
+        part->CollectRawTriangles(rawTriangles);
+    }
+    return rawTriangles;
 }
 
-void CModel::SetRawTriangles(const std::vector<RawModelTriangle>& triangles)
+void CModel::SetRawTriangles(const std::vector<RawModelTriangle>& rawTriangles)
 {
-    // TODO
-    m_rawTriangles = triangles;
+    std::vector<RawModelPart> parts;
+    parts.push_back(RawModelPart());
+    SetRawTriangles(rawTriangles, parts);
+}
+
+void CModel::SetRawTriangles(const std::vector<RawModelTriangle>& rawTriangles, const std::vector<RawModelPart>& rawParts)
+{
+    Clear();
+
+    for (const auto& rawPart : rawParts)
+    {
+        m_parts.push_back(new CModelPart(rawPart, rawTriangles));
+    }
 }
 
 int CModel::GetNumberOfParts() const

@@ -27,6 +27,30 @@
 namespace Gfx {
 
 /**
+ * \struct RawModelPart
+ * \brief Description of part of 3D model as raw data read from model file
+ */
+struct RawModelPart
+{
+    //! Number of this part
+    int partNumber;
+    //! Number of parent part (=0 if it has no parent)
+    int parentPartNumber;
+    //! Position
+    Math::Vector position;
+    //! Rotation along major axes in degrees
+    Math::Vector rotation;
+    //! Zoom along major axes
+    Math::Vector zoom;
+
+    RawModelPart()
+     : partNumber(0)
+     , parentPartNumber(-1)
+     , zoom(1.0, 1.0, 1.0)
+    {}
+};
+
+/**
  * \struct RawModelTriangle
  * \brief Triangle of a 3D model as raw data read from model file
  */
@@ -52,11 +76,10 @@ struct RawModelTriangle
     int part;
 
     RawModelTriangle()
-    {
-        variableTex2 = true;
-        state = 0;
-        part = 0;
-    }
+     : variableTex2(true)
+     , state(0)
+     , part(0)
+    {}
 };
 
 /**
@@ -78,21 +101,16 @@ struct ModelUvMap
 };
 
 /**
- * \enum ModelMaterialTextureModes
+ * \enum ModelMaterialTextureMode
  * \brief Modes (flag array) of texturing model material
  */
-enum class ModelMaterialTextureModes
+enum class ModelMaterialTextureMode
 {
-    Normal = (1<<0),
-    Alpha = (1<<5),
-    VariableSecondary = (1<<6),
-    BlackTransparent = (1<<1),
-    WhiteTransparent = (1<<2),
-    SecondaryBlackTransparent = (1<<3),
-    SecondaryWhiteTransparent = (1<<4)
+    Normal                    = 0,
+    Alpha                     = 1,
+    BlackTransparent          = 2,
+    WhiteTransparent          = 3
 };
-
-typedef unsigned int ModelMaterialTextureMode;
 
 /**
  * \enum ModelMaterial
@@ -102,45 +120,63 @@ struct ModelMaterial
 {
     //! Lighting material
     Material material;
-    //! Primaty texture
+    //! Primary texture
     std::string tex1Name;
     //! Secondary texture
     std::string tex2Name;
-    //! Texturing mode (flag set)
-    ModelMaterialTextureMode textureMode;
-    //! Custom part for changeable parts of model
-    unsigned int customPart;
+    //! Primary texture mode
+    ModelMaterialTextureMode tex1Mode;
+    //! Secondary texture mode
+    ModelMaterialTextureMode tex2Mode;
+    //! If true, 2nd texture will be taken from current engine setting
+    bool variableTex2;
 
     ModelMaterial()
-     : textureMode(static_cast<ModelMaterialTextureMode>(ModelMaterialTextureModes::Normal))
-     , customPart(0)
+     : tex1Mode(ModelMaterialTextureMode::Normal)
+     , tex2Mode(ModelMaterialTextureMode::Normal)
+     , variableTex2(false)
     {}
+
+    friend bool operator==(const ModelMaterial& left, const ModelMaterial& right)
+    {
+        return left.material == right.material &&
+               left.tex1Name == right.tex1Name &&
+               left.tex1Mode == right.tex1Mode &&
+               left.tex2Mode == right.tex2Mode &&
+               left.variableTex2 == right.variableTex2;
+    }
 };
 
 /**
  * \class CModelSubpart
- * \brief Subpart of model - chunk of geometry with one material
+ * \brief Block of a part of model - chunk of geometry with one material
  */
-class CModelSubpart
+class CModelBlock
 {
     friend class CModelPart;
 
 private:
-    CModelSubpart();
+    CModelBlock(const ModelMaterial& material);
 
 public:
     //! Returns associated model material
-    const ModelMaterial& GetMaterial() const;
+    inline const ModelMaterial& GetMaterial() const { return m_material; }
 
-    //! Change model material
-    void SetMaterial(const ModelMaterial& material);
+    //! Add new triangle to block
+    void AddTriangle(const RawModelTriangle& triangle);
+
+    //! Reverse-engineers raw triangles from model blocks
+    void CollectRawTriangles(std::vector<RawModelTriangle>& rawTriangles, int partNumber) const;
+
+    //! Returns number of triangles
+    int GetTriangleCount() const;
 
 private:
     ModelMaterial m_material;
     ModelGeometry m_geometry;
     BufferId m_geometryBufferId;
-    ModelUvMap m_uvMap;
-    BufferId m_uvMapBufferId;
+    ModelUvMap m_primaryUvMap;
+    BufferId m_primaryUvMapBufferId;
     ModelUvMap m_secondaryUvMap;
     BufferId m_secondaryUvMapBufferId;
 };
@@ -152,20 +188,36 @@ private:
 class CModelPart
 {
     friend class CModel;
+    friend class CModelBlock;
 
 private:
-    CModelPart();
+    CModelPart(const RawModelPart& rawPart, const std::vector<RawModelTriangle>& rawTriangles);
 
 public:
     //! Returns the part number
-    int GetNumber() const;
+    inline int GetNumber() const { return m_number; }
+
+    //! Returns the parent part number
+    inline int GetParentNumber() const { return m_parentNumber; }
+
+    //! Returns number of triangles
+    int GetTriangleCount() const;
+
+    //! Reverse-engineers raw triangles from model blocks
+    void CollectRawTriangles(std::vector<RawModelTriangle>& rawTriangles) const;
 
     //! Returns model subparts
-    std::vector<CModelSubpart*> GetSubparts();
+    const std::vector<CModelBlock*>& GetBlocks() { return m_blocks; }
+
+private:
+    static ModelMaterial ExtractMaterial(const RawModelTriangle& triangle);
+    CModelBlock* AddNewBlock(const ModelMaterial& modelMaterial);
+    CModelBlock* GetBlockForMaterial(const ModelMaterial& modelMaterial);
 
 private:
     int m_number;
-    std::vector<CModelSubpart*> m_subparts;
+    int m_parentNumber;
+    std::vector<CModelBlock*> m_blocks;
 };
 
 /**
@@ -181,9 +233,6 @@ public:
     //! Clear all model data
     void Clear();
 
-    //! Update buffers (re-pack data into buffers)
-    void Update();
-
     //! Returns the number of triangles in model
     int GetTriangleCount() const;
 
@@ -193,6 +242,9 @@ public:
     //! Sets new model data from raw triangles
     void SetRawTriangles(const std::vector<RawModelTriangle>& rawTriangles);
 
+    //! Sets new model data from raw triangles and parts data
+    void SetRawTriangles(const std::vector<RawModelTriangle>& rawTriangles, const std::vector<RawModelPart>& rawParts);
+
     //! Returns number of model parts
     int GetNumberOfParts() const;
 
@@ -200,8 +252,6 @@ public:
     CModelPart* GetPart(int partNumber);
 
 private:
-    //! Raw model triangles
-    std::vector<RawModelTriangle> m_rawTriangles;
     //! Model parts
     std::vector<CModelPart*> m_parts;
 };
