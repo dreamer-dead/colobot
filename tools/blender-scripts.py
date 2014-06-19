@@ -108,15 +108,8 @@ class ColobotTriangle:
 class ColobotModel:
     """Colobot model (content of model file)"""
     def __init__(self):
-        self.version = 1
+        self.version = 2
         self.triangles = []
-
-    def get_lod_level_list(self):
-        lod_level_set = set()
-        for t in self.triangles:
-            lod_level_set.add(t.lod_level)
-
-        return list(lod_level_set)
 
     def get_tex_pair_list(self):
         tex_pair_set = set()
@@ -128,30 +121,27 @@ class ColobotModel:
 
         return list(tex_pair_set)
 
-    def get_triangle_list(self, lod_level):
+    def get_triangle_list(self):
         triangles = []
         for t in self.triangles:
-            if (t.lod_level == lod_level):
-                triangles.append(t)
+            triangles.append(t)
 
         return triangles
 
-    def get_vertex_list(self, lod_level):
+    def get_vertex_list(self):
         vertex_set = set()
 
         for t in self.triangles:
-            if (t.lod_level == lod_level):
-                for i in range(0, 3):
-                    vertex_set.add(t.p[i])
+            for i in range(0, 3):
+                vertex_set.add(t.p[i])
 
         return list(vertex_set)
 
-    def get_material_list(self, lod_level):
+    def get_material_list(self):
         material_set = set()
 
         for t in self.triangles:
-            if (t.lod_level == lod_level):
-                material_set.add(t.mat)
+            material_set.add(t.mat)
 
         return list(material_set)
 
@@ -199,7 +189,8 @@ def write_colobot_model(filename, model):
         file.write('tex1 ' + t.mat.tex1 + '\n')
         file.write('tex2 ' + t.mat.tex2 + '\n')
         file.write('var_tex2 ' + ( 'Y' if t.mat.var_tex2 else 'N' + '\n' ) )
-        file.write('lod_level ' + str(t.lod_level) + '\n')
+        if (model.version < 2):
+            file.write('lod_level ' + str(t.lod_level) + '\n')
         file.write('state ' + str(t.mat.state) + '\n')
         file.write('\n')
 
@@ -281,7 +272,7 @@ def read_colobot_model(filename):
     if (tokens[0] != 'version'):
         raise ColobotError("Invalid header", "version")
     model.version = int(tokens[1])
-    if (model.version != 1):
+    if (model.version > 2):
         raise ColobotError("Unknown model file version")
 
     tokens, index = token_next_line(lines, index)
@@ -329,10 +320,11 @@ def read_colobot_model(filename):
             raise ColobotError("Invalid triangle", "var_tex2")
         t.mat.var_tex2 = tokens[1] == 'Y'
 
-        tokens, index = token_next_line(lines, index)
-        if (tokens[0] != 'lod_level'):
-            raise ColobotError("Invalid triangle", "lod_level")
-        t.lod_level = int(tokens[1])
+        if (model.version < 2):
+            tokens, index = token_next_line(lines, index)
+            if (tokens[0] != 'lod_level'):
+                raise ColobotError("Invalid triangle", "lod_level")
+            t.lod_level = int(tokens[1])
 
         tokens, index = token_next_line(lines, index)
         if (tokens[0] != 'state'):
@@ -391,7 +383,8 @@ def append_obj_to_colobot_model(obj, model, scene, defaults):
         t.var_tex2 = mat.get('var_tex2', defaults['var_tex2'])
         t.state = mat.get('state', defaults['state'])
 
-        t.lod_level = int(obj.data.get('lod_level', defaults['lod_level']))
+        if (model.version < 2):
+            t.lod_level = int(obj.data.get('lod_level', defaults['lod_level']))
 
         model.triangles.append(t)
 
@@ -430,108 +423,102 @@ def colobot_model_to_meshes(model, base_mesh_name, texture_dir):
 
     meshes = []
 
-    index = 0
-    lod_levels = model.get_lod_level_list()
-    for lod_level in lod_levels:
-        index = index + 1
-        mesh = bpy.data.meshes.new(name=base_mesh_name + str(index))
+    mesh = bpy.data.meshes.new(name=base_mesh_name)
 
-        triangle_list = model.get_triangle_list(lod_level)
-        vertex_list = model.get_vertex_list(lod_level)
-        material_list = model.get_material_list(lod_level)
+    triangle_list = model.get_triangle_list()
+    vertex_list = model.get_vertex_list()
+    material_list = model.get_material_list()
 
-        uv1map = False
-        uv2map = False
+    uv1map = False
+    uv2map = False
 
-        zero_t = array.array('f', [0.0, 0.0])
+    zero_t = array.array('f', [0.0, 0.0])
 
-        for v in vertex_list:
-            if ((not uv1map) and (v.t1 != zero_t)):
-                uv1map = True
-            if ((not uv2map) and (v.t2 != zero_t)):
-                uv2map = True
+    for v in vertex_list:
+        if ((not uv1map) and (v.t1 != zero_t)):
+            uv1map = True
+        if ((not uv2map) and (v.t2 != zero_t)):
+            uv2map = True
 
-        mesh.vertices.add(len(vertex_list))
+    mesh.vertices.add(len(vertex_list))
 
-        for i, v in enumerate(mesh.vertices):
-            v.co = copy.copy(vertex_list[i].coord)
-            v.normal = copy.copy(vertex_list[i].normal)
+    for i, v in enumerate(mesh.vertices):
+        v.co = copy.copy(vertex_list[i].coord)
+        v.normal = copy.copy(vertex_list[i].normal)
 
-        for i, m in enumerate(material_list):
-            material = bpy.data.materials.new(name=base_mesh_name + str(index) + '_mat_' + str(i+1))
-            material.diffuse_color = v4to3(m.diffuse)
-            material.ambient = (m.ambient[0] + m.ambient[1] + m.ambient[2]) / 3.0
-            material.alpha = (m.diffuse[3] + m.ambient[3]) / 2.0
-            material.specular_color = v4to3(m.specular)
-            material.specular_alpha = m.specular[3]
+    for i, m in enumerate(material_list):
+        material = bpy.data.materials.new(name=base_mesh_name + 'mat_' + str(i+1))
+        material.diffuse_color = v4to3(m.diffuse)
+        material.ambient = (m.ambient[0] + m.ambient[1] + m.ambient[2]) / 3.0
+        material.alpha = (m.diffuse[3] + m.ambient[3]) / 2.0
+        material.specular_color = v4to3(m.specular)
+        material.specular_alpha = m.specular[3]
 
-            material.var_tex2 = m.var_tex2
-            material.state = m.state
+        material.var_tex2 = m.var_tex2
+        material.state = m.state
 
-            mesh.materials.append(material)
+        mesh.materials.append(material)
 
-        mesh.tessfaces.add(len(triangle_list))
+    mesh.tessfaces.add(len(triangle_list))
 
-        for i, f in enumerate(mesh.tessfaces):
-            t = triangle_list[i]
-            f.material_index = material_list.index(t.mat)
-            for i in range(0, 3):
-                f.vertices[i] = vertex_list.index(t.p[i])
+    for i, f in enumerate(mesh.tessfaces):
+        t = triangle_list[i]
+        f.material_index = material_list.index(t.mat)
+        for i in range(0, 3):
+            f.vertices[i] = vertex_list.index(t.p[i])
 
-        if uv1map:
-            uvlay1 = mesh.tessface_uv_textures.new(name='UV_1')
-            for i, f in enumerate(uvlay1.data):
-                f.uv1[0] = triangle_list[i].p[0].t1[0]
-                f.uv1[1] = 1.0 - triangle_list[i].p[0].t1[1]
-                f.uv2[0] = triangle_list[i].p[1].t1[0]
-                f.uv2[1] = 1.0 - triangle_list[i].p[1].t1[1]
-                f.uv3[0] = triangle_list[i].p[2].t1[0]
-                f.uv3[1] = 1.0 - triangle_list[i].p[2].t1[1]
+    if uv1map:
+        uvlay1 = mesh.tessface_uv_textures.new(name='UV_1')
+        for i, f in enumerate(uvlay1.data):
+            f.uv1[0] = triangle_list[i].p[0].t1[0]
+            f.uv1[1] = 1.0 - triangle_list[i].p[0].t1[1]
+            f.uv2[0] = triangle_list[i].p[1].t1[0]
+            f.uv2[1] = 1.0 - triangle_list[i].p[1].t1[1]
+            f.uv3[0] = triangle_list[i].p[2].t1[0]
+            f.uv3[1] = 1.0 - triangle_list[i].p[2].t1[1]
 
-        if uv2map:
-            uvlay2 = mesh.tessface_uv_textures.new(name='UV_2')
-            for i, f in enumerate(uvlay2.data):
-                f.uv1[0] = triangle_list[i].p[0].t2[0]
-                f.uv1[1] = 1.0 - triangle_list[i].p[0].t2[1]
-                f.uv2[0] = triangle_list[i].p[1].t2[0]
-                f.uv2[1] = 1.0 - triangle_list[i].p[1].t2[1]
-                f.uv3[0] = triangle_list[i].p[2].t2[0]
-                f.uv3[1] = 1.0 - triangle_list[i].p[2].t2[1]
+    if uv2map:
+        uvlay2 = mesh.tessface_uv_textures.new(name='UV_2')
+        for i, f in enumerate(uvlay2.data):
+            f.uv1[0] = triangle_list[i].p[0].t2[0]
+            f.uv1[1] = 1.0 - triangle_list[i].p[0].t2[1]
+            f.uv2[0] = triangle_list[i].p[1].t2[0]
+            f.uv2[1] = 1.0 - triangle_list[i].p[1].t2[1]
+            f.uv3[0] = triangle_list[i].p[2].t2[0]
+            f.uv3[1] = 1.0 - triangle_list[i].p[2].t2[1]
 
-        for i, m in enumerate(material_list):
-            tex_pair = ColobotTexPair()
-            tex_pair.tex1 = m.tex1
-            tex_pair.tex2 = m.tex2
-            tex_object = tex_dict[tex_pair]
+    for i, m in enumerate(material_list):
+        tex_pair = ColobotTexPair()
+        tex_pair.tex1 = m.tex1
+        tex_pair.tex2 = m.tex2
+        tex_object = tex_dict[tex_pair]
 
-            if tex_object and tex_object.image1:
-                mtex = mesh.materials[i].texture_slots.add()
-                mtex.texture = tex_object.tex1
-                mtex.texture_coords = 'UV'
-                mtex.uv_layer = 'UV_1'
-                mtex.use_map_color_diffuse = True
+        if tex_object and tex_object.image1:
+            mtex = mesh.materials[i].texture_slots.add()
+            mtex.texture = tex_object.tex1
+            mtex.texture_coords = 'UV'
+            mtex.uv_layer = 'UV_1'
+            mtex.use_map_color_diffuse = True
 
-                for j, face in enumerate(mesh.uv_textures[0].data):
-                    if (triangle_list[j].tex1 == m.tex1):
-                        face.image = tex_object.image1
+            for j, face in enumerate(mesh.uv_textures[0].data):
+                if (triangle_list[j].tex1 == m.tex1):
+                    face.image = tex_object.image1
 
-            if tex_object and tex_object.image2:
-                mtex = mesh.materials[i].texture_slots.add()
-                mtex.texture = tex_object.tex2
-                mtex.texture_coords = 'UV'
-                mtex.uv_layer = 'UV_2'
-                mtex.use_map_color_diffuse = True
+        if tex_object and tex_object.image2:
+            mtex = mesh.materials[i].texture_slots.add()
+            mtex.texture = tex_object.tex2
+            mtex.texture_coords = 'UV'
+            mtex.uv_layer = 'UV_2'
+            mtex.use_map_color_diffuse = True
 
-                for j, face in enumerate(mesh.uv_textures[1].data):
-                    if (triangle_list[j].tex2 == m.tex2):
-                        face.image = tex_object.image2
+            for j, face in enumerate(mesh.uv_textures[1].data):
+                if (triangle_list[j].tex2 == m.tex2):
+                    face.image = tex_object.image2
 
-        mesh.lod_level = str(lod_level)
+    mesh.validate()
+    mesh.update()
 
-        mesh.validate()
-        mesh.update()
-
-        meshes.append(mesh)
+    meshes.append(mesh)
 
     return meshes
 
@@ -552,14 +539,6 @@ class ExportColobotDialog(bpy.types.Operator):
                  ('append', "Append", "Append triangles to existing model")],
                  default='overwrite')
 
-    default_lod_level = bpy.props.EnumProperty(
-        name="Default LOD level",
-        items = [('0', "Constant", "Constant (always visible)"),
-                 ('1', "Low", "Low (visible at furthest distance)"),
-                 ('2', "Medium", "Medium (visible at medium distance)"),
-                 ('3', "High", "High (visible at closest distance)")],
-                 default='0')
-
     default_var_tex2 = bpy.props.BoolProperty(name="Default variable 2nd texture", default=False)
 
     default_state = bpy.props.IntProperty(name="Default state", default=0)
@@ -567,7 +546,7 @@ class ExportColobotDialog(bpy.types.Operator):
     def execute(self, context):
         global EXPORT_FILEPATH
         try:
-            defaults = { 'lod_level': self.default_lod_level,
+            defaults = { 'lod_level': 0,
                          'var_tex2': self.default_var_tex2,
                          'state': self.default_state }
 
@@ -632,7 +611,6 @@ class ImportColobotDialog(bpy.types.Operator):
     bl_idname = 'object.import_colobot_dialog'
     bl_label = "Dialog for Colobot import"
 
-    lod_separate_layers = bpy.props.BoolProperty(name="LOD levels to separate layers", default=True)
     texture_dir = bpy.props.StringProperty(name="Texture directory", subtype="DIR_PATH")
 
     def execute(self, context):
@@ -656,13 +634,6 @@ class ImportColobotDialog(bpy.types.Operator):
                 bpy.context.scene.objects.link(obj)
                 bpy.context.scene.objects.active = obj
                 obj.select = True
-
-                # TODO: doesn't seem to work...
-                if (self.lod_separate_layers):
-                    layers = obj.layers
-                    for i in range(0, len(layers)):
-                        layers[i] = int(mesh.lod_level) == i
-                    obj.layers = layers
 
         except ColobotError as e:
             self.report({'ERROR'}, e.args.join(": "))
@@ -713,13 +684,12 @@ def import_menu_func(self, context):
 
 # Custom properties for materials
 def register_material_props():
-    bpy.types.Mesh.lod_level = bpy.props.EnumProperty(name="LOD level",
-        items = [('0', "Constant", "Constant (always visible)"),
-                 ('1', "Low", "Low (visible at furthest distance)"),
-                 ('2', "Medium", "Medium (visible at medium distance)"),
-                 ('3', "High", "High (visible at closest distance)")])
     bpy.types.Material.var_tex2 = bpy.props.BoolProperty(name="Variable 2nd texture", description="2nd texture shall be set to dirtyXX.png")
     bpy.types.Material.state = bpy.props.IntProperty(name="State", description="Engine render state")
+
+def unregister_material_props():
+    bpy.types.Material.var_tex2 = None
+    bpy.types.Material.state = None
 
 # Add-on registration
 def register():
@@ -729,3 +699,11 @@ def register():
 
     bpy.types.INFO_MT_file_export.append(export_menu_func)
     bpy.types.INFO_MT_file_import.append(import_menu_func)
+
+def unregister():
+    bpy.utils.unregister_module(__name__)
+    
+    unregister_material_props()
+
+    bpy.types.INFO_MT_file_export.remove(export_menu_func)
+    bpy.types.INFO_MT_file_import.remove(import_menu_func)
