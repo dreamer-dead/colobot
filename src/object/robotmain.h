@@ -439,6 +439,11 @@ protected:
     
     int         AutosaveRotate(bool freeOne);
     void        Autosave();
+    
+    void        WriteSpaceShipObject(CLevelParserLine* line, CObject* obj);
+    void        WriteSpaceShip();
+    CObject*    ReadSpaceShipObject(CLevelParserLine* line, int id);
+    void        ReadSpaceShip(std::vector<CObject*>& shipObjects, int id);
 
 
 protected:

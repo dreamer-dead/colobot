@@ -3687,6 +3687,8 @@ void CRobotMain::ScenePerso()
     }
 }
 
+const float SHIP_RADIUS = 8.0f;
+
 //! Creates the whole scene
 void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 {
@@ -3699,6 +3701,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
     g_id = 0;
     m_base = nullptr;
+    
+    std::vector<CObject*> shipObjects;
 
     if (!resetObject)
     {
@@ -4476,6 +4480,15 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     
                     if (line->GetParam("reset")->AsBool(false))
                         obj->SetResetCap(RESET_MOVE);
+                    
+                    if(m_base != nullptr && m_base != obj)
+                    {
+                        if(Math::DistanceProjected(m_base->GetPosition(0), pos) < SHIP_RADIUS*g_unit)
+                        {
+                            shipObjects.push_back(obj);
+                            CLogger::GetInstancePointer()->Debug("Ship object: %s\n", line->GetParam("type")->GetValue().c_str());
+                        }
+                    }
                 }
                 
                 rankObj ++;
@@ -4724,6 +4737,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             
             throw CLevelParserException("Unknown command: '"+line->GetCommand()+"' in "+line->GetLevel()->GetFilename()+":"+boost::lexical_cast<std::string>(line->GetLineNumber()));
         }
+        
+        if(!fixScene) ReadSpaceShip(shipObjects, rankObj);
 
         if (read[0] == 0)
             CompileScript(soluce);  // compiles all scripts
@@ -5630,6 +5645,168 @@ char*  CRobotMain::GetNewScriptName(ObjectType type, int rank)
     return 0;
 }
 
+void CRobotMain::WriteSpaceShipObject(CLevelParserLine* line, CObject* obj)
+{
+    line->AddParam("type", new CLevelParserParam(obj->GetType()));
+    line->AddParam("pos", new CLevelParserParam((obj->GetPosition(0)-m_base->GetPosition(0))/g_unit)); // Relative to SpaceShip!
+    line->AddParam("angle", new CLevelParserParam((obj->GetAngle(0)-m_base->GetAngle(0))/(Math::PI/180.0f))); // Relative to SpaceShip!
+    line->AddParam("trainer", new CLevelParserParam(obj->GetTrainer()));
+    line->AddParam("ignoreBuildCheck", new CLevelParserParam(obj->GetIgnoreBuildCheck()));
+    line->AddParam("option", new CLevelParserParam(obj->GetOption()));
+    if (obj == m_infoObject)
+        line->AddParam("select", new CLevelParserParam(1));
+    
+    obj->Write(line);
+}
+
+void CRobotMain::WriteSpaceShip()
+{
+    if(m_base == nullptr) return;
+    
+    CLogger::GetInstancePointer()->Debug("WriteSpaceShip\n");
+    CLevelParser* level = new CLevelParser("ship.sav"); //TODO
+    CLevelParserLine* line;
+    
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+    
+    for (int i = 0; i < 1000000; i++)
+    {
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == nullptr) break;
+        
+        if (obj == m_base) continue;
+        if (obj->GetTruck() != nullptr) continue;
+        if (obj->GetBurn()) continue;
+        if (obj->GetDead()) continue;
+        if (obj->GetExplo()) continue;
+        if (Math::DistanceProjected(m_base->GetPosition(0), obj->GetPosition(0)) > SHIP_RADIUS*g_unit) continue;
+        
+        CObject* power = obj->GetPower();
+        CObject* fret  = obj->GetFret();
+        
+        if (fret != nullptr){  // object transported?
+            line = new CLevelParserLine("CreateFret");
+            WriteSpaceShipObject(line, fret);
+            level->AddLine(line);
+        }
+        
+        if (power != nullptr) { // battery transported?
+            line = new CLevelParserLine("CreatePower");
+            WriteSpaceShipObject(line, power);
+            level->AddLine(line);
+        }
+        
+        line = new CLevelParserLine("CreateObject");
+        WriteSpaceShipObject(line, obj);
+        level->AddLine(line);
+    }
+    
+    level->Save();
+    delete level;
+}
+
+CObject* CRobotMain::ReadSpaceShipObject(CLevelParserLine* line, int id)
+{
+    Math::Vector pos  = m_base->GetPosition(0)+(line->GetParam("pos")->AsPoint()*g_unit);
+    Math::Vector dir  = m_base->GetAngle(0)+(line->GetParam("angle")->AsPoint()*(Math::PI/180.0f));
+    
+    ObjectType type = line->GetParam("type")->AsObjectType();
+    CLogger::GetInstancePointer()->Debug("%d %s\n", type, line->GetParam("type")->GetValue().c_str());
+    
+    bool trainer = line->GetParam("trainer")->AsBool(false);
+    bool toy = line->GetParam("toy")->AsBool(false);
+    //TODO: special handling
+    int option = line->GetParam("option")->AsInt(0);
+    
+    CObject* obj = CObjectManager::GetInstancePointer()->CreateObject(pos, dir.y, type, 0.0f, 1.0f, 0.0f, trainer, toy, option);
+    obj->SetDefRank(id);
+    obj->SetPosition(0, pos);
+    obj->SetAngle(0, dir);
+    obj->SetIgnoreBuildCheck(line->GetParam("ignoreBuildCheck")->AsBool(false));
+    
+    obj->Read(line);
+    
+    return obj;
+}
+
+void CRobotMain::ReadSpaceShip(std::vector<CObject*>& shipObjects, int id)
+{
+    if(m_base == nullptr) return;
+    
+    std::map<ObjectType, std::vector<CObject*>> shipObjectsByType;
+    for(CObject* obj : shipObjects)
+        shipObjectsByType[obj->GetType()].push_back(obj);
+    
+    std::map<ObjectType, unsigned int> loadedObjects;
+    
+    int objRank = id;
+    CObject *fret = nullptr, *power = nullptr, *sel = nullptr;
+    CLevelParser* level = new CLevelParser("ship.sav"); //TODO
+    if(!level->Exists()) return;
+    level->Load();
+    for(CLevelParserLine* line : level->GetLines())
+    {
+        if (line->GetCommand() == "CreateFret")
+            fret = ReadSpaceShipObject(line, -1);
+        
+        if (line->GetCommand() == "CreatePower")
+            power = ReadSpaceShipObject(line, -1);
+        
+        if (line->GetCommand() == "CreateObject")
+        {
+            ObjectType type = line->GetParam("type")->AsObjectType();
+            if(loadedObjects[type] < shipObjectsByType[type].size())
+            {
+                CObject* obj = ReadSpaceShipObject(line, objRank++);
+                
+                if (line->GetParam("select")->AsBool(false))
+                    sel = obj;
+                
+                if (fret != nullptr)
+                {
+                    obj->SetFret(fret);
+                    CTaskManip* task = new CTaskManip(obj);
+                    task->Start(TMO_AUTO, TMA_GRAB);  // holds the object!
+                    delete task;
+                }
+                
+                if (power != nullptr)
+                {
+                    obj->SetPower(power);
+                    power->SetTruck(obj);
+                }
+                
+                loadedObjects[type] ++;
+            } else {
+                if(power != nullptr)
+                    power->DeleteObject(true);
+                if(fret != nullptr)
+                    fret->DeleteObject(true);
+            }
+            
+            fret  = nullptr;
+            power = nullptr;
+        }
+    }
+    
+    for(int i = 0; i < OBJECT_MAX; i++)
+    {
+        ObjectType type = static_cast<ObjectType>(i);
+        int toRemove = loadedObjects[type];
+        for(int j=0; j<toRemove; j++)
+        {
+            auto it = shipObjectsByType[type].begin();
+            CObject* obj = *it;
+            obj->DeleteObject(true);
+            shipObjectsByType[type].erase(it);
+        }
+    }
+    
+    if(sel != nullptr)
+        SelectObject(sel);
+    
+    delete level;
+}
 
 //! Seeks if an object occupies in a spot, to prevent a backup of the game
 bool CRobotMain::IsBusy()
@@ -6333,6 +6510,7 @@ Error CRobotMain::CheckEndMission(bool frame)
             if (m_winDelay == 0) m_winDelay = m_endTakeWinDelay;
             m_lostDelay = 0.0f;
             m_displayText->SetEnable(false);
+            WriteSpaceShip();
             if(m_exitAfterMission)
                 m_eventQueue->AddEvent(Event(EVENT_QUIT));
         }
@@ -6445,6 +6623,7 @@ Error CRobotMain::CheckEndMission(bool frame)
             }
             m_missionTimerEnabled = m_missionTimerStarted = false;
             m_displayText->SetEnable(false);
+            WriteSpaceShip();
             if(m_exitAfterMission)
                 m_eventQueue->AddEvent(Event(EVENT_QUIT));
             return ERR_OK;  // mission ended
@@ -6466,6 +6645,7 @@ Error CRobotMain::CheckEndMission(bool frame)
         m_lostDelay = 0.0f;
         m_missionTimerEnabled = m_missionTimerStarted = false;
         m_displayText->SetEnable(false);
+        WriteSpaceShip();
         if(m_exitAfterMission)
             m_eventQueue->AddEvent(Event(EVENT_QUIT));
         return ERR_OK;  // mission ended
@@ -6480,6 +6660,7 @@ Error CRobotMain::CheckEndMission(bool frame)
             CLogger::GetInstancePointer()->Info("Mission time: %s\n", TimeFormat(m_missionTimer).c_str());
             m_displayText->DisplayText(("Time: "+TimeFormat(m_missionTimer)).c_str(), Math::Vector(0.0f,0.0f,0.0f));
         }
+        WriteSpaceShip();
         m_missionTimerEnabled = m_missionTimerStarted = false;
         m_winDelay  = m_endTakeWinDelay;  // wins in two seconds
         m_lostDelay = 0.0f;
