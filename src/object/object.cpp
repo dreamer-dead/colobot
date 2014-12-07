@@ -2301,815 +2301,105 @@ bool CObject::CreateShadowCircle(float radius, float intensity,
 bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
                              ObjectType type, float power)
 {
-    Math::Point     p;
-    int         rank, i;
-
-    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
-
     SetType(type);
 
-    rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
-    SetObjectRank(0, rank);
-
-    if ( m_type == OBJECT_PORTICO )
+    switch (m_type)
     {
-        modelManager->AddModelReference("portico1.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
+        case OBJECT_PORTICO:
+            CreatePortico(pos, angle);
+            break;
 
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(1, rank);
-        SetObjectParent(1, 0);
-        modelManager->AddModelReference("portico2.mod", false, rank);
-        SetPosition(1, Math::Vector(0.0f, 67.0f, 0.0f));
+        case OBJECT_BASE:
+            CreateBase(pos, angle);
+            break;
 
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(2, rank);
-        SetObjectParent(2, 1);
-        modelManager->AddModelReference("portico3.mod", false, rank);
-        SetPosition(2, Math::Vector(0.0f, 0.0f, -33.0f));
-        SetAngleY(2, 45.0f*Math::PI/180.0f);
+        case OBJECT_DERRICK:
+            CreateDerrick(pos, angle);
+            break;
 
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(3, rank);
-        SetObjectParent(3, 2);
-        modelManager->AddModelReference("portico4.mod", false, rank);
-        SetPosition(3, Math::Vector(50.0f, 0.0f, 0.0f));
-        SetAngleY(3, -60.0f*Math::PI/180.0f);
+        case OBJECT_RESEARCH:
+            CreateResearch(pos, angle);
+            break;
 
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(4, rank);
-        SetObjectParent(4, 3);
-        modelManager->AddModelReference("portico5.mod", false, rank);
-        SetPosition(4, Math::Vector(35.0f, 0.0f, 0.0f));
-        SetAngleY(4, -55.0f*Math::PI/180.0f);
+        case OBJECT_RADAR:
+            CreateRadar(pos, angle);
+            break;
 
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(5, rank);
-        SetObjectParent(5, 1);
-        modelManager->AddModelReference("portico3.mod", false, rank);
-        SetPosition(5, Math::Vector(0.0f, 0.0f, 33.0f));
-        SetAngleY(5, -45.0f*Math::PI/180.0f);
+        case OBJECT_INFO:
+            CreateInfo(pos, angle);
+            break;
 
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(6, rank);
-        SetObjectParent(6, 5);
-        modelManager->AddModelReference("portico4.mod", false, rank);
-        SetPosition(6, Math::Vector(50.0f, 0.0f, 0.0f));
-        SetAngleY(6, 60.0f*Math::PI/180.0f);
+        case OBJECT_ENERGY:
+            CreateEnergy(pos, angle, power);
+            break;
 
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(7, rank);
-        SetObjectParent(7, 6);
-        modelManager->AddModelReference("portico5.mod", false, rank);
-        SetPosition(7, Math::Vector(35.0f, 0.0f, 0.0f));
-        SetAngleY(7, 55.0f*Math::PI/180.0f);
+        case OBJECT_LABO:
+            CreateLabo(pos, angle);
+            break;
 
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(8, rank);
-        SetObjectParent(8, 0);
-        modelManager->AddModelReference("portico6.mod", false, rank);
-        SetPosition(8, Math::Vector(-35.0f, 50.0f, -35.0f));
-        SetAngleY(8, -Math::PI/2.0f);
-        SetZoom(8, 2.0f);
+        case OBJECT_FACTORY:
+            CreateFactory(pos, angle);
+            break;
 
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(9, rank);
-        SetObjectParent(9, 8);
-        modelManager->AddModelReference("portico7.mod", false, rank);
-        SetPosition(9, Math::Vector(0.0f, 4.5f, 1.9f));
+        case OBJECT_REPAIR:
+            CreateRepair(pos, angle);
+            break;
 
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(10, rank);
-        SetObjectParent(10, 0);
-        modelManager->AddModelReference("portico6.mod", false, rank);
-        SetPosition(10, Math::Vector(-35.0f, 50.0f, 35.0f));
-        SetAngleY(10, -Math::PI/2.0f);
-        SetZoom(10, 2.0f);
+        case OBJECT_DESTROYER:
+            CreateDestroyer(pos, angle);
+            break;
 
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(11, rank);
-        SetObjectParent(11, 10);
-        modelManager->AddModelReference("portico7.mod", false, rank);
-        SetPosition(11, Math::Vector(0.0f, 4.5f, 1.9f));
+        case OBJECT_STATION:
+            CreateStation(pos, angle, power);
+            break;
 
-        CreateCrashSphere(Math::Vector(  0.0f, 28.0f,   0.0f), 45.5f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 27.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  0.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-27.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 27.0f, 10.0f,  42.0f), 15.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  0.0f, 10.0f,  42.0f), 15.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-27.0f, 10.0f,  42.0f), 15.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-32.0f, 45.0f, -32.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-32.0f, 45.0f,  32.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 32.0f, 45.0f, -32.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 32.0f, 45.0f,  32.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        SetGlobalSphere(Math::Vector(0.0f, 35.0f, 0.0f), 50.0f);
+        case OBJECT_CONVERT:
+            CreateConvert(pos, angle);
+            break;
 
-        CreateShadowCircle(50.0f, 1.0f);
+        case OBJECT_TOWER:
+            CreateTower(pos, angle);
+            break;
+
+        case OBJECT_NUCLEAR:
+            CreateNuclear(pos, angle);
+            break;
+
+        case OBJECT_PARA:
+            CreatePara(pos, angle);
+            break;
+
+        case OBJECT_SAFE:
+            CreateSafe(pos, angle);
+            break;
+
+        case OBJECT_HUSTON:
+            CreateHuston(pos, angle);
+            break;
+
+        case OBJECT_TARGET1:
+            CreateTarget1(pos, angle);
+            break;
+
+        case OBJECT_TARGET2:
+            CreateTarget2(pos, angle, height);
+            break;
+
+        case OBJECT_NEST:
+            CreateNest(pos, angle);
+            break;
+
+        case OBJECT_START:
+            CreateStart(pos, angle);
+            break;
+
+        case OBJECT_END:
+            CreateEnd(pos, angle);
+            break;
+
+        default:
+            break;
     }
-
-    if ( m_type == OBJECT_BASE )
-    {
-        modelManager->AddModelReference("base1.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        for ( i=0 ; i<8 ; i++ )
-        {
-            rank = m_engine->CreateObject();
-            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-            SetObjectRank(1+i, rank);
-            SetObjectParent(1+i, 0);
-            modelManager->AddModelReference("base2.mod", false, rank);
-            p = Math::RotatePoint(-Math::PI/4.0f*i, 27.8f);
-            SetPosition(1+i, Math::Vector(p.x, 30.0f, p.y));
-            SetAngleY(1+i, Math::PI/4.0f*i);
-            SetAngleZ(1+i, Math::PI/2.0f);
-
-            rank = m_engine->CreateObject();
-            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-            SetObjectRank(10+i, rank);
-            SetObjectParent(10+i, 1+i);
-            modelManager->AddModelReference("base4.mod", false, rank);
-            SetPosition(10+i, Math::Vector(23.5f, 0.0f, 7.0f));
-
-            rank = m_engine->CreateObject();
-            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-            SetObjectRank(18+i, rank);
-            SetObjectParent(18+i, 1+i);
-            modelManager->AddModelReference("base4.mod", true, rank);
-            SetPosition(18+i, Math::Vector(23.5f, 0.0f, -7.0f));
-        }
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(9, rank);
-        SetObjectParent(9, 0);
-        modelManager->AddModelReference("base3.mod", false, rank); // central pillar
-
-        CreateCrashSphere(Math::Vector(  0.0f, 33.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  0.0f, 39.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  0.0f, 45.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  0.0f, 51.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  0.0f, 57.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  0.0f, 63.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  0.0f, 69.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  0.0f, 82.0f,   0.0f),  8.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 18.0f, 94.0f,   0.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-18.0f, 94.0f,   0.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  0.0f, 94.0f,  18.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  0.0f, 94.0f, -18.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 13.0f, 94.0f,  13.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-13.0f, 94.0f,  13.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 13.0f, 94.0f, -13.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-13.0f, 94.0f, -13.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  0.0f,104.0f,   0.0f), 14.0f, SOUND_BOUMm, 0.45f);
-
-        SetGlobalSphere(Math::Vector(0.0f, 45.0f, 0.0f), 10.0f);
-
-        CreateShadowCircle(60.0f, 1.0f);
-        m_showLimitRadius = 200.0f;
-
-        m_terrain->AddBuildingLevel(pos, 28.6f, 73.4f, 30.0f, 0.4f);
-    }
-
-    if ( m_type == OBJECT_DERRICK )
-    {
-        modelManager->AddModelReference("derrick1.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(1, rank);
-        SetObjectParent(1, 0);
-        modelManager->AddModelReference("derrick2.mod", false, rank);
-
-        CreateCrashSphere(Math::Vector(0.0f,  0.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(0.0f, 17.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(0.0f, 26.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(7.0f, 17.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 10.0f);
-
-        CreateShadowCircle(10.0f, 0.4f);
-    }
-
-    if ( m_type == OBJECT_RESEARCH )
-    {
-        modelManager->AddModelReference("search1.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(1, rank);
-        SetObjectParent(1, 0);
-        modelManager->AddModelReference("search2.mod", false, rank);
-        SetPosition(1, Math::Vector(0.0f, 13.0f, 0.0f));
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(2, rank);
-        SetObjectParent(2, 1);
-        modelManager->AddModelReference("search3.mod", false, rank);
-        SetPosition(2, Math::Vector(0.0f, 4.0f, 0.0f));
-        SetAngleZ(2, 35.0f*Math::PI/180.0f);
-
-        CreateCrashSphere(Math::Vector(0.0f,  0.0f, 0.0f), 9.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(0.0f,  6.0f, 0.0f), 9.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(0.0f, 14.0f, 0.0f), 7.0f, SOUND_BOUMm, 0.45f);
-        SetGlobalSphere(Math::Vector(0.0f, 8.0f, 0.0f), 12.0f);
-
-        m_character.posPower = Math::Vector(7.5f, 3.0f, 0.0f);
-
-        CreateShadowCircle(12.0f, 1.0f);
-    }
-
-    if ( m_type == OBJECT_RADAR )
-    {
-        modelManager->AddModelReference("radar1.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(1, rank);
-        SetObjectParent(1, 0);
-        modelManager->AddModelReference("radar2.mod", false, rank);
-        SetPosition(1, Math::Vector(0.0f, 5.0f, 0.0f));
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(2, rank);
-        SetObjectParent(2, 0);
-        modelManager->AddModelReference("radar3.mod", false, rank);
-        SetPosition(2, Math::Vector(0.0f, 11.0f, 0.0f));
-        SetAngleY(2, -Math::PI/2.0f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(3, rank);
-        SetObjectParent(3, 2);
-        modelManager->AddModelReference("radar4.mod", false, rank);
-        SetPosition(3, Math::Vector(0.0f, 4.5f, 1.9f));
-
-        CreateCrashSphere(Math::Vector(0.0f,  3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(0.0f, 11.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        SetGlobalSphere(Math::Vector(0.0f, 7.0f, 0.0f), 7.0f);
-
-        CreateShadowCircle(8.0f, 1.0f);
-    }
-
-    if ( m_type == OBJECT_INFO )
-    {
-        modelManager->AddModelReference("info1.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(1, rank);
-        SetObjectParent(1, 0);
-        modelManager->AddModelReference("info2.mod", false, rank);
-        SetPosition(1, Math::Vector(0.0f, 5.0f, 0.0f));
-
-        for ( i=0 ; i<3 ; i++ )
-        {
-            rank = m_engine->CreateObject();
-            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-            SetObjectRank(2+i*2, rank);
-            SetObjectParent(2+i*2, 1);
-            modelManager->AddModelReference("info3.mod", false, rank);
-            SetPosition(2+i*2, Math::Vector(0.0f, 4.5f, 0.0f));
-
-            rank = m_engine->CreateObject();
-            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-            SetObjectRank(3+i*2, rank);
-            SetObjectParent(3+i*2, 2+i*2);
-            modelManager->AddModelReference("radar4.mod", false, rank);
-            SetPosition(3+i*2, Math::Vector(0.0f, 0.0f, -4.0f));
-
-            SetAngleY(2+i*2, 2.0f*Math::PI/3.0f*i);
-        }
-
-        CreateCrashSphere(Math::Vector(0.0f,  3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(0.0f, 11.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 6.0f);
-
-        CreateShadowCircle(8.0f, 1.0f);
-    }
-
-    if ( m_type == OBJECT_ENERGY )
-    {
-        modelManager->AddModelCopy("energy.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        CreateCrashSphere(Math::Vector(-2.0f, 13.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-7.0f,  3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 0.0f,  1.0f, 0.0f), 1.5f, SOUND_BOUMm, 0.45f);
-        SetGlobalSphere(Math::Vector(-7.0f, 5.0f, 0.0f), 5.0f);
-
-        m_character.posPower = Math::Vector(0.0f, 3.0f, 0.0f);
-        m_energy = power;  // initializes the energy level
-
-        CreateShadowCircle(6.0f, 0.5f);
-    }
-
-    if ( m_type == OBJECT_LABO )
-    {
-        modelManager->AddModelReference("labo1.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(1, rank);
-        SetObjectParent(1, 0);
-        modelManager->AddModelReference("labo2.mod", false, rank);
-        SetPosition(1, Math::Vector(-9.0f, 3.0f, 0.0f));
-        SetAngleZ(1, Math::PI/2.0f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(2, rank);
-        SetObjectParent(2, 1);
-        modelManager->AddModelReference("labo3.mod", false, rank);
-        SetPosition(2, Math::Vector(9.0f, -1.0f, 0.0f));
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(3, rank);
-        SetObjectParent(3, 2);
-        modelManager->AddModelReference("labo4.mod", false, rank);
-        SetPosition(3, Math::Vector(0.0f, 0.0f, 0.0f));
-        SetAngleZ(3, 80.0f*Math::PI/180.0f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(4, rank);
-        SetObjectParent(4, 2);
-        modelManager->AddModelReference("labo4.mod", false, rank);
-        SetPosition(4, Math::Vector(0.0f, 0.0f, 0.0f));
-        SetAngleZ(4, 80.0f*Math::PI/180.0f);
-        SetAngleY(4, Math::PI*2.0f/3.0f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(5, rank);
-        SetObjectParent(5, 2);
-        modelManager->AddModelReference("labo4.mod", false, rank);
-        SetPosition(5, Math::Vector(0.0f, 0.0f, 0.0f));
-        SetAngleZ(5, 80.0f*Math::PI/180.0f);
-        SetAngleY(5, -Math::PI*2.0f/3.0f);
-
-        CreateCrashSphere(Math::Vector(  0.0f,  1.0f,  0.0f), 1.5f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  0.0f, 11.0f,  0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-10.0f, 10.0f,  0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-12.0f,  3.0f,  3.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-12.0f,  3.0f, -3.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        SetGlobalSphere(Math::Vector(-10.0f, 5.0f, 0.0f), 7.0f);
-
-        m_character.posPower = Math::Vector(0.0f, 3.0f, 0.0f);
-
-        CreateShadowCircle(7.0f, 0.5f);
-    }
-
-    if ( m_type == OBJECT_FACTORY )
-    {
-        modelManager->AddModelReference("factory1.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        for ( i=0 ; i<9 ; i++ )
-        {
-            rank = m_engine->CreateObject();
-            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-            SetObjectRank(1+i, rank);
-            SetObjectParent(1+i, 0);
-            modelManager->AddModelReference("factory2.mod", false, rank);
-            SetPosition(1+i, Math::Vector(10.0f, 2.0f*i, 10.0f));
-            SetAngleZ(1+i, Math::PI/2.0f);
-            SetZoomZ(1+i, 0.30f);
-
-            rank = m_engine->CreateObject();
-            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-            SetObjectRank(10+i, rank);
-            SetObjectParent(10+i, 0);
-            modelManager->AddModelReference("factory2.mod", false, rank);
-            SetPosition(10+i, Math::Vector(10.0f, 2.0f*i, -10.0f));
-            SetAngleZ(10+i, -Math::PI/2.0f);
-            SetAngleY(10+i, Math::PI);
-            SetZoomZ(10+i, 0.30f);
-        }
-
-        for ( i=0 ; i<2 ; i++ )
-        {
-            float s = static_cast<float>(i*2-1);
-            CreateCrashSphere(Math::Vector(-10.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            CreateCrashSphere(Math::Vector( -3.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            CreateCrashSphere(Math::Vector(  3.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            CreateCrashSphere(Math::Vector( 10.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            CreateCrashSphere(Math::Vector(-10.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            CreateCrashSphere(Math::Vector( -3.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            CreateCrashSphere(Math::Vector(  3.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            CreateCrashSphere(Math::Vector( 10.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            CreateCrashSphere(Math::Vector(-10.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            CreateCrashSphere(Math::Vector( -3.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            CreateCrashSphere(Math::Vector(  3.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            CreateCrashSphere(Math::Vector( 10.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            CreateCrashSphere(Math::Vector(-10.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            CreateCrashSphere(Math::Vector( -3.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            CreateCrashSphere(Math::Vector(  3.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            CreateCrashSphere(Math::Vector( 10.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            CreateCrashSphere(Math::Vector(-10.0f,  2.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            CreateCrashSphere(Math::Vector(-10.0f,  9.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-        }
-        CreateCrashSphere(Math::Vector(-10.0f, 21.0f, -4.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 18.0f);
-
-        CreateShadowCircle(24.0f, 0.3f);
-    }
-
-    if ( m_type == OBJECT_REPAIR )
-    {
-        modelManager->AddModelReference("repair1.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(1, rank);
-        SetObjectParent(1, 0);
-        modelManager->AddModelReference("repair2.mod", false, rank);
-        SetPosition(1, Math::Vector(-11.0f, 13.5f, 0.0f));
-        SetAngleZ(1, Math::PI/2.0f);
-
-        m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
-
-        CreateCrashSphere(Math::Vector(-11.0f,  0.0f,  4.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-11.0f,  0.0f,  0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-11.0f,  0.0f, -4.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-11.0f, 10.0f,  0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        SetGlobalSphere(Math::Vector(-11.0f, 13.0f, 0.0f), 15.0f);
-    }
-
-    if ( m_type == OBJECT_DESTROYER )
-    {
-        modelManager->AddModelReference("destroy1.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(1, rank);
-        SetObjectParent(1, 0);
-        modelManager->AddModelReference("destroy2.mod", false, rank);
-        SetPosition(1, Math::Vector(0.0f, 0.0f, 0.0f));
-
-        m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
-
-        CreateCrashSphere(Math::Vector(-3.5f, 0.0f, -13.5f), 4.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 3.5f, 0.0f, -13.5f), 4.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-3.5f, 0.0f,  13.5f), 4.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 3.5f, 0.0f,  13.5f), 4.0f, SOUND_BOUMm, 0.45f);
-
-        CreateShadowCircle(19.0f, 1.0f);
-    }
-
-    if ( m_type == OBJECT_STATION )
-    {
-        modelManager->AddModelCopy("station.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
-
-        CreateCrashSphere(Math::Vector(-15.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-15.0f, 6.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        SetGlobalSphere(Math::Vector(-15.0f, 5.0f, 0.0f), 6.0f);
-
-        m_energy = power;  // initialise le niveau d'�nergie
-    }
-
-    if ( m_type == OBJECT_CONVERT )
-    {
-        modelManager->AddModelReference("convert1.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(1, rank);
-        SetObjectParent(1, 0);
-        modelManager->AddModelReference("convert2.mod", false, rank);
-        SetPosition(1, Math::Vector(0.0f, 14.0f, 0.0f));
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(2, rank);
-        SetObjectParent(2, 0);
-        modelManager->AddModelReference("convert3.mod", false, rank);
-        SetPosition(2, Math::Vector(0.0f, 11.5f, 0.0f));
-        SetAngleX(2, -Math::PI*0.35f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(3, rank);
-        SetObjectParent(3, 0);
-        modelManager->AddModelReference("convert3.mod", false, rank);
-        SetPosition(3, Math::Vector(0.0f, 11.5f, 0.0f));
-        SetAngleY(3, Math::PI);
-        SetAngleX(3, -Math::PI*0.35f);
-
-        m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
-
-        CreateCrashSphere(Math::Vector(-10.0f,  2.0f,  4.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-10.0f,  2.0f, -4.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-10.0f,  9.0f,  0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  0.0f, 14.0f,  0.0f), 1.5f, SOUND_BOUMm, 0.45f);
-        SetGlobalSphere(Math::Vector(-3.0f, 8.0f, 0.0f), 14.0f);
-    }
-
-    if ( m_type == OBJECT_TOWER )
-    {
-        modelManager->AddModelReference("tower.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(1, rank);
-        SetObjectParent(1, 0);
-        modelManager->AddModelReference("roller2c.mod", false, rank);
-        SetPosition(1, Math::Vector(0.0f, 20.0f, 0.0f));
-        SetAngleZ(1, Math::PI/2.0f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(2, rank);
-        SetObjectParent(2, 1);
-        modelManager->AddModelReference("roller3c.mod", false, rank);
-        SetPosition(2, Math::Vector(4.5f, 0.0f, 0.0f));
-        SetAngleZ(2, 0.0f);
-
-        CreateCrashSphere(Math::Vector(0.0f,  0.0f, 0.0f), 6.5f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(0.0f,  8.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(0.0f, 15.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(0.0f, 24.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 7.0f);
-
-        m_character.posPower = Math::Vector(5.0f, 3.0f, 0.0f);
-
-        CreateShadowCircle(6.0f, 1.0f);
-        m_showLimitRadius = Gfx::LTNG_PROTECTION_RADIUS;
-    }
-
-    if ( m_type == OBJECT_NUCLEAR )
-    {
-        modelManager->AddModelReference("nuclear1.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(1, rank);
-        SetObjectParent(1, 0);
-        modelManager->AddModelReference("nuclear2.mod", false, rank);
-        SetPosition(1, Math::Vector(20.0f, 10.0f, 0.0f));
-        SetAngleZ(1, 135.0f*Math::PI/180.0f);
-
-        CreateCrashSphere(Math::Vector( 0.0f,  0.0f, 0.0f), 19.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 0.0f, 24.0f, 0.0f), 15.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(22.0f,  1.0f, 0.0f),  1.5f, SOUND_BOUMm, 0.45f);
-        SetGlobalSphere(Math::Vector(0.0f, 17.0f, 0.0f), 26.0f);
-
-        m_character.posPower = Math::Vector(22.0f, 3.0f, 0.0f);
-
-        CreateShadowCircle(21.0f, 1.0f);
-    }
-
-    if ( m_type == OBJECT_PARA )
-    {
-        modelManager->AddModelReference("para.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        m_terrain->AddBuildingLevel(pos, 16.0f, 18.0f, 1.0f, 0.5f);
-
-        CreateCrashSphere(Math::Vector( 13.0f,  3.0f,  13.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 11.0f, 15.0f,  11.0f),  2.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-13.0f,  3.0f,  13.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-11.0f, 15.0f, -11.0f),  2.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 13.0f,  3.0f, -13.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 11.0f, 15.0f, -11.0f),  2.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-13.0f,  3.0f, -13.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-11.0f, 15.0f, -11.0f),  2.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  0.0f, 26.0f,   0.0f),  9.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  0.0f, 54.0f,   0.0f), 14.0f, SOUND_BOUMm, 0.45f);
-        SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 20.0f);
-
-        CreateShadowCircle(21.0f, 1.0f);
-        m_showLimitRadius = Gfx::LTNG_PROTECTION_RADIUS;
-    }
-
-    if ( m_type == OBJECT_SAFE )
-    {
-        modelManager->AddModelReference("safe1.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(1, rank);
-        SetObjectParent(1, 0);
-        modelManager->AddModelReference("safe2.mod", false, rank);
-        SetZoom(1, 1.05f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(2, rank);
-        SetObjectParent(2, 0);
-        modelManager->AddModelReference("safe3.mod", false, rank);
-        SetZoom(2, 1.05f);
-
-        m_terrain->AddBuildingLevel(pos, 18.0f, 20.0f, 1.0f, 0.5f);
-
-        CreateCrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 13.0f, SOUND_BOUMm, 0.45f);
-        SetGlobalSphere(Math::Vector(0.0f, 1.0f, 0.0f), 13.0f);
-
-        CreateShadowCircle(23.0f, 1.0f);
-    }
-
-    if ( m_type == OBJECT_HUSTON )
-    {
-        modelManager->AddModelReference("huston1.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(1, rank);
-        SetObjectParent(1, 0);
-        modelManager->AddModelReference("huston2.mod", false, rank);
-        SetPosition(1, Math::Vector(0.0f, 39.0f, 30.0f));
-        SetAngleY(1, -Math::PI/2.0f);
-        SetZoom(1, 3.0f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        SetObjectRank(2, rank);
-        SetObjectParent(2, 1);
-        modelManager->AddModelReference("huston3.mod", false, rank);
-        SetPosition(2, Math::Vector(0.0f, 4.5f, 1.9f));
-
-        CreateCrashSphere(Math::Vector( 15.0f,  6.0f, -53.0f), 16.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-15.0f,  6.0f, -53.0f), 16.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 15.0f,  6.0f, -26.0f), 16.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-15.0f,  6.0f, -26.0f), 16.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 15.0f,  6.0f,   0.0f), 16.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-15.0f,  6.0f,   0.0f), 16.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 15.0f,  6.0f,  26.0f), 16.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-15.0f,  6.0f,  26.0f), 16.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 15.0f,  6.0f,  53.0f), 16.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-15.0f,  6.0f,  53.0f), 16.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  0.0f, 27.0f,  30.0f), 12.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  0.0f, 45.0f,  30.0f), 14.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 26.0f,  4.0f, -61.0f),  5.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-26.0f,  4.0f, -61.0f),  5.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 26.0f,  4.0f,  61.0f),  5.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-26.0f,  4.0f,  61.0f),  5.0f, SOUND_BOUMm, 0.45f);
-    }
-
-    if ( m_type == OBJECT_TARGET1 )
-    {
-        modelManager->AddModelReference("target1.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetZoom(0, 1.5f);
-        SetFloorHeight(0.0f);
-
-        CreateCrashSphere(Math::Vector(  0.0f, 50.0f+14.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( -7.0f, 50.0f+12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  7.0f, 50.0f+12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-12.0f, 50.0f+ 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 12.0f, 50.0f+ 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-14.0f, 50.0f+ 0.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 14.0f, 50.0f+ 0.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(-12.0f, 50.0f- 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( 12.0f, 50.0f- 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector( -7.0f, 50.0f-12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  7.0f, 50.0f-12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(  0.0f, 50.0f-14.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-
-        CreateCrashSphere(Math::Vector(0.0f, 30.0f, 0.0f), 2.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(0.0f, 24.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(0.0f, 16.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        CreateCrashSphere(Math::Vector(0.0f,  4.0f, 0.0f), 8.0f, SOUND_BOUMm, 0.45f);
-
-        CreateShadowCircle(15.0f, 1.0f);
-    }
-
-    if ( m_type == OBJECT_TARGET2 )
-    {
-        modelManager->AddModelReference("target2.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        height += 50.0f*1.5f;
-    }
-
-    if ( m_type == OBJECT_NEST )
-    {
-        modelManager->AddModelReference("nest.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        m_terrain->AddBuildingLevel(pos, 3.0f, 5.0f, 1.0f, 0.5f);
-
-        CreateShadowCircle(4.0f, 1.0f);
-    }
-
-    if ( m_type == OBJECT_START )
-    {
-        modelManager->AddModelReference("start.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
-    }
-
-    if ( m_type == OBJECT_END )
-    {
-        modelManager->AddModelReference("end.mod", false, rank);
-        SetPosition(0, pos);
-        SetAngleY(0, angle);
-        SetFloorHeight(0.0f);
-
-        m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
-    }
-
-#if 0
-    if ( power > 0.0f )  // creates a battery?
-    {
-        CObject*    pPower;
-
-        pPower = new CObject();
-        pPower->SetType(power<=1.0f?OBJECT_POWER:OBJECT_ATOMIC);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
-        pPower->SetObjectRank(0, rank);
-
-        if ( power <= 1.0f )  modelManager->AddModelReference("power.mod", false, rank);
-        else                  modelManager->AddModelReference("atomic.mod", false, rank);
-
-        pPower->SetPosition(0, GetCharacter()->posPower);
-        pPower->CreateCrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-        pPower->SetGlobalSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.5f);
-
-        pPower->SetTruck(this);
-        SetPower(pPower);
-
-        if ( power <= 1.0f )  pPower->SetEnergy(power);
-        else                  pPower->SetEnergy(power/100.0f);
-    }
-#endif
 
     pos = GetPosition(0);
     pos.y += height;
@@ -3119,6 +2409,916 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
     m_engine->LoadAllTextures();
 
     return true;
+}
+
+void CObject::CreatePortico(Math::Vector pos, float angle)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("portico1.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(1, rank);
+    SetObjectParent(1, 0);
+    modelManager->AddModelReference("portico2.mod", false, rank);
+    SetPosition(1, Math::Vector(0.0f, 67.0f, 0.0f));
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(2, rank);
+    SetObjectParent(2, 1);
+    modelManager->AddModelReference("portico3.mod", false, rank);
+    SetPosition(2, Math::Vector(0.0f, 0.0f, -33.0f));
+    SetAngleY(2, 45.0f*Math::PI/180.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(3, rank);
+    SetObjectParent(3, 2);
+    modelManager->AddModelReference("portico4.mod", false, rank);
+    SetPosition(3, Math::Vector(50.0f, 0.0f, 0.0f));
+    SetAngleY(3, -60.0f*Math::PI/180.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(4, rank);
+    SetObjectParent(4, 3);
+    modelManager->AddModelReference("portico5.mod", false, rank);
+    SetPosition(4, Math::Vector(35.0f, 0.0f, 0.0f));
+    SetAngleY(4, -55.0f*Math::PI/180.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(5, rank);
+    SetObjectParent(5, 1);
+    modelManager->AddModelReference("portico3.mod", false, rank);
+    SetPosition(5, Math::Vector(0.0f, 0.0f, 33.0f));
+    SetAngleY(5, -45.0f*Math::PI/180.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(6, rank);
+    SetObjectParent(6, 5);
+    modelManager->AddModelReference("portico4.mod", false, rank);
+    SetPosition(6, Math::Vector(50.0f, 0.0f, 0.0f));
+    SetAngleY(6, 60.0f*Math::PI/180.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(7, rank);
+    SetObjectParent(7, 6);
+    modelManager->AddModelReference("portico5.mod", false, rank);
+    SetPosition(7, Math::Vector(35.0f, 0.0f, 0.0f));
+    SetAngleY(7, 55.0f*Math::PI/180.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(8, rank);
+    SetObjectParent(8, 0);
+    modelManager->AddModelReference("portico6.mod", false, rank);
+    SetPosition(8, Math::Vector(-35.0f, 50.0f, -35.0f));
+    SetAngleY(8, -Math::PI/2.0f);
+    SetZoom(8, 2.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(9, rank);
+    SetObjectParent(9, 8);
+    modelManager->AddModelReference("portico7.mod", false, rank);
+    SetPosition(9, Math::Vector(0.0f, 4.5f, 1.9f));
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(10, rank);
+    SetObjectParent(10, 0);
+    modelManager->AddModelReference("portico6.mod", false, rank);
+    SetPosition(10, Math::Vector(-35.0f, 50.0f, 35.0f));
+    SetAngleY(10, -Math::PI/2.0f);
+    SetZoom(10, 2.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(11, rank);
+    SetObjectParent(11, 10);
+    modelManager->AddModelReference("portico7.mod", false, rank);
+    SetPosition(11, Math::Vector(0.0f, 4.5f, 1.9f));
+
+    CreateCrashSphere(Math::Vector(  0.0f, 28.0f,   0.0f), 45.5f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 27.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  0.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-27.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 27.0f, 10.0f,  42.0f), 15.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  0.0f, 10.0f,  42.0f), 15.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-27.0f, 10.0f,  42.0f), 15.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-32.0f, 45.0f, -32.0f), 10.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-32.0f, 45.0f,  32.0f), 10.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 32.0f, 45.0f, -32.0f), 10.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 32.0f, 45.0f,  32.0f), 10.0f, SOUND_BOUMm, 0.45f);
+    SetGlobalSphere(Math::Vector(0.0f, 35.0f, 0.0f), 50.0f);
+
+    CreateShadowCircle(50.0f, 1.0f);
+}
+
+void CObject::CreateBase(Math::Vector pos, float angle)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("base1.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    for (int i = 0; i < 8; i++)
+    {
+        rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        SetObjectRank(1+i, rank);
+        SetObjectParent(1+i, 0);
+        modelManager->AddModelReference("base2.mod", false, rank);
+        Math::Point p = Math::RotatePoint(-Math::PI/4.0f*i, 27.8f);
+        SetPosition(1+i, Math::Vector(p.x, 30.0f, p.y));
+        SetAngleY(1+i, Math::PI/4.0f*i);
+        SetAngleZ(1+i, Math::PI/2.0f);
+
+        rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        SetObjectRank(10+i, rank);
+        SetObjectParent(10+i, 1+i);
+        modelManager->AddModelReference("base4.mod", false, rank);
+        SetPosition(10+i, Math::Vector(23.5f, 0.0f, 7.0f));
+
+        rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        SetObjectRank(18+i, rank);
+        SetObjectParent(18+i, 1+i);
+        modelManager->AddModelReference("base4.mod", true, rank);
+        SetPosition(18+i, Math::Vector(23.5f, 0.0f, -7.0f));
+    }
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(9, rank);
+    SetObjectParent(9, 0);
+    modelManager->AddModelReference("base3.mod", false, rank); // central pillar
+
+    CreateCrashSphere(Math::Vector(  0.0f, 33.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  0.0f, 39.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  0.0f, 45.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  0.0f, 51.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  0.0f, 57.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  0.0f, 63.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  0.0f, 69.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  0.0f, 82.0f,   0.0f),  8.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 18.0f, 94.0f,   0.0f), 10.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-18.0f, 94.0f,   0.0f), 10.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  0.0f, 94.0f,  18.0f), 10.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  0.0f, 94.0f, -18.0f), 10.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 13.0f, 94.0f,  13.0f), 10.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-13.0f, 94.0f,  13.0f), 10.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 13.0f, 94.0f, -13.0f), 10.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-13.0f, 94.0f, -13.0f), 10.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  0.0f,104.0f,   0.0f), 14.0f, SOUND_BOUMm, 0.45f);
+
+    SetGlobalSphere(Math::Vector(0.0f, 45.0f, 0.0f), 10.0f);
+
+    CreateShadowCircle(60.0f, 1.0f);
+    m_showLimitRadius = 200.0f;
+
+    m_terrain->AddBuildingLevel(pos, 28.6f, 73.4f, 30.0f, 0.4f);
+}
+
+void CObject::CreateDerrick(Math::Vector pos, float angle)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("derrick1.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(1, rank);
+    SetObjectParent(1, 0);
+    modelManager->AddModelReference("derrick2.mod", false, rank);
+
+    CreateCrashSphere(Math::Vector(0.0f,  0.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(0.0f, 17.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(0.0f, 26.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(7.0f, 17.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+    SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 10.0f);
+
+    CreateShadowCircle(10.0f, 0.4f);
+}
+
+void CObject::CreateResearch(Math::Vector pos, float angle)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("search1.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(1, rank);
+    SetObjectParent(1, 0);
+    modelManager->AddModelReference("search2.mod", false, rank);
+    SetPosition(1, Math::Vector(0.0f, 13.0f, 0.0f));
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(2, rank);
+    SetObjectParent(2, 1);
+    modelManager->AddModelReference("search3.mod", false, rank);
+    SetPosition(2, Math::Vector(0.0f, 4.0f, 0.0f));
+    SetAngleZ(2, 35.0f*Math::PI/180.0f);
+
+    CreateCrashSphere(Math::Vector(0.0f,  0.0f, 0.0f), 9.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(0.0f,  6.0f, 0.0f), 9.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(0.0f, 14.0f, 0.0f), 7.0f, SOUND_BOUMm, 0.45f);
+    SetGlobalSphere(Math::Vector(0.0f, 8.0f, 0.0f), 12.0f);
+
+    m_character.posPower = Math::Vector(7.5f, 3.0f, 0.0f);
+
+    CreateShadowCircle(12.0f, 1.0f);
+}
+
+void CObject::CreateRadar(Math::Vector pos, float angle)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("radar1.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(1, rank);
+    SetObjectParent(1, 0);
+    modelManager->AddModelReference("radar2.mod", false, rank);
+    SetPosition(1, Math::Vector(0.0f, 5.0f, 0.0f));
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(2, rank);
+    SetObjectParent(2, 0);
+    modelManager->AddModelReference("radar3.mod", false, rank);
+    SetPosition(2, Math::Vector(0.0f, 11.0f, 0.0f));
+    SetAngleY(2, -Math::PI/2.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(3, rank);
+    SetObjectParent(3, 2);
+    modelManager->AddModelReference("radar4.mod", false, rank);
+    SetPosition(3, Math::Vector(0.0f, 4.5f, 1.9f));
+
+    CreateCrashSphere(Math::Vector(0.0f,  3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(0.0f, 11.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+    SetGlobalSphere(Math::Vector(0.0f, 7.0f, 0.0f), 7.0f);
+
+    CreateShadowCircle(8.0f, 1.0f);
+}
+
+void CObject::CreateInfo(Math::Vector pos, float angle)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("info1.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(1, rank);
+    SetObjectParent(1, 0);
+    modelManager->AddModelReference("info2.mod", false, rank);
+    SetPosition(1, Math::Vector(0.0f, 5.0f, 0.0f));
+
+    for (int i = 0; i < 3; i++)
+    {
+        rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        SetObjectRank(2+i*2, rank);
+        SetObjectParent(2+i*2, 1);
+        modelManager->AddModelReference("info3.mod", false, rank);
+        SetPosition(2+i*2, Math::Vector(0.0f, 4.5f, 0.0f));
+
+        rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        SetObjectRank(3+i*2, rank);
+        SetObjectParent(3+i*2, 2+i*2);
+        modelManager->AddModelReference("radar4.mod", false, rank);
+        SetPosition(3+i*2, Math::Vector(0.0f, 0.0f, -4.0f));
+
+        SetAngleY(2+i*2, 2.0f*Math::PI/3.0f*i);
+    }
+
+    CreateCrashSphere(Math::Vector(0.0f,  3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(0.0f, 11.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+    SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 6.0f);
+
+    CreateShadowCircle(8.0f, 1.0f);
+}
+
+void CObject::CreateEnergy(Math::Vector pos, float angle, float power)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelCopy("energy.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    CreateCrashSphere(Math::Vector(-2.0f, 13.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-7.0f,  3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 0.0f,  1.0f, 0.0f), 1.5f, SOUND_BOUMm, 0.45f);
+    SetGlobalSphere(Math::Vector(-7.0f, 5.0f, 0.0f), 5.0f);
+
+    m_character.posPower = Math::Vector(0.0f, 3.0f, 0.0f);
+    m_energy = power;  // initializes the energy level
+
+    CreateShadowCircle(6.0f, 0.5f);
+}
+
+void CObject::CreateLabo(Math::Vector pos, float angle)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("labo1.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(1, rank);
+    SetObjectParent(1, 0);
+    modelManager->AddModelReference("labo2.mod", false, rank);
+    SetPosition(1, Math::Vector(-9.0f, 3.0f, 0.0f));
+    SetAngleZ(1, Math::PI/2.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(2, rank);
+    SetObjectParent(2, 1);
+    modelManager->AddModelReference("labo3.mod", false, rank);
+    SetPosition(2, Math::Vector(9.0f, -1.0f, 0.0f));
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(3, rank);
+    SetObjectParent(3, 2);
+    modelManager->AddModelReference("labo4.mod", false, rank);
+    SetPosition(3, Math::Vector(0.0f, 0.0f, 0.0f));
+    SetAngleZ(3, 80.0f*Math::PI/180.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(4, rank);
+    SetObjectParent(4, 2);
+    modelManager->AddModelReference("labo4.mod", false, rank);
+    SetPosition(4, Math::Vector(0.0f, 0.0f, 0.0f));
+    SetAngleZ(4, 80.0f*Math::PI/180.0f);
+    SetAngleY(4, Math::PI*2.0f/3.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(5, rank);
+    SetObjectParent(5, 2);
+    modelManager->AddModelReference("labo4.mod", false, rank);
+    SetPosition(5, Math::Vector(0.0f, 0.0f, 0.0f));
+    SetAngleZ(5, 80.0f*Math::PI/180.0f);
+    SetAngleY(5, -Math::PI*2.0f/3.0f);
+
+    CreateCrashSphere(Math::Vector(  0.0f,  1.0f,  0.0f), 1.5f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  0.0f, 11.0f,  0.0f), 4.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-10.0f, 10.0f,  0.0f), 4.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-12.0f,  3.0f,  3.0f), 4.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-12.0f,  3.0f, -3.0f), 4.0f, SOUND_BOUMm, 0.45f);
+    SetGlobalSphere(Math::Vector(-10.0f, 5.0f, 0.0f), 7.0f);
+
+    m_character.posPower = Math::Vector(0.0f, 3.0f, 0.0f);
+
+    CreateShadowCircle(7.0f, 0.5f);
+}
+
+void CObject::CreateFactory(Math::Vector pos, float angle)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("factory1.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    for (int i = 0; i < 9; i++)
+    {
+        rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        SetObjectRank(1+i, rank);
+        SetObjectParent(1+i, 0);
+        modelManager->AddModelReference("factory2.mod", false, rank);
+        SetPosition(1+i, Math::Vector(10.0f, 2.0f*i, 10.0f));
+        SetAngleZ(1+i, Math::PI/2.0f);
+        SetZoomZ(1+i, 0.30f);
+
+        rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        SetObjectRank(10+i, rank);
+        SetObjectParent(10+i, 0);
+        modelManager->AddModelReference("factory2.mod", false, rank);
+        SetPosition(10+i, Math::Vector(10.0f, 2.0f*i, -10.0f));
+        SetAngleZ(10+i, -Math::PI/2.0f);
+        SetAngleY(10+i, Math::PI);
+        SetZoomZ(10+i, 0.30f);
+    }
+
+    for (int i = 0; i < 2; i++)
+    {
+        float s = static_cast<float>(i*2-1);
+        CreateCrashSphere(Math::Vector(-10.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+        CreateCrashSphere(Math::Vector( -3.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+        CreateCrashSphere(Math::Vector(  3.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+        CreateCrashSphere(Math::Vector( 10.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+        CreateCrashSphere(Math::Vector(-10.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+        CreateCrashSphere(Math::Vector( -3.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+        CreateCrashSphere(Math::Vector(  3.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+        CreateCrashSphere(Math::Vector( 10.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+        CreateCrashSphere(Math::Vector(-10.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+        CreateCrashSphere(Math::Vector( -3.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+        CreateCrashSphere(Math::Vector(  3.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+        CreateCrashSphere(Math::Vector( 10.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+        CreateCrashSphere(Math::Vector(-10.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+        CreateCrashSphere(Math::Vector( -3.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+        CreateCrashSphere(Math::Vector(  3.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+        CreateCrashSphere(Math::Vector( 10.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+        CreateCrashSphere(Math::Vector(-10.0f,  2.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+        CreateCrashSphere(Math::Vector(-10.0f,  9.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+    }
+    CreateCrashSphere(Math::Vector(-10.0f, 21.0f, -4.0f), 3.0f, SOUND_BOUMm, 0.45f);
+    SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 18.0f);
+
+    CreateShadowCircle(24.0f, 0.3f);
+}
+
+void CObject::CreateRepair(Math::Vector pos, float angle)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("repair1.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(1, rank);
+    SetObjectParent(1, 0);
+    modelManager->AddModelReference("repair2.mod", false, rank);
+    SetPosition(1, Math::Vector(-11.0f, 13.5f, 0.0f));
+    SetAngleZ(1, Math::PI/2.0f);
+
+    m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
+
+    CreateCrashSphere(Math::Vector(-11.0f,  0.0f,  4.0f), 5.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-11.0f,  0.0f,  0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-11.0f,  0.0f, -4.0f), 5.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-11.0f, 10.0f,  0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+    SetGlobalSphere(Math::Vector(-11.0f, 13.0f, 0.0f), 15.0f);
+}
+
+void CObject::CreateDestroyer(Math::Vector pos, float angle)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("destroy1.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(1, rank);
+    SetObjectParent(1, 0);
+    modelManager->AddModelReference("destroy2.mod", false, rank);
+    SetPosition(1, Math::Vector(0.0f, 0.0f, 0.0f));
+
+    m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
+
+    CreateCrashSphere(Math::Vector(-3.5f, 0.0f, -13.5f), 4.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 3.5f, 0.0f, -13.5f), 4.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-3.5f, 0.0f,  13.5f), 4.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 3.5f, 0.0f,  13.5f), 4.0f, SOUND_BOUMm, 0.45f);
+
+    CreateShadowCircle(19.0f, 1.0f);
+}
+
+void CObject::CreateStation(Math::Vector pos, float angle, float power)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelCopy("station.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
+
+    CreateCrashSphere(Math::Vector(-15.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-15.0f, 6.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
+    SetGlobalSphere(Math::Vector(-15.0f, 5.0f, 0.0f), 6.0f);
+
+    m_energy = power;
+}
+
+void CObject::CreateConvert(Math::Vector pos, float angle)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("convert1.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(1, rank);
+    SetObjectParent(1, 0);
+    modelManager->AddModelReference("convert2.mod", false, rank);
+    SetPosition(1, Math::Vector(0.0f, 14.0f, 0.0f));
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(2, rank);
+    SetObjectParent(2, 0);
+    modelManager->AddModelReference("convert3.mod", false, rank);
+    SetPosition(2, Math::Vector(0.0f, 11.5f, 0.0f));
+    SetAngleX(2, -Math::PI*0.35f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(3, rank);
+    SetObjectParent(3, 0);
+    modelManager->AddModelReference("convert3.mod", false, rank);
+    SetPosition(3, Math::Vector(0.0f, 11.5f, 0.0f));
+    SetAngleY(3, Math::PI);
+    SetAngleX(3, -Math::PI*0.35f);
+
+    m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
+
+    CreateCrashSphere(Math::Vector(-10.0f,  2.0f,  4.0f), 5.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-10.0f,  2.0f, -4.0f), 5.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-10.0f,  9.0f,  0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  0.0f, 14.0f,  0.0f), 1.5f, SOUND_BOUMm, 0.45f);
+    SetGlobalSphere(Math::Vector(-3.0f, 8.0f, 0.0f), 14.0f);
+}
+
+void CObject::CreateTower(Math::Vector pos, float angle)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("tower.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(1, rank);
+    SetObjectParent(1, 0);
+    modelManager->AddModelReference("roller2c.mod", false, rank);
+    SetPosition(1, Math::Vector(0.0f, 20.0f, 0.0f));
+    SetAngleZ(1, Math::PI/2.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(2, rank);
+    SetObjectParent(2, 1);
+    modelManager->AddModelReference("roller3c.mod", false, rank);
+    SetPosition(2, Math::Vector(4.5f, 0.0f, 0.0f));
+    SetAngleZ(2, 0.0f);
+
+    CreateCrashSphere(Math::Vector(0.0f,  0.0f, 0.0f), 6.5f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(0.0f,  8.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(0.0f, 15.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(0.0f, 24.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+    SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 7.0f);
+
+    m_character.posPower = Math::Vector(5.0f, 3.0f, 0.0f);
+
+    CreateShadowCircle(6.0f, 1.0f);
+    m_showLimitRadius = Gfx::LTNG_PROTECTION_RADIUS;
+}
+
+void CObject::CreateNuclear(Math::Vector pos, float angle)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("nuclear1.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(1, rank);
+    SetObjectParent(1, 0);
+    modelManager->AddModelReference("nuclear2.mod", false, rank);
+    SetPosition(1, Math::Vector(20.0f, 10.0f, 0.0f));
+    SetAngleZ(1, 135.0f*Math::PI/180.0f);
+
+    CreateCrashSphere(Math::Vector( 0.0f,  0.0f, 0.0f), 19.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 0.0f, 24.0f, 0.0f), 15.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(22.0f,  1.0f, 0.0f),  1.5f, SOUND_BOUMm, 0.45f);
+    SetGlobalSphere(Math::Vector(0.0f, 17.0f, 0.0f), 26.0f);
+
+    m_character.posPower = Math::Vector(22.0f, 3.0f, 0.0f);
+
+    CreateShadowCircle(21.0f, 1.0f);
+}
+
+void CObject::CreatePara(Math::Vector pos, float angle)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("para.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    m_terrain->AddBuildingLevel(pos, 16.0f, 18.0f, 1.0f, 0.5f);
+
+    CreateCrashSphere(Math::Vector( 13.0f,  3.0f,  13.0f),  3.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 11.0f, 15.0f,  11.0f),  2.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-13.0f,  3.0f,  13.0f),  3.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-11.0f, 15.0f, -11.0f),  2.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 13.0f,  3.0f, -13.0f),  3.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 11.0f, 15.0f, -11.0f),  2.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-13.0f,  3.0f, -13.0f),  3.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-11.0f, 15.0f, -11.0f),  2.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  0.0f, 26.0f,   0.0f),  9.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  0.0f, 54.0f,   0.0f), 14.0f, SOUND_BOUMm, 0.45f);
+    SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 20.0f);
+
+    CreateShadowCircle(21.0f, 1.0f);
+    m_showLimitRadius = Gfx::LTNG_PROTECTION_RADIUS;
+}
+
+void CObject::CreateSafe(Math::Vector pos, float angle)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("safe1.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(1, rank);
+    SetObjectParent(1, 0);
+    modelManager->AddModelReference("safe2.mod", false, rank);
+    SetZoom(1, 1.05f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(2, rank);
+    SetObjectParent(2, 0);
+    modelManager->AddModelReference("safe3.mod", false, rank);
+    SetZoom(2, 1.05f);
+
+    m_terrain->AddBuildingLevel(pos, 18.0f, 20.0f, 1.0f, 0.5f);
+
+    CreateCrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 13.0f, SOUND_BOUMm, 0.45f);
+    SetGlobalSphere(Math::Vector(0.0f, 1.0f, 0.0f), 13.0f);
+
+    CreateShadowCircle(23.0f, 1.0f);
+}
+
+void CObject::CreateHuston(Math::Vector pos, float angle)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("huston1.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(1, rank);
+    SetObjectParent(1, 0);
+    modelManager->AddModelReference("huston2.mod", false, rank);
+    SetPosition(1, Math::Vector(0.0f, 39.0f, 30.0f));
+    SetAngleY(1, -Math::PI/2.0f);
+    SetZoom(1, 3.0f);
+
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+    SetObjectRank(2, rank);
+    SetObjectParent(2, 1);
+    modelManager->AddModelReference("huston3.mod", false, rank);
+    SetPosition(2, Math::Vector(0.0f, 4.5f, 1.9f));
+
+    CreateCrashSphere(Math::Vector( 15.0f,  6.0f, -53.0f), 16.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-15.0f,  6.0f, -53.0f), 16.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 15.0f,  6.0f, -26.0f), 16.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-15.0f,  6.0f, -26.0f), 16.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 15.0f,  6.0f,   0.0f), 16.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-15.0f,  6.0f,   0.0f), 16.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 15.0f,  6.0f,  26.0f), 16.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-15.0f,  6.0f,  26.0f), 16.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 15.0f,  6.0f,  53.0f), 16.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-15.0f,  6.0f,  53.0f), 16.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  0.0f, 27.0f,  30.0f), 12.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  0.0f, 45.0f,  30.0f), 14.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 26.0f,  4.0f, -61.0f),  5.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-26.0f,  4.0f, -61.0f),  5.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 26.0f,  4.0f,  61.0f),  5.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-26.0f,  4.0f,  61.0f),  5.0f, SOUND_BOUMm, 0.45f);
+}
+
+void CObject::CreateTarget1(Math::Vector pos, float angle)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("target1.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetZoom(0, 1.5f);
+    SetFloorHeight(0.0f);
+
+    CreateCrashSphere(Math::Vector(  0.0f, 50.0f+14.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( -7.0f, 50.0f+12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  7.0f, 50.0f+12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-12.0f, 50.0f+ 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 12.0f, 50.0f+ 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-14.0f, 50.0f+ 0.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 14.0f, 50.0f+ 0.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(-12.0f, 50.0f- 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( 12.0f, 50.0f- 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector( -7.0f, 50.0f-12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  7.0f, 50.0f-12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(  0.0f, 50.0f-14.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+
+    CreateCrashSphere(Math::Vector(0.0f, 30.0f, 0.0f), 2.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(0.0f, 24.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(0.0f, 16.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
+    CreateCrashSphere(Math::Vector(0.0f,  4.0f, 0.0f), 8.0f, SOUND_BOUMm, 0.45f);
+
+    CreateShadowCircle(15.0f, 1.0f);
+}
+
+void CObject::CreateTarget2(Math::Vector pos, float angle, float& height)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("target2.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    height += 50.0f*1.5f; // TODO: get rid of this
+}
+
+void CObject::CreateNest(Math::Vector pos, float angle)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("nest.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    m_terrain->AddBuildingLevel(pos, 3.0f, 5.0f, 1.0f, 0.5f);
+
+    CreateShadowCircle(4.0f, 1.0f);
+}
+
+void CObject::CreateStart(Math::Vector pos, float angle)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("start.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
+}
+
+void CObject::CreateEnd(Math::Vector pos, float angle)
+{
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
+
+    int rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+    SetObjectRank(0, rank);
+
+    modelManager->AddModelReference("end.mod", false, rank);
+    SetPosition(0, pos);
+    SetAngleY(0, angle);
+    SetFloorHeight(0.0f);
+
+    m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
 }
 
 // Creates a small resource set on the ground.

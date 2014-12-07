@@ -663,6 +663,30 @@ protected:
     bool        UpdateTransformObject();
     void        UpdateSelectParticle();
 
+    void CreatePortico(Math::Vector pos, float angle);
+    void CreateBase(Math::Vector pos, float angle);
+    void CreateDerrick(Math::Vector pos, float angle);
+    void CreateResearch(Math::Vector pos, float angle);
+    void CreateRadar(Math::Vector pos, float angle);
+    void CreateInfo(Math::Vector pos, float angle);
+    void CreateEnergy(Math::Vector pos, float angle, float power);
+    void CreateLabo(Math::Vector pos, float angle);
+    void CreateFactory(Math::Vector pos, float angle);
+    void CreateRepair(Math::Vector pos, float angle);
+    void CreateDestroyer(Math::Vector pos, float angle);
+    void CreateStation(Math::Vector pos, float angle, float power);
+    void CreateConvert(Math::Vector pos, float angle);
+    void CreateTower(Math::Vector pos, float angle);
+    void CreateNuclear(Math::Vector pos, float angle);
+    void CreatePara(Math::Vector pos, float angle);
+    void CreateSafe(Math::Vector pos, float angle);
+    void CreateHuston(Math::Vector pos, float angle);
+    void CreateTarget1(Math::Vector pos, float angle);
+    void CreateTarget2(Math::Vector pos, float angle, float& height);
+    void CreateNest(Math::Vector pos, float angle);
+    void CreateStart(Math::Vector pos, float angle);
+    void CreateEnd(Math::Vector pos, float angle);
+
 protected:
     CApplication*       m_app;
     Gfx::CEngine*       m_engine;
