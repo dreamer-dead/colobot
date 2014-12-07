@@ -30,6 +30,8 @@
 
 const int MAX_OBJECTS = 500;
 
+class CObjectFactory;
+
 /**
  * \class ObjectManager
  * \brief Manager for objects
@@ -52,7 +54,12 @@ public:
     void      Flush();
 
 protected:
+    //! Loads CObjectFactory instances
+    void      LoadObjectFactories();
+    
+protected:
     CObject* m_table[MAX_OBJECTS];
+    std::map<ObjectType, CObjectFactory*> m_factory;
     int m_usedCount;
 };
 

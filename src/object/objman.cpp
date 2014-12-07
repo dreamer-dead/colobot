@@ -36,10 +36,16 @@ CObjectManager::CObjectManager()
         m_table[i] = nullptr;
     }
     m_usedCount = 0;
+    
+    LoadObjectFactories();
 }
 
 CObjectManager::~CObjectManager()
 {
+    for(auto f : m_factory) {
+        delete f.second;
+        m_factory[f.first] = nullptr;
+    }
 }
 
 bool CObjectManager::AddInstance(CObject* instance)
@@ -68,6 +74,22 @@ CObject* CObjectManager::SearchInstance(int id)
     return m_table[id];
 }
 
+void CObjectManager::LoadObjectFactories()
+{
+    for(int i=0; i<OBJECT_MAX; i++)
+    {
+        ObjectType type = static_cast<ObjectType>(i);
+        std::string name = GetTypeObject(type);
+        if(!name.empty()) {
+            try {
+                m_factory[type] = new CObjectFactory("objects/"+name+".txt");
+            } catch(std::exception& e) {
+                CLogger::GetInstancePointer()->Error("An error occured while loading '%s' factory: %s\n", name.c_str(), e.what());
+            }
+        }
+    }
+}
+
 CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType type,
                                       float power, float zoom, float height,
                                       bool trainer, bool toy, int option)
@@ -84,12 +106,9 @@ CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType 
     
     //TODO: I think not all code uses CObjectManager::CreateObject, some use CObject::Create* methods directly
     
-    try {
-        //TODO: Keep cache of CObjectFactory instances somewhere, load them once on game start
-        CObjectFactory* factory = new CObjectFactory(type);
-        object = factory->Create(pos, angle, type, power, zoom, height, trainer, toy, option);
-    } catch(std::exception& e) {
-        CLogger::GetInstancePointer()->Error("An error occured while creating '%s': %s\n", GetTypeObject(type), e.what());
+    if(m_factory[type])
+    {
+        object = m_factory[type]->Create(pos, angle, type, power, zoom, height, trainer, toy, option);
     }
     
     if(object != nullptr)
