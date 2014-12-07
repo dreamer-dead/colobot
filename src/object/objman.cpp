@@ -20,6 +20,8 @@
 
 #include "object/object.h"
 #include "object/auto/auto.h"
+#include "object/objectfactory.h"
+#include "script/cmdtoken.h"
 
 #include "object/objman.h"
 
@@ -79,6 +81,23 @@ CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType 
     {
         trainer = false;  // necessarily
     }
+    
+    //TODO: I think not all code uses CObjectManager::CreateObject, some use CObject::Create* methods directly
+    
+    try {
+        //TODO: Keep cache of CObjectFactory instances somewhere, load them once on game start
+        CObjectFactory* factory = new CObjectFactory(type);
+        object = factory->Create(pos, angle, type, power, zoom, height, trainer, toy, option);
+    } catch(std::exception& e) {
+        CLogger::GetInstancePointer()->Error("An error occured while creating '%s': %s\n", GetTypeObject(type), e.what());
+    }
+    
+    if(object != nullptr)
+        return object;
+    else
+        CLogger::GetInstancePointer()->Info("Falling back to old, hardcoded objects (%s)\n", GetTypeObject(type));
+    
+    //TODO: Create .txt files for everything, and remove old code
 
     if ( type == OBJECT_PORTICO  ||
          type == OBJECT_BASE     ||

@@ -24,11 +24,12 @@
 
 #pragma once
 
-#include <object/object.h>
-#include <graphics/core/color.h>
-#include <graphics/engine/water.h>
-#include <graphics/engine/pyro.h>
-#include <math/point.h>
+#include "object/object.h"
+#include "graphics/core/color.h"
+#include "graphics/engine/water.h"
+#include "graphics/engine/pyro.h"
+#include "math/point.h"
+#include "sound/sound.h"
 
 #include <string>
 
@@ -75,6 +76,7 @@ public:
     int AsResearchFlag();
     Gfx::PyroType AsPyroType();
     Gfx::CameraType AsCameraType();
+    Sound AsSoundType();
     const std::vector<CLevelParserParam*>& AsArray();
     //@}
     
@@ -96,6 +98,7 @@ public:
     int AsResearchFlag(int def);
     Gfx::PyroType AsPyroType(Gfx::PyroType def);
     Gfx::CameraType AsCameraType(Gfx::CameraType def);
+    Sound AsSoundType(Sound def);
     //@}
     
     //! Set line this param is part of
@@ -126,6 +129,7 @@ private:
     int ToResearchFlag(std::string value);
     Gfx::PyroType ToPyroType(std::string value);
     Gfx::CameraType ToCameraType(std::string value);
+    Sound ToSoundType(std::string value);
     
     const std::string FromObjectType(ObjectType value);
     const std::string FromCameraType(Gfx::CameraType value);

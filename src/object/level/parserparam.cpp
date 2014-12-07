@@ -246,7 +246,10 @@ Math::Vector CLevelParserParam::AsPoint()
     
     ParseArray();
     
-    if(m_array.size() == 2) { //XZ
+    if(m_array.size() == 1) {
+        float x = m_array[0]->AsFloat();
+        return Math::Vector(x, x, x);
+    } else if(m_array.size() == 2) { //XZ
         return Math::Vector(m_array[0]->AsFloat(), 0.0f, m_array[1]->AsFloat());
     } else if(m_array.size() == 3) { //XYZ
         return Math::Vector(m_array[0]->AsFloat(), m_array[1]->AsFloat(), m_array[2]->AsFloat());
@@ -918,6 +921,109 @@ Gfx::CameraType CLevelParserParam::AsCameraType(Gfx::CameraType def)
     if(m_empty)
         return def;
     return AsCameraType();
+}
+
+
+Sound CLevelParserParam::ToSoundType(std::string value)
+{
+    if(value == "NONE") return SOUND_NONE;
+    if(value == "CLICK") return SOUND_CLICK;
+    if(value == "BOUM") return SOUND_BOUM;
+    if(value == "EXPLO") return SOUND_EXPLO;
+    if(value == "FLYh") return SOUND_FLYh;
+    if(value == "FLY") return SOUND_FLY;
+    if(value == "STEPs") return SOUND_STEPs;
+    if(value == "MOTORw") return SOUND_MOTORw;
+    if(value == "MOTORt") return SOUND_MOTORt;
+    if(value == "MOTORr") return SOUND_MOTORr;
+    if(value == "ERROR") return SOUND_ERROR;
+    if(value == "CONVERT") return SOUND_CONVERT;
+    if(value == "ENERGY") return SOUND_ENERGY;
+    if(value == "PLOUF") return SOUND_PLOUF;
+    if(value == "BLUP") return SOUND_BLUP;
+    if(value == "WARNING") return SOUND_WARNING;
+    if(value == "DERRICK") return SOUND_DERRICK;
+    if(value == "LABO") return SOUND_LABO;
+    if(value == "STATION") return SOUND_STATION;
+    if(value == "REPAIR") return SOUND_REPAIR;
+    if(value == "RESEARCH") return SOUND_RESEARCH;
+    if(value == "INSECTs") return SOUND_INSECTs;
+    if(value == "BURN") return SOUND_BURN;
+    if(value == "TZOING") return SOUND_TZOING;
+    if(value == "GGG") return SOUND_GGG;
+    if(value == "MANIP") return SOUND_MANIP;
+    if(value == "FIRE") return SOUND_FIRE;
+    if(value == "HUMAN1") return SOUND_HUMAN1;
+    if(value == "STEPw") return SOUND_STEPw;
+    if(value == "SWIM") return SOUND_SWIM;
+    if(value == "RADAR") return SOUND_RADAR;
+    if(value == "BUILD") return SOUND_BUILD;
+    if(value == "ALARM") return SOUND_ALARM;
+    if(value == "SLIDE") return SOUND_SLIDE;
+    if(value == "EXPLOi") return SOUND_EXPLOi;
+    if(value == "INSECTa") return SOUND_INSECTa;
+    if(value == "INSECTb") return SOUND_INSECTb;
+    if(value == "INSECTw") return SOUND_INSECTw;
+    if(value == "INSECTm") return SOUND_INSECTm;
+    if(value == "TREMBLE") return SOUND_TREMBLE;
+    if(value == "PSHHH") return SOUND_PSHHH;
+    if(value == "NUCLEAR") return SOUND_NUCLEAR;
+    if(value == "INFO") return SOUND_INFO;
+    if(value == "OPEN") return SOUND_OPEN;
+    if(value == "CLOSE") return SOUND_CLOSE;
+    if(value == "FACTORY") return SOUND_FACTORY;
+    if(value == "EGG") return SOUND_EGG;
+    if(value == "MOTORs") return SOUND_MOTORs;
+    if(value == "MOTORi") return SOUND_MOTORi;
+    if(value == "SHIELD") return SOUND_SHIELD;
+    if(value == "FIREi") return SOUND_FIREi;
+    if(value == "GUNDEL") return SOUND_GUNDEL;
+    if(value == "PSHHH2") return SOUND_PSHHH2;
+    if(value == "MESSAGE") return SOUND_MESSAGE;
+    if(value == "BOUMm") return SOUND_BOUMm;
+    if(value == "BOUMv") return SOUND_BOUMv;
+    if(value == "BOUMs") return SOUND_BOUMs;
+    if(value == "EXPLOl") return SOUND_EXPLOl;
+    if(value == "EXPLOlp") return SOUND_EXPLOlp;
+    if(value == "EXPLOp") return SOUND_EXPLOp;
+    if(value == "STEPh") return SOUND_STEPh;
+    if(value == "STEPm") return SOUND_STEPm;
+    if(value == "POWERON") return SOUND_POWERON;
+    if(value == "POWEROFF") return SOUND_POWEROFF;
+    if(value == "AIE") return SOUND_AIE;
+    if(value == "WAYPOINT") return SOUND_WAYPOINT;
+    if(value == "RECOVER") return SOUND_RECOVER;
+    if(value == "DEADi") return SOUND_DEADi;
+    if(value == "JOSTLE") return SOUND_JOSTLE;
+    if(value == "GFLAT") return SOUND_GFLAT;
+    if(value == "DEADg") return SOUND_DEADg;
+    if(value == "DEADw") return SOUND_DEADw;
+    if(value == "FLYf") return SOUND_FLYf;
+    if(value == "ALARMt") return SOUND_ALARMt;
+    if(value == "FINDING") return SOUND_FINDING;
+    if(value == "THUMP") return SOUND_THUMP;
+    if(value == "TOUCH") return SOUND_TOUCH;
+    if(value == "BLITZ") return SOUND_BLITZ;
+    if(value == "MUSHROOM") return SOUND_MUSHROOM;
+    if(value == "FIREp") return SOUND_FIREp;
+    if(value == "EXPLOg1") return SOUND_EXPLOg1;
+    if(value == "EXPLOg2") return SOUND_EXPLOg2;
+    return SOUND_NONE;
+}
+
+
+Sound CLevelParserParam::AsSoundType()
+{
+    if(m_empty)
+        throw CLevelParserExceptionMissingParam(this);
+    return ToSoundType(m_value);
+}
+
+Sound CLevelParserParam::AsSoundType(Sound def)
+{
+    if(m_empty)
+        return def;
+    return AsSoundType();
 }
 
 

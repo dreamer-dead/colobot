@@ -649,12 +649,13 @@ public:
     
     static DriveType GetDriveFromObject(ObjectType type);
     static ToolType  GetToolFromObject(ObjectType type);
+    
+    void        CreateOtherObject(ObjectType type);
 
 protected:
     bool        EventFrame(const Event &event);
     void        VirusFrame(float rTime);
     void        PartiFrame(float rTime);
-    void        CreateOtherObject(ObjectType type);
     void        InitPart(int part);
     void        UpdateTotalPart();
     int         SearchDescendant(int parent, int n);
