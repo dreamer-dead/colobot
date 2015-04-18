@@ -453,7 +453,7 @@ bool CAutoLabo::EventProcess(const Event &event)
 Error CAutoLabo::GetError()
 {
     CObject*    pObj;
-    ObjectType  type;
+    CObjectType*  type;
 
     if ( m_object->GetVirusMode() )
     {

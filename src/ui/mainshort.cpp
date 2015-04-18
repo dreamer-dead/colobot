@@ -96,7 +96,7 @@ bool CMainShort::CreateShortcuts()
 {
     CObject*    pObj;
     CControl*   pc;
-    ObjectType  type;
+    CObjectType*  type;
     Math::Point     pos, dim;
     int         i, rank, icon;
 

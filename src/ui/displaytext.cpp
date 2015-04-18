@@ -482,7 +482,7 @@ float CDisplayText::GetVisitHeight(EventType event)
 
 float CDisplayText::GetIdealDist(CObject* pObj)
 {
-    ObjectType  type;
+    CObjectType*  type;
 
     if ( pObj == 0 )  return 40.0f;
 
@@ -501,7 +501,7 @@ float CDisplayText::GetIdealDist(CObject* pObj)
 
 float CDisplayText::GetIdealHeight(CObject* pObj)
 {
-    ObjectType  type;
+    CObjectType*  type;
 
     if ( pObj == 0 )  return 5.0f;
 

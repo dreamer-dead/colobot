@@ -42,10 +42,10 @@ public:
     ~CMotionToto();
 
     void    DeleteObject(bool bAll=false);
-    bool    Create(Math::Vector pos, float angle, ObjectType type, float power);
+    bool    Create(Math::Vector pos, float angle, CObjectType* type, float power);
     bool    EventProcess(const Event &event);
     Error   SetAction(int action, float time=0.2f);
-    void    SetLinkType(ObjectType type);
+    void    SetLinkType(CObjectType* type);
 
     void    StartDisplayInfo();
     void    StopDisplayInfo();
@@ -67,7 +67,7 @@ protected:
     float       m_blinkTime;
     float       m_blinkProgress;
     int         m_soundChannel;
-    ObjectType  m_type;
+    CObjectType*  m_type;
     Math::Point     m_mousePos;
 };
 

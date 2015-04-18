@@ -502,7 +502,7 @@ CObject* CTaskGoto::WormSearch(Math::Vector &impact)
     CObject*    pObj;
     CObject*    pBest = 0;
     Math::Vector    iPos, oPos;
-    ObjectType  oType;
+    CObjectType*  oType;
     float       distance, min, radius;
 
     iPos = m_object->GetPosition(0);
@@ -610,7 +610,7 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
 {
     Math::Vector    pos;
     CObject*    target;
-    ObjectType  type;
+    CObjectType*  type;
     float       dist;
     int         x, y;
 
@@ -1039,7 +1039,7 @@ CObject* CTaskGoto::SearchTarget(Math::Vector pos, float margin)
 
 bool CTaskGoto::AdjustTarget(CObject* pObj, Math::Vector &pos, float &distance)
 {
-    ObjectType  type;
+    CObjectType*  type;
     Character*  character;
     Math::Matrix*   mat;
     Math::Vector    goal;
@@ -1178,7 +1178,7 @@ bool CTaskGoto::AdjustBuilding(Math::Vector &pos, float margin, float &distance)
 bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
                             bool bTake, float distance, float &suppl)
 {
-    ObjectType  type;
+    CObjectType*  type;
     Math::Matrix*   mat;
 
     pos = Math::Vector(0.0f, 0.0f, 0.0f);
@@ -1404,7 +1404,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
         }
     }
 #else
-    ObjectType  iType, oType;
+    CObjectType  *iType, *oType;
     Math::Vector    iPos, oPos;
     Math::Point     repulse;
     CObject     *pObj;
@@ -1573,7 +1573,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
 
 void CTaskGoto::ComputeFlyingRepulse(float &dir)
 {
-    ObjectType  oType;
+    CObjectType*  oType;
     Math::Vector    iPos, oPos;
     CObject     *pObj;
     float       add, fac, dist, iRadius, oRadius, repulse;
@@ -1891,7 +1891,7 @@ bool CTaskGoto::BitmapTestLine(const Math::Vector &start, const Math::Vector &go
 void CTaskGoto::BitmapObject()
 {
     CObject     *pObj;
-    ObjectType  type;
+    CObjectType*  type;
     Math::Vector    iPos, oPos;
     float       iRadius, oRadius, h;
     int         j;
@@ -1951,7 +1951,7 @@ void CTaskGoto::BitmapTerrain(const Math::Vector &min, const Math::Vector &max)
 
 void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
 {
-    ObjectType  type;
+    CObjectType*  type;
     Math::Vector    p;
     float       aLimit, angle, h;
     int         x, y;

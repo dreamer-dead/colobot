@@ -205,7 +205,7 @@ bool CBrain::EventProcess(const Event &event)
     Ui::CControl*   pc;
     Ui::CSlider*    ps;
     EventType           action;
-    ObjectType      type;
+    CObjectType*      type;
     Error           err;
     float           axeX, axeY, axeZ, factor;
 
@@ -1124,7 +1124,7 @@ Error CBrain::StartTaskFlag(TaskFlagOrder order, int rank)
 
 // Built a building.
 
-Error CBrain::StartTaskBuild(ObjectType type)
+Error CBrain::StartTaskBuild(CObjectType* type)
 {
     StopTask();
 
@@ -1346,7 +1346,7 @@ void CBrain::ColorFlag(int color)
 
 bool CBrain::CreateInterface(bool bSelect)
 {
-    ObjectType       type;
+    CObjectType*       type;
     Ui::CWindow*     pw;
     Ui::CButton*     pb;
     Ui::CSlider*     ps;
@@ -2287,7 +2287,7 @@ void CBrain::UpdateInterface(float rTime)
 
 void CBrain::UpdateInterface()
 {
-    ObjectType  type;
+    CObjectType*  type;
     Ui::CWindow*    pw;
     Ui::CButton*    pb;
     Ui::CSlider*    ps;

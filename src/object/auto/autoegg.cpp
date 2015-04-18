@@ -123,7 +123,7 @@ void CAutoEgg::Init()
 
 // Getes a value.
 
-bool CAutoEgg::SetType(ObjectType type)
+bool CAutoEgg::SetType(CObjectType* type)
 {
     m_type = type;
     return true;
@@ -284,7 +284,7 @@ CObject* CAutoEgg::SearchAlien()
     CObject*    pObj;
     CObject*    pBest;
     Math::Vector    cPos, oPos;
-    ObjectType  type;
+    CObjectType*  type;
     float       dist, min;
 
     cPos = m_object->GetPosition(0);

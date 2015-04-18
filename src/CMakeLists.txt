@@ -142,8 +142,9 @@ set(BASE_SOURCES
     object/motion/motionvehicle.cpp
     object/motion/motionworm.cpp
     object/object.cpp
-    object/robotmain.cpp
+    object/objecttype.cpp
     object/objman.cpp
+    object/robotmain.cpp
     object/task/task.cpp
     object/task/taskadvance.cpp
     object/task/taskbuild.cpp
@@ -166,6 +167,7 @@ set(BASE_SOURCES
     object/task/taskterraform.cpp
     object/task/taskturn.cpp
     object/task/taskwait.cpp
+    object/typeregistry.cpp
     physics/physics.cpp
     script/cbottoken.cpp
     script/cmdtoken.cpp

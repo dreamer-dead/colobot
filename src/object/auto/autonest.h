@@ -51,7 +51,7 @@ public:
 
 protected:
     bool        SearchFree(Math::Vector pos);
-    void        CreateFret(Math::Vector pos, float angle, ObjectType type);
+    void        CreateFret(Math::Vector pos, float angle, CObjectType* type);
     CObject*    SearchFret();
 
 protected:

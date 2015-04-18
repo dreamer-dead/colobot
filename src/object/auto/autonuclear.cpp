@@ -337,7 +337,7 @@ bool CAutoNuclear::SearchVehicle()
 {
     CObject*    pObj;
     Math::Vector    oPos;
-    ObjectType  type;
+    CObjectType*  type;
     float       oRadius, dist;
     
     for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
@@ -418,7 +418,7 @@ void CAutoNuclear::CreatePower()
 Error CAutoNuclear::GetError()
 {
     CObject*    pObj;
-    ObjectType  type;
+    CObjectType*  type;
 //? TerrainRes  res;
 
     if ( m_object->GetVirusMode() )

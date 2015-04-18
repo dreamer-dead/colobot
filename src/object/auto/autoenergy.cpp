@@ -381,7 +381,7 @@ bool CAutoEnergy::EventProcess(const Event &event)
 CObject* CAutoEnergy::SearchMetal()
 {
     CObject*    pObj;
-    ObjectType  type;
+    CObjectType*  type;
 
     pObj = m_object->GetPower();
     if ( pObj == 0 )  return 0;
@@ -401,7 +401,7 @@ bool CAutoEnergy::SearchVehicle()
 {
     CObject*    pObj;
     Math::Vector    cPos, oPos;
-    ObjectType  type;
+    CObjectType*  type;
     float       oRadius, dist;
 
     cPos = m_object->GetPosition(0);
@@ -485,7 +485,7 @@ CObject* CAutoEnergy::SearchPower()
 {
     CObject*    pObj;
     Math::Vector    cPos, oPos;
-    ObjectType  type;
+    CObjectType*  type;
 
     cPos = m_object->GetPosition(0);
     
@@ -515,7 +515,7 @@ CObject* CAutoEnergy::SearchPower()
 Error CAutoEnergy::GetError()
 {
     CObject*    pObj;
-    ObjectType  type;
+    CObjectType*  type;
     Gfx::TerrainRes  res;
 
     if ( m_object->GetVirusMode() )

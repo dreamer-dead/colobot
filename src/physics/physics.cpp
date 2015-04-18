@@ -781,7 +781,7 @@ bool CPhysics::EventProcess(const Event &event)
 
 void CPhysics::MotorUpdate(float aTime, float rTime)
 {
-    ObjectType  type;
+    CObjectType*  type;
     CObject*    power;
     Math::Vector    pos, motorSpeed;
     float       energy, speed, factor, h;
@@ -1048,7 +1048,7 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
     Character*  character;
     Math::Vector    vibLin, vibCir, incl;
     float       speedLin, speedCir, accel;
-    ObjectType  type;
+    CObjectType*  type;
     bool        bOnBoard;
 
     if ( !m_engine->IsVisiblePoint(m_object->GetPosition(0)) )  return;
@@ -1471,7 +1471,7 @@ void CPhysics::UpdateMotionStruct(float rTime, Motion &motion)
 
 bool CPhysics::EventFrame(const Event &event)
 {
-    ObjectType  type;
+    CObjectType*  type;
     Math::Matrix    objRotate, matRotate;
     Math::Vector    iPos, iAngle, tAngle, pos, newpos, angle, newangle, n;
     float       h, w;
@@ -1627,7 +1627,7 @@ bool CPhysics::EventFrame(const Event &event)
 void CPhysics::SoundMotor(float rTime)
 {
     CObject*    power;
-    ObjectType  type;
+    CObjectType*  type;
     float       energy;
 
     m_lastSoundInsect -= rTime;
@@ -1772,7 +1772,7 @@ void CPhysics::SoundMotor(float rTime)
 
 void CPhysics::WaterFrame(float aTime, float rTime)
 {
-    ObjectType  type;
+    CObjectType*  type;
     Math::Vector    pos, speed;
     Math::Point     dim;
     float       level;
@@ -1859,7 +1859,7 @@ void CPhysics::WaterFrame(float aTime, float rTime)
 
 // Sounds the engine at full power.
 
-void CPhysics::SoundMotorFull(float rTime, ObjectType type)
+void CPhysics::SoundMotorFull(float rTime, CObjectType* type)
 {
     Sound       sound;
     float       amplitude, time, freq;
@@ -1970,7 +1970,7 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
 
 // Sounds the engine idling.
 
-void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
+void CPhysics::SoundMotorSlow(float rTime, CObjectType* type)
 {
     Math::Matrix*   mat;
     Math::Vector    pos, speed;
@@ -2098,7 +2098,7 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
 
 // Sounds the engine not running.
 
-void CPhysics::SoundMotorStop(float rTime, ObjectType type)
+void CPhysics::SoundMotorStop(float rTime, CObjectType* type)
 {
     if ( type == OBJECT_MOBILEia ||
          type == OBJECT_MOBILEic ||
@@ -2126,7 +2126,7 @@ void CPhysics::SoundMotorStop(float rTime, ObjectType type)
 
 // Sounds the reactor at full power.
 
-void CPhysics::SoundReactorFull(float rTime, ObjectType type)
+void CPhysics::SoundReactorFull(float rTime, CObjectType* type)
 {
     Sound       sound;
     Math::Matrix*   mat;
@@ -2237,7 +2237,7 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
 
 // Sounds the reactor stopped.
 
-void CPhysics::SoundReactorStop(float rTime, ObjectType type)
+void CPhysics::SoundReactorStop(float rTime, CObjectType* type)
 {
     CObject*    power;
     float       energy;
@@ -2299,7 +2299,7 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
                           Math::Vector &pos, Math::Vector &angle)
 {
     Character*  character;
-    ObjectType  type;
+    CObjectType*  type;
     Math::Vector    norm;
     Math::Matrix    matRotate;
     float       level, h, f, a1, volume, freq, force;
@@ -2515,7 +2515,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
     Sound           sound;
     float           iRad, oRad, distance, force, volume;
     int             j, colType;
-    ObjectType      iType, oType;
+    CObjectType     *iType, *oType;
 
     if ( m_object->GetRuin() )  return 0;  // is burning or exploding?
     if ( !m_object->GetClip() )  return 0;
@@ -2749,8 +2749,8 @@ bool CPhysics::JostleObject(CObject* pObj, float force)
 // Effects of the explosion on the object buffers.
 // Returns true if we ignore this obstacle.
 
-bool CPhysics::ExploOther(ObjectType iType,
-                          CObject *pObj, ObjectType oType, float force)
+bool CPhysics::ExploOther(CObjectType* iType,
+                          CObject *pObj, CObjectType* oType, float force)
 {
     Gfx::CPyro* pyro;
 
@@ -2858,7 +2858,7 @@ bool CPhysics::ExploOther(ObjectType iType,
 // Returns 1 -> immobile object
 // Returns 2 -> object destroyed
 
-int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
+int CPhysics::ExploHimself(CObjectType* iType, CObjectType* oType, float force)
 {
     Gfx::PyroType    type;
     Gfx::CPyro*      pyro;
@@ -3149,7 +3149,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
     Math::Matrix*   mat;
     Math::Vector    pos, speed;
     Math::Point     dim;
-    ObjectType  type;
+    CObjectType*  type;
     Math::Point     c, p;
     float       h, a, delay, level;
     int         r, i, nb;
@@ -3665,7 +3665,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
 
 // Generates some particles after falling into the water.
 
-void CPhysics::WaterParticle(float aTime, Math::Vector pos, ObjectType type,
+void CPhysics::WaterParticle(float aTime, Math::Vector pos, CObjectType* type,
                               float floor, float advance, float turn)
 {
     Math::Vector    ppos, speed;
@@ -3857,7 +3857,7 @@ void CPhysics::CreateInterface(bool bSelect)
 
 Error CPhysics::GetError()
 {
-    ObjectType  type;
+    CObjectType*  type;
     CObject*    power;
 
     type = m_object->GetType();

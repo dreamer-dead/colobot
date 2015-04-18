@@ -33,7 +33,7 @@ public:
     ~CMotionVehicle();
 
     void        DeleteObject(bool bAll=false);
-    bool        Create(Math::Vector pos, float angle, ObjectType type, float power);
+    bool        Create(Math::Vector pos, float angle, CObjectType* type, float power);
     bool        EventProcess(const Event &event);
 
     bool        GetTraceDown();
@@ -44,12 +44,12 @@ public:
     void        SetTraceWidth(float width);
 
 protected:
-    void        CreatePhysics(ObjectType type);
+    void        CreatePhysics(CObjectType* type);
     bool        EventFrame(const Event &event);
     bool        EventFrameFly(const Event &event);
     bool        EventFrameInsect(const Event &event);
     bool        EventFrameCanoni(const Event &event);
-    void        UpdateTrackMapping(float left, float right, ObjectType type);
+    void        UpdateTrackMapping(float left, float right, CObjectType* type);
 
 protected:
     float       m_wheelTurn[4];

@@ -85,7 +85,7 @@ void CMotion::SetBrain(CBrain* brain)
 
 // Creates.
 
-bool CMotion::Create(Math::Vector pos, float angle, ObjectType type, float power)
+bool CMotion::Create(Math::Vector pos, float angle, CObjectType* type, float power)
 {
     return true;
 }

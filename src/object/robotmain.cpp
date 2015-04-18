@@ -150,6 +150,7 @@ CRobotMain::CRobotMain(CController* controller)
     m_short       = nullptr;
     m_map         = nullptr;
     m_displayInfo = nullptr;
+    m_typereg    = nullptr;
 
     m_time = 0.0f;
     m_gameTime = 0.0f;
@@ -263,6 +264,7 @@ void CRobotMain::Create(bool loadProfile)
     m_short       = new Ui::CMainShort();
     m_map         = new Ui::CMainMap();
     m_displayInfo = nullptr;
+    m_typereg     = new CTypeRegistry();
     
     m_engine->SetTerrain(m_terrain);
     
@@ -318,6 +320,9 @@ void CRobotMain::Create(bool loadProfile)
 //! Destructor of robot application
 CRobotMain::~CRobotMain()
 {
+    delete m_typereg;
+    m_typereg = nullptr;
+
     delete m_displayText;
     m_displayText = nullptr;
 
@@ -896,7 +901,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                     std::ostringstream ss;
                     CObject* obj = GetSelect();
                     if(obj != nullptr) {
-                        ss << "CreateObject type=" << GetTypeObject(obj->GetType()) << " pos=" << std::fixed << std::setprecision(3) << obj->GetPosition(0).x/g_unit << ";" << obj->GetPosition(0).z/g_unit << " dir=" << (obj->GetAngleZ(0)/(Math::PI/180.0f));
+                        ss << "CreateObject type=" << obj->GetType()->GetName() << " pos=" << std::fixed << std::setprecision(3) << obj->GetPosition(0).x/g_unit << ";" << obj->GetPosition(0).z/g_unit << " dir=" << (obj->GetAngleZ(0)/(Math::PI/180.0f));
                     }
                     widgetSetClipboardText(ss.str().c_str());
                 }
@@ -1815,7 +1820,7 @@ void CRobotMain::SelectOneObject(CObject* obj, bool displayError)
     obj->SetSelect(true, displayError);
     m_camera->SetControllingObject(obj);
 
-    ObjectType type = obj->GetType();
+    CObjectType* type = obj->GetType();
     if ( type == OBJECT_HUMAN    ||
          type == OBJECT_MOBILEfa ||
          type == OBJECT_MOBILEta ||
@@ -1970,7 +1975,7 @@ CObject* CRobotMain::SearchNearest(Math::Vector pos, CObject* exclu)
         if (obj == exclu) continue;
         if (!IsSelectable(obj)) continue;
 
-        ObjectType type = obj->GetType();
+        CObjectType* type = obj->GetType();
         if (type == OBJECT_TOTO) continue;
 
         Math::Vector oPos = obj->GetPosition(0);
@@ -1997,7 +2002,7 @@ CObject* CRobotMain::GetSelect()
     return nullptr;
 }
 
-CObject* CRobotMain::SearchObject(ObjectType type)
+CObject* CRobotMain::SearchObject(CObjectType* type)
 {
     return CObjectManager::GetInstancePointer()->FindNearest(nullptr, type);
 }
@@ -2017,7 +2022,7 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
         if (obj->GetProxyActivate()) continue;
 
         CObject* target = nullptr;
-        ObjectType type = obj->GetType();
+        CObjectType* type = obj->GetType();
         if ( type == OBJECT_PORTICO      ||
              type == OBJECT_BASE         ||
              type == OBJECT_DERRICK      ||
@@ -2150,7 +2155,7 @@ bool CRobotMain::IsSelectable(CObject* obj)
 {
     if (!obj->GetSelectable()) return false;
 
-    ObjectType type = obj->GetType();
+    CObjectType* type = obj->GetType();
     if ( type == OBJECT_HUMAN    ||
          type == OBJECT_TOTO     ||
          type == OBJECT_MOBILEfa ||
@@ -2415,7 +2420,7 @@ void CRobotMain::ChangeCamera()
         {
             if (obj->GetCameraLock()) return;
 
-            ObjectType oType = obj->GetType();
+            CObjectType* oType = obj->GetType();
             Gfx::CameraType type = obj->GetCameraType();
 
             if ( oType != OBJECT_MOBILEfa &&
@@ -2645,7 +2650,7 @@ bool CRobotMain::EventFrame(const Event &event)
             CObject* obj = it.second;
             if (pm != nullptr) pm->UpdateObject(obj);
             if (obj->GetTruck() != nullptr)  continue;
-            ObjectType type = obj->GetType();
+            CObjectType* type = obj->GetType();
             if (type == OBJECT_TOTO)
                 toto = obj;
             else
@@ -3484,7 +3489,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             
             if (line->GetCommand() == "CreateObject" && read[0] == 0)
             {
-                ObjectType type = line->GetParam("type")->AsObjectType();
+                CObjectType* type = line->GetParam("type")->AsObjectType();
                 
                 int gadget = line->GetParam("gadget")->AsInt(-1);
                 if ( gadget == -1 )
@@ -4219,7 +4224,7 @@ float CRobotMain::SearchNearestObject(Math::Vector center, CObject *exclu)
         if (obj->GetTruck() != nullptr) continue;  // object carries?
         if (obj == exclu)  continue;
 
-        ObjectType type = obj->GetType();
+        CObjectType* type = obj->GetType();
 
         if (type == OBJECT_BASE)
         {
@@ -4373,7 +4378,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
         Math::Vector oPos;
         float oRadius;
 
-        ObjectType type = obj->GetType();
+        CObjectType* type = obj->GetType();
         if (type == OBJECT_BASE)
         {
             oPos = obj->GetPosition(0);
@@ -4638,7 +4643,7 @@ void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
 
     if (!IsSelectable(obj)) return;
 
-    ObjectType type = obj->GetType();
+    CObjectType* type = obj->GetType();
     if (type == OBJECT_HUMAN) return;
 
     int objRank = obj->GetDefRank();
@@ -4673,7 +4678,7 @@ void CRobotMain::LoadFileScript(CObject *obj, const char* filename, int objRank,
     CBrain* brain = obj->GetBrain();
     if (brain == nullptr) return;
 
-    ObjectType type = obj->GetType();
+    CObjectType* type = obj->GetType();
     if (type == OBJECT_HUMAN) return;
 
     std::string dirname = filename;
@@ -4712,7 +4717,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
 
     if (!IsSelectable(obj)) return;
 
-    ObjectType type = obj->GetType();
+    CObjectType* type = obj->GetType();
     if (type == OBJECT_HUMAN) return;
 
     int objRank = obj->GetDefRank();
@@ -4748,7 +4753,7 @@ void CRobotMain::SaveFileScript(CObject *obj, const char* filename, int objRank)
     CBrain* brain = obj->GetBrain();
     if (brain == nullptr) return;
 
-    ObjectType type = obj->GetType();
+    CObjectType* type = obj->GetType();
     if (type == OBJECT_HUMAN) return;
     
     std::string dirname = filename;
@@ -4779,7 +4784,7 @@ bool CRobotMain::SaveFileStack(CObject *obj, FILE *file, int objRank)
     CBrain* brain = obj->GetBrain();
     if (brain == nullptr) return true;
 
-    ObjectType type = obj->GetType();
+    CObjectType* type = obj->GetType();
     if (type == OBJECT_HUMAN) return true;
 
     return brain->WriteStack(file);
@@ -4793,7 +4798,7 @@ bool CRobotMain::ReadFileStack(CObject *obj, FILE *file, int objRank)
     CBrain* brain = obj->GetBrain();
     if (brain == nullptr) return true;
 
-    ObjectType type = obj->GetType();
+    CObjectType* type = obj->GetType();
     if (type == OBJECT_HUMAN) return true;
 
     return brain->ReadStack(file);
@@ -4810,7 +4815,7 @@ bool CRobotMain::FlushNewScriptName()
 }
 
 //! Adds a script name
-bool CRobotMain::AddNewScriptName(ObjectType type, char *name)
+bool CRobotMain::AddNewScriptName(CObjectType* type, char *name)
 {
     for (int i = 0; i < MAXNEWSCRIPTNAME; i++)
     {
@@ -4826,7 +4831,7 @@ bool CRobotMain::AddNewScriptName(ObjectType type, char *name)
 }
 
 //! Seeks a script name for a given type
-char*  CRobotMain::GetNewScriptName(ObjectType type, int rank)
+char*  CRobotMain::GetNewScriptName(CObjectType* type, int rank)
 {
     for (int i = 0; i < MAXNEWSCRIPTNAME; i++)
     {
@@ -5056,7 +5061,7 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, 
     Math::Vector dir  = line->GetParam("angle")->AsPoint()*(Math::PI/180.0f);
     Math::Vector zoom = line->GetParam("zoom")->AsPoint();
 
-    ObjectType type = line->GetParam("type")->AsObjectType();
+    CObjectType* type = line->GetParam("type")->AsObjectType();
     int id = line->GetParam("id")->AsInt();
 
     bool trainer = line->GetParam("trainer")->AsBool(false);
@@ -5484,7 +5489,7 @@ void CRobotMain::UpdateAudio(bool frame)
             if (obj->GetRuin()) continue;
             if (!obj->GetEnable()) continue;
 
-            ObjectType type = obj->GetType();
+            CObjectType* type = obj->GetType();
             if (type == OBJECT_SCRAP2 ||
                 type == OBJECT_SCRAP3 ||
                 type == OBJECT_SCRAP4 ||
@@ -5614,7 +5619,7 @@ Error CRobotMain::CheckEndMission(bool frame)
                 if(obj->GetTruck() != nullptr) continue;
             }
 
-            ObjectType type = obj->GetType();
+            CObjectType* type = obj->GetType();
             if (type == OBJECT_SCRAP2 ||
                 type == OBJECT_SCRAP3 ||
                 type == OBJECT_SCRAP4 ||
@@ -5883,7 +5888,7 @@ bool CRobotMain::GetRadar()
     {
         CObject* obj = it.second;
 
-        ObjectType type = obj->GetType();
+        CObjectType* type = obj->GetType();
         if (type == OBJECT_RADAR && !obj->GetLock())
             return true;
     }

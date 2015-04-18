@@ -309,7 +309,7 @@ void CCamera::SetType(CameraType type)
         m_addDirectionH = 0.0f;
         m_addDirectionV = -Math::PI*0.05f;
 
-        ObjectType oType;
+        CObjectType* oType;
         if ( m_cameraObj == 0 )  oType = OBJECT_NULL;
         else                     oType = m_cameraObj->GetType();
 
@@ -872,7 +872,7 @@ bool CCamera::IsCollision(Math::Vector &eye, Math::Vector lookat)
 
 bool CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
 {
-    ObjectType iType;
+    CObjectType* iType;
     if (m_cameraObj == NULL)
         iType = OBJECT_NULL;
     else
@@ -917,7 +917,7 @@ bool CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
              iType == OBJECT_SAFE     ||
              iType == OBJECT_HUSTON   )  continue;
 
-        ObjectType oType = obj->GetType();
+        CObjectType* oType = obj->GetType();
         if ( oType == OBJECT_HUMAN  ||
              oType == OBJECT_TECH   ||
              oType == OBJECT_TOTO   ||
@@ -972,7 +972,7 @@ bool CCamera::IsCollisionFix(Math::Vector &eye, Math::Vector lookat)
 
         if (obj == m_cameraObj) continue;
 
-        ObjectType type = obj->GetType();
+        CObjectType* type = obj->GetType();
         if ( type == OBJECT_TOTO    ||
              type == OBJECT_FRET    ||
              type == OBJECT_STONE   ||
@@ -1302,7 +1302,7 @@ bool CCamera::EventFrameDialog(const Event &event)
 
 bool CCamera::EventFrameBack(const Event &event)
 {
-    ObjectType type;
+    CObjectType* type;
     if (m_cameraObj == NULL)
         type = OBJECT_NULL;
     else

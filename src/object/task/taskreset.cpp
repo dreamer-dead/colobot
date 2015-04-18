@@ -280,7 +280,7 @@ bool CTaskReset::SearchVehicle()
 {
     CObject*    pObj;
     Math::Vector    oPos;
-    ObjectType  type;
+    CObjectType*  type;
     float       oRadius, dist;
     
     for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())

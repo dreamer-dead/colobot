@@ -46,7 +46,7 @@ public:
     CLevelParserParam(Gfx::Color value);
     CLevelParserParam(Math::Point value);
     CLevelParserParam(Math::Vector value);
-    CLevelParserParam(ObjectType value);
+    CLevelParserParam(CObjectType* value);
     CLevelParserParam(Gfx::CameraType value);
     CLevelParserParam(const std::vector<CLevelParserParam*>& value);
     //@}
@@ -66,7 +66,7 @@ public:
     std::string AsPath(const std::string defaultDir);
     Gfx::Color AsColor();
     Math::Vector AsPoint();
-    ObjectType AsObjectType();
+    CObjectType* AsObjectType();
     DriveType AsDriveType();
     ToolType AsToolType();
     Gfx::WaterType AsWaterType();
@@ -87,7 +87,7 @@ public:
     std::string AsPath(const std::string defaultDir, std::string def);
     Gfx::Color AsColor(Gfx::Color def);
     Math::Vector AsPoint(Math::Vector def);
-    ObjectType AsObjectType(ObjectType def);
+    CObjectType* AsObjectType(CObjectType* def);
     DriveType AsDriveType(DriveType def);
     ToolType AsToolType(ToolType def);
     Gfx::WaterType AsWaterType(Gfx::WaterType def);
@@ -115,7 +115,7 @@ private:
     template<typename T> T Cast(std::string requestedType);
     
     std::string ToPath(std::string path, const std::string defaultDir);
-    ObjectType ToObjectType(std::string value);
+    CObjectType* ToObjectType(std::string value);
     DriveType ToDriveType(std::string value);
     ToolType ToToolType(std::string value);
     Gfx::WaterType ToWaterType(std::string value);
@@ -125,7 +125,7 @@ private:
     Gfx::PyroType ToPyroType(std::string value);
     Gfx::CameraType ToCameraType(std::string value);
     
-    const std::string FromObjectType(ObjectType value);
+    const std::string FromObjectType(CObjectType* value);
     const std::string FromCameraType(Gfx::CameraType value);
     
 private:

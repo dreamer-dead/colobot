@@ -182,7 +182,7 @@ Error CTaskRecover::Start()
     Math::Vector    pos, iPos, oPos;
     float       energy;
 
-    ObjectType  type;
+    CObjectType*  type;
 
     m_bError = true;  // operation impossible
     if ( !m_physics->GetLand() )  return ERR_RECOVER_VEH;

@@ -237,7 +237,7 @@ CObject* CAutoRepair::SearchVehicle()
     CObject*    pObj;
     CPhysics*   physics;
     Math::Vector    sPos, oPos;
-    ObjectType  type;
+    CObjectType*  type;
     float       dist;
 
     sPos = m_object->GetPosition(0);

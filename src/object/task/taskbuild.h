@@ -53,7 +53,7 @@ public:
 
     bool        EventProcess(const Event &event);
 
-    Error       Start(ObjectType type);
+    Error       Start(CObjectType* type);
     Error       IsEnded();
     bool        Abort();
 
@@ -66,7 +66,7 @@ protected:
     void        DeleteMark(Math::Vector pos, float radius);
 
 protected:
-    ObjectType      m_type;                  // type of construction
+    CObjectType*      m_type;                  // type of construction
     CObject*        m_metal;                 // transforms metal object
     CObject*        m_power;                 // the vehicle battery
     CObject*        m_building;              // building built

@@ -134,9 +134,9 @@ bool CTaskFlag::Abort()
 
 // Returns the closest object to a given position.
 
-CObject* CTaskFlag::SearchNearest(Math::Vector pos, ObjectType type)
+CObject* CTaskFlag::SearchNearest(Math::Vector pos, CObjectType* type)
 {
-    std::vector<ObjectType> types;
+    std::vector<CObjectType*> types;
     if(type == OBJECT_NULL)
     {
         types = {OBJECT_FLAGb, OBJECT_FLAGr, OBJECT_FLAGg, OBJECT_FLAGy, OBJECT_FLAGv};
@@ -148,9 +148,9 @@ CObject* CTaskFlag::SearchNearest(Math::Vector pos, ObjectType type)
 
 // Counts the number of existing objects.
 
-int CTaskFlag::CountObject(ObjectType type)
+int CTaskFlag::CountObject(CObjectType* type)
 {
-    ObjectType  oType;
+    CObjectType*  oType;
     CObject     *pObj;
     Math::Vector    oPos;
     int         count;
@@ -193,7 +193,7 @@ Error CTaskFlag::CreateFlag(int rank)
     float         dist;
     int           i;
 
-    ObjectType  table[5] =
+    CObjectType*  table[5] =
     {
         OBJECT_FLAGb,
         OBJECT_FLAGr,

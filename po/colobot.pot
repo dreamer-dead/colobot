@@ -1067,267 +1067,6 @@ msgstr ""
 msgid "One step"
 msgstr ""
 
-msgid "Gantry crane"
-msgstr ""
-
-msgid "Spaceship"
-msgstr ""
-
-msgid "Derrick"
-msgstr ""
-
-msgid "Bot factory"
-msgstr ""
-
-msgid "Repair center"
-msgstr ""
-
-msgid "Destroyer"
-msgstr ""
-
-msgid "Power station"
-msgstr ""
-
-msgid "Converts ore to titanium"
-msgstr ""
-
-msgid "Defense tower"
-msgstr ""
-
-msgid "Nest"
-msgstr ""
-
-msgid "Research center"
-msgstr ""
-
-msgid "Radar station"
-msgstr ""
-
-msgid "Information exchange post"
-msgstr ""
-
-msgid "Power cell factory"
-msgstr ""
-
-msgid "Autolab"
-msgstr ""
-
-msgid "Nuclear power station"
-msgstr ""
-
-msgid "Lightning conductor"
-msgstr ""
-
-msgid "Vault"
-msgstr ""
-
-msgid "Houston Mission Control"
-msgstr ""
-
-msgid "Target"
-msgstr ""
-
-msgid "Start"
-msgstr ""
-
-msgid "Finish"
-msgstr ""
-
-msgid "Titanium ore"
-msgstr ""
-
-msgid "Uranium ore"
-msgstr ""
-
-msgid "Organic matter"
-msgstr ""
-
-msgid "Titanium"
-msgstr ""
-
-msgid "Power cell"
-msgstr ""
-
-msgid "Nuclear power cell"
-msgstr ""
-
-msgid "Black box"
-msgstr ""
-
-msgid "Key A"
-msgstr ""
-
-msgid "Key B"
-msgstr ""
-
-msgid "Key C"
-msgstr ""
-
-msgid "Key D"
-msgstr ""
-
-msgid "Explosive"
-msgstr ""
-
-msgid "Fixed mine"
-msgstr ""
-
-msgid "Survival kit"
-msgstr ""
-
-msgid "Checkpoint"
-msgstr ""
-
-msgid "Blue flag"
-msgstr ""
-
-msgid "Red flag"
-msgstr ""
-
-msgid "Green flag"
-msgstr ""
-
-msgid "Yellow flag"
-msgstr ""
-
-msgid "Violet flag"
-msgstr ""
-
-msgid "Energy deposit (site for power station)"
-msgstr ""
-
-msgid "Uranium deposit (site for derrick)"
-msgstr ""
-
-msgid "Found key A (site for derrick)"
-msgstr ""
-
-msgid "Found key B (site for derrick)"
-msgstr ""
-
-msgid "Found key C (site for derrick)"
-msgstr ""
-
-msgid "Found key D (site for derrick)"
-msgstr ""
-
-msgid "Titanium deposit (site for derrick)"
-msgstr ""
-
-msgid "Practice bot"
-msgstr ""
-
-msgid "Winged grabber"
-msgstr ""
-
-msgid "Tracked grabber"
-msgstr ""
-
-msgid "Wheeled grabber"
-msgstr ""
-
-msgid "Legged grabber"
-msgstr ""
-
-msgid "Winged shooter"
-msgstr ""
-
-msgid "Tracked shooter"
-msgstr ""
-
-msgid "Wheeled shooter"
-msgstr ""
-
-msgid "Legged shooter"
-msgstr ""
-
-msgid "Winged orga shooter"
-msgstr ""
-
-msgid "Tracked orga shooter"
-msgstr ""
-
-msgid "Wheeled orga shooter"
-msgstr ""
-
-msgid "Legged orga shooter"
-msgstr ""
-
-msgid "Winged sniffer"
-msgstr ""
-
-msgid "Tracked sniffer"
-msgstr ""
-
-msgid "Wheeled sniffer"
-msgstr ""
-
-msgid "Legged sniffer"
-msgstr ""
-
-msgid "Thumper"
-msgstr ""
-
-msgid "Phazer shooter"
-msgstr ""
-
-msgid "Recycler"
-msgstr ""
-
-msgid "Shielder"
-msgstr ""
-
-msgid "Subber"
-msgstr ""
-
-msgid "Target bot"
-msgstr ""
-
-msgid "Drawer bot"
-msgstr ""
-
-msgid "Engineer"
-msgstr ""
-
-msgid "Robbie"
-msgstr ""
-
-msgid "Alien Queen"
-msgstr ""
-
-msgid "Ant"
-msgstr ""
-
-msgid "Spider"
-msgstr ""
-
-msgid "Wasp"
-msgstr ""
-
-msgid "Worm"
-msgstr ""
-
-msgid "Egg"
-msgstr ""
-
-msgid "Wreckage"
-msgstr ""
-
-msgid "Ruin"
-msgstr ""
-
-msgid "Waste"
-msgstr ""
-
-msgid "Spaceship ruin"
-msgstr ""
-
-msgid "Remains of Apollo mission"
-msgstr ""
-
-msgid "Lunar Roving Vehicle"
-msgstr ""
-
 msgid "Internal error - tell the developers"
 msgstr ""
 
@@ -1790,4 +1529,265 @@ msgid "Write error"
 msgstr ""
 
 msgid "Button %1"
+msgstr ""
+
+msgid "Gantry crane"
+msgstr ""
+
+msgid "Spaceship"
+msgstr ""
+
+msgid "Derrick"
+msgstr ""
+
+msgid "Bot factory"
+msgstr ""
+
+msgid "Power station"
+msgstr ""
+
+msgid "Converts ore to titanium"
+msgstr ""
+
+msgid "Repair center"
+msgstr ""
+
+msgid "Defense tower"
+msgstr ""
+
+msgid "Research center"
+msgstr ""
+
+msgid "Radar station"
+msgstr ""
+
+msgid "Power cell factory"
+msgstr ""
+
+msgid "Autolab"
+msgstr ""
+
+msgid "Nuclear power station"
+msgstr ""
+
+msgid "Information exchange post"
+msgstr ""
+
+msgid "Lightning conductor"
+msgstr ""
+
+msgid "Vault"
+msgstr ""
+
+msgid "Houston Mission Control"
+msgstr ""
+
+msgid "Destroyer"
+msgstr ""
+
+msgid "Start"
+msgstr ""
+
+msgid "Finish"
+msgstr ""
+
+msgid "Target"
+msgstr ""
+
+msgid "Nest"
+msgstr ""
+
+msgid "Titanium ore"
+msgstr ""
+
+msgid "Uranium ore"
+msgstr ""
+
+msgid "Titanium"
+msgstr ""
+
+msgid "Power cell"
+msgstr ""
+
+msgid "Nuclear power cell"
+msgstr ""
+
+msgid "Organic matter"
+msgstr ""
+
+msgid "Black box"
+msgstr ""
+
+msgid "Explosive"
+msgstr ""
+
+msgid "Key A"
+msgstr ""
+
+msgid "Key B"
+msgstr ""
+
+msgid "Key C"
+msgstr ""
+
+msgid "Key D"
+msgstr ""
+
+msgid "Fixed mine"
+msgstr ""
+
+msgid "Survival kit"
+msgstr ""
+
+msgid "Wheeled grabber"
+msgstr ""
+
+msgid "Tracked grabber"
+msgstr ""
+
+msgid "Winged grabber"
+msgstr ""
+
+msgid "Legged grabber"
+msgstr ""
+
+msgid "Wheeled sniffer"
+msgstr ""
+
+msgid "Tracked sniffer"
+msgstr ""
+
+msgid "Winged sniffer"
+msgstr ""
+
+msgid "Legged sniffer"
+msgstr ""
+
+msgid "Wheeled shooter"
+msgstr ""
+
+msgid "Tracked shooter"
+msgstr ""
+
+msgid "Winged shooter"
+msgstr ""
+
+msgid "Legged shooter"
+msgstr ""
+
+msgid "Wheeled orga shooter"
+msgstr ""
+
+msgid "Tracked orga shooter"
+msgstr ""
+
+msgid "Winged orga shooter"
+msgstr ""
+
+msgid "Legged orga shooter"
+msgstr ""
+
+msgid "Thumper"
+msgstr ""
+
+msgid "Phazer shooter"
+msgstr ""
+
+msgid "Recycler"
+msgstr ""
+
+msgid "Shielder"
+msgstr ""
+
+msgid "Subber"
+msgstr ""
+
+msgid "Drawer bot"
+msgstr ""
+
+msgid "Practice bot"
+msgstr ""
+
+msgid "Target bot"
+msgstr ""
+
+msgid "Energy deposit (site for power station)"
+msgstr ""
+
+msgid "Titanium deposit (site for derrick)"
+msgstr ""
+
+msgid "Uranium deposit (site for derrick)"
+msgstr ""
+
+msgid "Found key A (site for derrick)"
+msgstr ""
+
+msgid "Found key B (site for derrick)"
+msgstr ""
+
+msgid "Found key C (site for derrick)"
+msgstr ""
+
+msgid "Found key D (site for derrick)"
+msgstr ""
+
+msgid "Checkpoint"
+msgstr ""
+
+msgid "Blue flag"
+msgstr ""
+
+msgid "Red flag"
+msgstr ""
+
+msgid "Green flag"
+msgstr ""
+
+msgid "Yellow flag"
+msgstr ""
+
+msgid "Violet flag"
+msgstr ""
+
+msgid "Robbie"
+msgstr ""
+
+msgid "Engineer"
+msgstr ""
+
+msgid "Alien Queen"
+msgstr ""
+
+msgid "Egg"
+msgstr ""
+
+msgid "Ant"
+msgstr ""
+
+msgid "Spider"
+msgstr ""
+
+msgid "Wasp"
+msgstr ""
+
+msgid "Worm"
+msgstr ""
+
+msgid "Wreckage"
+msgstr ""
+
+msgid "Ruin"
+msgstr ""
+
+msgid "Waste"
+msgstr ""
+
+msgid "Spaceship ruin"
+msgstr ""
+
+msgid "Remains of Apollo mission"
+msgstr ""
+
+msgid "Lunar Roving Vehicle"
 msgstr ""

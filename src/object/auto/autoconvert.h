@@ -56,7 +56,7 @@ public:
     bool        Read(CLevelParserLine* line);
 
 protected:
-    CObject*    SearchStone(ObjectType type);
+    CObject*    SearchStone(CObjectType* type);
     bool        SearchVehicle();
     void        CreateMetal();
 

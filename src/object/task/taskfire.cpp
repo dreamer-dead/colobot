@@ -61,7 +61,7 @@ bool CTaskFire::EventProcess(const Event &event)
     CPhysics*   physics;
     Math::Matrix*   mat;
     Math::Vector    pos, speed, dir, vib;
-    ObjectType  type;
+    CObjectType*  type;
     Math::Point     dim;
     float       energy, fire;
     int         i, channel;
@@ -270,7 +270,7 @@ Error CTaskFire::Start(float delay)
     CObject*    power;
     Math::Vector    pos, goal, speed;
     float       energy, fire;
-    ObjectType  type;
+    CObjectType*  type;
 
     m_bError = true;  // operation impossible
 

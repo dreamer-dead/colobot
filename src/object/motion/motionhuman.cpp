@@ -96,7 +96,7 @@ Error CMotionHuman::SetAction(int action, float time)
 
 // Creates cosmonaut on the ground.
 
-bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
+bool CMotionHuman::Create(Math::Vector pos, float angle, CObjectType* type,
                           float power)
 {
     char        filename[100];
@@ -333,7 +333,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
 
 // Creates the physical object.
 
-void CMotionHuman::CreatePhysics(ObjectType type)
+void CMotionHuman::CreatePhysics(CObjectType* type)
 {
     Character*  character;
     int         i;

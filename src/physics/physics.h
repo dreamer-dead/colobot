@@ -180,11 +180,11 @@ protected:
     bool        EventFrame(const Event &event);
     void        WaterFrame(float aTime, float rTime);
     void        SoundMotor(float rTime);
-    void        SoundMotorFull(float rTime, ObjectType type);
-    void        SoundMotorSlow(float rTime, ObjectType type);
-    void        SoundMotorStop(float rTime, ObjectType type);
-    void        SoundReactorFull(float rTime, ObjectType type);
-    void        SoundReactorStop(float rTime, ObjectType type);
+    void        SoundMotorFull(float rTime, CObjectType* type);
+    void        SoundMotorSlow(float rTime, CObjectType* type);
+    void        SoundMotorStop(float rTime, CObjectType* type);
+    void        SoundReactorFull(float rTime, CObjectType* type);
+    void        SoundReactorStop(float rTime, CObjectType* type);
     void        FrameParticle(float aTime, float rTime);
     void        MotorUpdate(float aTime, float rTime);
     void        EffectUpdate(float aTime, float rTime);
@@ -194,13 +194,13 @@ protected:
     int         ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle);
     bool        JostleObject(CObject* pObj, Math::Vector iPos, float iRad, Math::Vector oPos, float oRad);
     bool        JostleObject(CObject* pObj, float force);
-    bool        ExploOther(ObjectType iType, CObject *pObj, ObjectType oType, float force);
-    int         ExploHimself(ObjectType iType, ObjectType oType, float force);
+    bool        ExploOther(CObjectType* iType, CObject *pObj, CObjectType* oType, float force);
+    int         ExploHimself(CObjectType* iType, CObjectType* oType, float force);
 
     void        PowerParticle(float factor, bool bBreak);
     void        CrashParticle(float crash);
     void        MotorParticle(float aTime, float rTime);
-    void        WaterParticle(float aTime, Math::Vector pos, ObjectType type, float floor, float advance, float turn);
+    void        WaterParticle(float aTime, Math::Vector pos, CObjectType* type, float floor, float advance, float turn);
     void        WheelParticle(int color, float width);
     void        SetFalling();
 

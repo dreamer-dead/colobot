@@ -234,7 +234,7 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
     CObject*    power;
     Math::Matrix*   mat;
     Math::Vector    pos, iPos, oPos, speed;
-    ObjectType  type;
+    CObjectType*  type;
     float       energy;
 
     if ( mode == TSM_DOWN )
@@ -551,7 +551,7 @@ bool CTaskShield::CreateLight(Math::Vector pos)
 
 void CTaskShield::IncreaseShield()
 {
-    ObjectType  type;
+    CObjectType*  type;
     CObject*    pObj;
     Math::Vector    oPos;
     float       dist, shield;

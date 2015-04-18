@@ -57,7 +57,7 @@ public:
 protected:
     void    InitAngle();
     bool    CreateMark();
-    void    DeleteMark(ObjectType type);
+    void    DeleteMark(CObjectType* type);
 
 protected:
     TaskSearchHand  m_hand;

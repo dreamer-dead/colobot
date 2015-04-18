@@ -44,7 +44,7 @@ public:
     Error   StartTaskTake();
     Error   StartTaskManip(TaskManipOrder order, TaskManipArm arm);
     Error   StartTaskFlag(TaskFlagOrder order, int rank);
-    Error   StartTaskBuild(ObjectType type);
+    Error   StartTaskBuild(CObjectType* type);
     Error   StartTaskSearch();
     Error   StartTaskDeleteMark();
     Error   StartTaskInfo(const char *name, float value, float power, bool bSend);

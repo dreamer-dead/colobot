@@ -561,7 +561,7 @@ float CWater::GetLevel()
 
 float CWater::GetLevel(CObject* object)
 {
-    ObjectType type = object->GetType();
+    CObjectType* type = object->GetType();
 
     if ( type == OBJECT_HUMAN ||
          type == OBJECT_TECH  )

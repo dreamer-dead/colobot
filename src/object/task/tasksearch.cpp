@@ -124,7 +124,7 @@ void CTaskSearch::InitAngle()
 
 Error CTaskSearch::Start()
 {
-    ObjectType  type;
+    CObjectType*  type;
     Math::Vector    speed;
     int         i;
 
@@ -236,7 +236,7 @@ bool CTaskSearch::Abort()
 bool CTaskSearch::CreateMark()
 {
     CObject*        fret;
-    ObjectType      type;
+    CObjectType*      type;
     Math::Matrix*   mat;
     Math::Vector    pos;
     Gfx::TerrainRes res;
@@ -304,7 +304,7 @@ bool CTaskSearch::CreateMark()
 
 // Destroys the marks of a given type.
 
-void CTaskSearch::DeleteMark(ObjectType type)
+void CTaskSearch::DeleteMark(CObjectType* type)
 {
     CObject*    pObj;
     pObj = CObjectManager::GetInstancePointer()->FindNearest(nullptr, type);

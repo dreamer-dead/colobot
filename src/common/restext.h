@@ -38,7 +38,6 @@ enum ResType
 {
     RES_TEXT        = 0,    //! < RT_*
     RES_EVENT       = 1,    //! < EVENT_*  (EventMsg)
-    RES_OBJECT      = 2,    //! < OBJECT_* (ObjectType)
     RES_ERR         = 3,    //! < ERR_*    (Error)
     RES_KEY         = 4,    //! < KEY()    (keys)
     RES_CBOT        = 5,    //! < TX_*     (CBot)
@@ -159,3 +158,4 @@ void     InitializeRestext();
 void     SetGlobalGamerName(std::string name);
 bool     GetResource(ResType type, int num, std::string& text);
 
+extern char g_gamerName[100];

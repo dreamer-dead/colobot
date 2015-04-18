@@ -80,7 +80,7 @@ void CMotionToto::DeleteObject(bool bAll)
 
 // Creates a vehicle traveling any lands on the ground.
 
-bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
+bool CMotionToto::Create(Math::Vector pos, float angle, CObjectType* type,
                          float power)
 {
     Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
@@ -851,7 +851,7 @@ Error CMotionToto::SetAction(int action, float time)
 
 // Specifies the type of the object is attached to toto.
 
-void CMotionToto::SetLinkType(ObjectType type)
+void CMotionToto::SetLinkType(CObjectType* type)
 {
     m_type = type;
 }

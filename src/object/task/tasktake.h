@@ -74,6 +74,6 @@ protected:
     bool            m_bError;
     bool            m_bTurn;
     float           m_angle;
-    ObjectType      m_fretType;
+    CObjectType*      m_fretType;
 };
 

@@ -267,7 +267,7 @@ bool CAutoRadar::SearchEnemy(Math::Vector &pos)
     CObject*    pObj;
     CObject*    pBest = 0;
     Math::Vector    iPos, oPos;
-    ObjectType  oType;
+    CObjectType*  oType;
     float       distance, min;
 
     iPos = m_object->GetPosition(0);

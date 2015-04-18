@@ -68,7 +68,7 @@ void CMotionSpider::DeleteObject(bool bAll)
 
 // Creates a vehicle traveling any lands on the ground.
 
-bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
+bool CMotionSpider::Create(Math::Vector pos, float angle, CObjectType* type,
                            float power)
 {
     int         rank, i, j, parent;

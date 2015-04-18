@@ -466,7 +466,7 @@ CObject* CAutoDerrick::SearchFret()
 {
     CObject*    pObj;
     Math::Vector    oPos;
-    ObjectType  type;
+    CObjectType*  type;
     
     for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -490,7 +490,7 @@ bool CAutoDerrick::SearchFree(Math::Vector pos)
 {
     CObject*    pObj;
     Math::Vector    sPos;
-    ObjectType  type;
+    CObjectType*  type;
     float       sRadius, distance;
     int         j;
     
@@ -515,7 +515,7 @@ bool CAutoDerrick::SearchFree(Math::Vector pos)
 
 // Create a transportable object.
 
-void CAutoDerrick::CreateFret(Math::Vector pos, float angle, ObjectType type,
+void CAutoDerrick::CreateFret(Math::Vector pos, float angle, CObjectType* type,
                               float height)
 {
     CObject*        fret;

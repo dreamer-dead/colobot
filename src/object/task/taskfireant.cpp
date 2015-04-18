@@ -85,7 +85,7 @@ bool CTaskFireAnt::EventProcess(const Event &event)
 Error CTaskFireAnt::Start(Math::Vector impact)
 {
     Math::Vector    pos;
-    ObjectType  type;
+    CObjectType*  type;
 
     m_impact = impact;
 

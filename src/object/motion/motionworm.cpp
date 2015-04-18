@@ -80,7 +80,7 @@ void CMotionWorm::DeleteObject(bool bAll)
 
 // Creates a vehicle traveling any lands on the ground.
 
-bool CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
+bool CMotionWorm::Create(Math::Vector pos, float angle, CObjectType* type,
                          float power)
 {
     int         rank, i;

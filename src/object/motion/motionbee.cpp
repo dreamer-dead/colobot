@@ -66,7 +66,7 @@ void CMotionBee::DeleteObject(bool bAll)
 
 // Creates a vehicle traveling any lands on the ground.
 
-bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
+bool CMotionBee::Create(Math::Vector pos, float angle, CObjectType* type,
                         float power)
 {
     Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();

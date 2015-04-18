@@ -194,7 +194,7 @@ Error CTaskTerraform::Start()
     Math::Vector    pos, speed;
     float       energy;
 
-    ObjectType  type;
+    CObjectType*  type;
 
     m_bError = true;  // operation impossible
     if ( !m_physics->GetLand() )  return ERR_TERRA_VEH;
@@ -343,7 +343,7 @@ bool CTaskTerraform::Terraform()
     CBrain*     brain;
     CMotion*    motion;
     Gfx::CPyro* pyro;
-    ObjectType  type;
+    CObjectType*  type;
     float       dist;
 
     m_camera->StartEffect(Gfx::CAM_EFFECT_TERRAFORM, m_terraPos, 1.0f);

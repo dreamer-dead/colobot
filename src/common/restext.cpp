@@ -40,7 +40,6 @@
 
 const char* stringsText[RT_MAX]         = { nullptr };
 const char* stringsEvent[EVENT_STD_MAX] = { nullptr };
-const char* stringsObject[OBJECT_MAX]   = { nullptr };
 const char* stringsErr[ERR_MAX]         = { nullptr };
 const char* stringsCbot[TX_MAX]         = { nullptr };
 
@@ -455,112 +454,6 @@ void InitializeRestext()
 
 
 
-    stringsObject[OBJECT_PORTICO]      = TR("Gantry crane");
-    stringsObject[OBJECT_BASE]         = TR("Spaceship");
-    stringsObject[OBJECT_DERRICK]      = TR("Derrick");
-    stringsObject[OBJECT_FACTORY]      = TR("Bot factory");
-    stringsObject[OBJECT_REPAIR]       = TR("Repair center");
-    stringsObject[OBJECT_DESTROYER]    = TR("Destroyer");
-    stringsObject[OBJECT_STATION]      = TR("Power station");
-    stringsObject[OBJECT_CONVERT]      = TR("Converts ore to titanium");
-    stringsObject[OBJECT_TOWER]        = TR("Defense tower");
-    stringsObject[OBJECT_NEST]         = TR("Nest");
-    stringsObject[OBJECT_RESEARCH]     = TR("Research center");
-    stringsObject[OBJECT_RADAR]        = TR("Radar station");
-    stringsObject[OBJECT_INFO]         = TR("Information exchange post");
-    stringsObject[OBJECT_ENERGY]       = TR("Power cell factory");
-    stringsObject[OBJECT_LABO]         = TR("Autolab");
-    stringsObject[OBJECT_NUCLEAR]      = TR("Nuclear power station");
-    stringsObject[OBJECT_PARA]         = TR("Lightning conductor");
-    stringsObject[OBJECT_SAFE]         = TR("Vault");
-    stringsObject[OBJECT_HUSTON]       = TR("Houston Mission Control");
-    stringsObject[OBJECT_TARGET1]      = TR("Target");
-    stringsObject[OBJECT_TARGET2]      = TR("Target");
-    stringsObject[OBJECT_START]        = TR("Start");
-    stringsObject[OBJECT_END]          = TR("Finish");
-    stringsObject[OBJECT_STONE]        = TR("Titanium ore");
-    stringsObject[OBJECT_URANIUM]      = TR("Uranium ore");
-    stringsObject[OBJECT_BULLET]       = TR("Organic matter");
-    stringsObject[OBJECT_METAL]        = TR("Titanium");
-    stringsObject[OBJECT_POWER]        = TR("Power cell");
-    stringsObject[OBJECT_ATOMIC]       = TR("Nuclear power cell");
-    stringsObject[OBJECT_BBOX]         = TR("Black box");
-    stringsObject[OBJECT_KEYa]         = TR("Key A");
-    stringsObject[OBJECT_KEYb]         = TR("Key B");
-    stringsObject[OBJECT_KEYc]         = TR("Key C");
-    stringsObject[OBJECT_KEYd]         = TR("Key D");
-    stringsObject[OBJECT_TNT]          = TR("Explosive");
-    stringsObject[OBJECT_BOMB]         = TR("Fixed mine");
-    stringsObject[OBJECT_BAG]          = TR("Survival kit");
-    stringsObject[OBJECT_WAYPOINT]     = TR("Checkpoint");
-    stringsObject[OBJECT_FLAGb]        = TR("Blue flag");
-    stringsObject[OBJECT_FLAGr]        = TR("Red flag");
-    stringsObject[OBJECT_FLAGg]        = TR("Green flag");
-    stringsObject[OBJECT_FLAGy]        = TR("Yellow flag");
-    stringsObject[OBJECT_FLAGv]        = TR("Violet flag");
-    stringsObject[OBJECT_MARKPOWER]    = TR("Energy deposit (site for power station)");
-    stringsObject[OBJECT_MARKURANIUM]  = TR("Uranium deposit (site for derrick)");
-    stringsObject[OBJECT_MARKKEYa]     = TR("Found key A (site for derrick)");
-    stringsObject[OBJECT_MARKKEYb]     = TR("Found key B (site for derrick)");
-    stringsObject[OBJECT_MARKKEYc]     = TR("Found key C (site for derrick)");
-    stringsObject[OBJECT_MARKKEYd]     = TR("Found key D (site for derrick)");
-    stringsObject[OBJECT_MARKSTONE]    = TR("Titanium deposit (site for derrick)");
-    stringsObject[OBJECT_MOBILEft]     = TR("Practice bot");
-    stringsObject[OBJECT_MOBILEtt]     = TR("Practice bot");
-    stringsObject[OBJECT_MOBILEwt]     = TR("Practice bot");
-    stringsObject[OBJECT_MOBILEit]     = TR("Practice bot");
-    stringsObject[OBJECT_MOBILEfa]     = TR("Winged grabber");
-    stringsObject[OBJECT_MOBILEta]     = TR("Tracked grabber");
-    stringsObject[OBJECT_MOBILEwa]     = TR("Wheeled grabber");
-    stringsObject[OBJECT_MOBILEia]     = TR("Legged grabber");
-    stringsObject[OBJECT_MOBILEfc]     = TR("Winged shooter");
-    stringsObject[OBJECT_MOBILEtc]     = TR("Tracked shooter");
-    stringsObject[OBJECT_MOBILEwc]     = TR("Wheeled shooter");
-    stringsObject[OBJECT_MOBILEic]     = TR("Legged shooter");
-    stringsObject[OBJECT_MOBILEfi]     = TR("Winged orga shooter");
-    stringsObject[OBJECT_MOBILEti]     = TR("Tracked orga shooter");
-    stringsObject[OBJECT_MOBILEwi]     = TR("Wheeled orga shooter");
-    stringsObject[OBJECT_MOBILEii]     = TR("Legged orga shooter");
-    stringsObject[OBJECT_MOBILEfs]     = TR("Winged sniffer");
-    stringsObject[OBJECT_MOBILEts]     = TR("Tracked sniffer");
-    stringsObject[OBJECT_MOBILEws]     = TR("Wheeled sniffer");
-    stringsObject[OBJECT_MOBILEis]     = TR("Legged sniffer");
-    stringsObject[OBJECT_MOBILErt]     = TR("Thumper");
-    stringsObject[OBJECT_MOBILErc]     = TR("Phazer shooter");
-    stringsObject[OBJECT_MOBILErr]     = TR("Recycler");
-    stringsObject[OBJECT_MOBILErs]     = TR("Shielder");
-    stringsObject[OBJECT_MOBILEsa]     = TR("Subber");
-    stringsObject[OBJECT_MOBILEtg]     = TR("Target bot");
-    stringsObject[OBJECT_MOBILEdr]     = TR("Drawer bot");
-    stringsObject[OBJECT_TECH]         = TR("Engineer");
-    stringsObject[OBJECT_TOTO]         = TR("Robbie");
-    stringsObject[OBJECT_MOTHER]       = TR("Alien Queen");
-    stringsObject[OBJECT_ANT]          = TR("Ant");
-    stringsObject[OBJECT_SPIDER]       = TR("Spider");
-    stringsObject[OBJECT_BEE]          = TR("Wasp");
-    stringsObject[OBJECT_WORM]         = TR("Worm");
-    stringsObject[OBJECT_EGG]          = TR("Egg");
-    stringsObject[OBJECT_RUINmobilew1] = TR("Wreckage");
-    stringsObject[OBJECT_RUINmobilew2] = TR("Wreckage");
-    stringsObject[OBJECT_RUINmobilet1] = TR("Wreckage");
-    stringsObject[OBJECT_RUINmobilet2] = TR("Wreckage");
-    stringsObject[OBJECT_RUINmobiler1] = TR("Wreckage");
-    stringsObject[OBJECT_RUINmobiler2] = TR("Wreckage");
-    stringsObject[OBJECT_RUINfactory]  = TR("Ruin");
-    stringsObject[OBJECT_RUINdoor]     = TR("Ruin");
-    stringsObject[OBJECT_RUINsupport]  = TR("Waste");
-    stringsObject[OBJECT_RUINradar]    = TR("Ruin");
-    stringsObject[OBJECT_RUINconvert]  = TR("Ruin");
-    stringsObject[OBJECT_RUINbase]     = TR("Spaceship ruin");
-    stringsObject[OBJECT_RUINhead]     = TR("Spaceship ruin");
-    stringsObject[OBJECT_APOLLO1]      = TR("Remains of Apollo mission");
-    stringsObject[OBJECT_APOLLO3]      = TR("Remains of Apollo mission");
-    stringsObject[OBJECT_APOLLO4]      = TR("Remains of Apollo mission");
-    stringsObject[OBJECT_APOLLO5]      = TR("Remains of Apollo mission");
-    stringsObject[OBJECT_APOLLO2]      = TR("Lunar Roving Vehicle");
-
-
-
     stringsErr[ERR_GENERIC]         = TR("Internal error - tell the developers");
     stringsErr[ERR_CMD]             = TR("Unknown command");
     stringsErr[ERR_MANIP_VEH]       = TR("Inappropriate bot");
@@ -754,7 +647,7 @@ void InitializeRestext()
 
 
 
-static char         g_gamerName[100];
+char         g_gamerName[100];
 
 void SetGlobalGamerName(std::string name)
 {
@@ -808,14 +701,6 @@ static const char* GetResourceBase(ResType type, int num)
                 return ""; // can be safely ignored (user events)
 
             str = stringsEvent[num];
-            break;
-
-        case RES_OBJECT:
-            assert(num < OBJECT_MAX);
-            if (num == OBJECT_HUMAN)
-                return g_gamerName;
-
-            str = stringsObject[num];
             break;
 
         case RES_ERR:

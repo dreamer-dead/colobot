@@ -47,7 +47,7 @@ public:
     ~CMotionBee();
 
     void    DeleteObject(bool bAll=false);
-    bool    Create(Math::Vector pos, float angle, ObjectType type, float power);
+    bool    Create(Math::Vector pos, float angle, CObjectType* type, float power);
     bool    EventProcess(const Event &event);
 
 protected:

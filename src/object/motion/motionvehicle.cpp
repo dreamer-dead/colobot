@@ -91,7 +91,7 @@ void CMotionVehicle::DeleteObject(bool bAll)
 
 // Creates a vehicle traveling any lands on the ground.
 
-bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
+bool CMotionVehicle::Create(Math::Vector pos, float angle, CObjectType* type,
                             float power)
 {
     CObject*        pPower;
@@ -960,7 +960,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
 // Creates the physics of the object.
 
-void CMotionVehicle::CreatePhysics(ObjectType type)
+void CMotionVehicle::CreatePhysics(CObjectType* type)
 {
     Character*  character;
 
@@ -1267,7 +1267,7 @@ bool CMotionVehicle::EventFrame(const Event &event)
     Math::Matrix*   mat;
     Character*  character;
     Math::Vector    pos, angle, floor;
-    ObjectType  type;
+    CObjectType*  type;
     float       s, a, speedBL, speedBR, speedFL, speedFR, h, a1, a2;
     float       back, front, dist, radius, limit[2];
 
@@ -1878,7 +1878,7 @@ bool CMotionVehicle::EventFrameCanoni(const Event &event)
 
 // Updates the mapping of the texture of the caterpillars.
 
-void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type)
+void CMotionVehicle::UpdateTrackMapping(float left, float right, CObjectType* type)
 {
     Gfx::Material mat;
     mat.diffuse = Gfx::Color(1.0f, 1.0f, 1.0f);  // white

@@ -120,7 +120,7 @@ Error CTaskManager::StartTaskFlag(TaskFlagOrder order, int rank)
 
 // Builds a building.
 
-Error CTaskManager::StartTaskBuild(ObjectType type)
+Error CTaskManager::StartTaskBuild(CObjectType* type)
 {
     m_task = new CTaskBuild(m_object);
     return (static_cast<CTaskBuild*>(m_task))->Start(type);

@@ -227,7 +227,7 @@ bool CAutoMush::SearchTarget()
 {
     CObject*    pObj;
     Math::Vector    iPos, oPos;
-    ObjectType  type;
+    CObjectType*  type;
     float       dist;
 
     iPos = m_object->GetPosition(0);

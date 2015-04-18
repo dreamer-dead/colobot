@@ -97,6 +97,6 @@ protected:
     float           m_move;
     Math::Vector        m_targetPos;
     float           m_timeLimit;
-    ObjectType      m_fretType;
+    CObjectType*      m_fretType;
 };
 

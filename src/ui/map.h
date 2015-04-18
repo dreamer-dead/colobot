@@ -62,7 +62,7 @@ struct MapObject
     char        bUsed;
     CObject*    object;
     MapColor    color;
-    ObjectType  type;
+    CObjectType*  type;
     Math::Point     pos;
     float       dir;
 };
@@ -110,9 +110,9 @@ protected:
     Math::Point AdjustOffset(Math::Point offset);
     void        SelectObject(Math::Point pos);
     Math::Point MapInter(Math::Point pos, float dir);
-    void        DrawFocus(Math::Point pos, float dir, ObjectType type, MapColor color);
-    void        DrawObject(Math::Point pos, float dir, ObjectType type, MapColor color, bool bSelect, bool bHilite);
-    void        DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color, ObjectType type, bool bHilite);
+    void        DrawFocus(Math::Point pos, float dir, CObjectType* type, MapColor color);
+    void        DrawObject(Math::Point pos, float dir, CObjectType* type, MapColor color, bool bSelect, bool bHilite);
+    void        DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color, CObjectType* type, bool bHilite);
     void        DrawHighlight(Math::Point pos);
     void        DrawTriangle(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point uv1, Math::Point uv2);
     void        DrawPenta(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point p4, Math::Point p5, Math::Point uv1, Math::Point uv2);

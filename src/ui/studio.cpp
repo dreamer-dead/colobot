@@ -424,7 +424,7 @@ bool IsToken(int character)
 
 void CStudio::SearchToken(CEdit* edit)
 {
-    ObjectType  type;
+    CObjectType*  type;
     int         len, cursor1, cursor2, i, character, level;
     char*       text;
     char        token[100];
@@ -496,29 +496,11 @@ void CStudio::SearchToken(CEdit* edit)
     m_helpFilename = GetHelpFilename(token);
     if ( m_helpFilename.length() == 0 )
     {
-        for ( i=0 ; i<OBJECT_MAX ; i++ )
+        type = CTypeRegistry::GetInstancePointer()->GetByScriptableName(token);
+        if(type != nullptr)
         {
-            type = static_cast< ObjectType >(i);
-            text = const_cast<char *>(GetObjectName(type));
-            if ( text[0] != 0 )
-            {
-                if ( strcmp(token, text) == 0 )
-                {
-                    m_helpFilename = GetHelpFilename(type);
-                    SetInfoText(std::string(token), true);
-                    return;
-                }
-            }
-            text = const_cast<char *>(GetObjectAlias(type));
-            if ( text[0] != 0 )
-            {
-                if ( strcmp(token, text) == 0 )
-                {
-                    m_helpFilename = GetHelpFilename(type);
-                    SetInfoText(std::string(token), true);
-                    return;
-                }
-            }
+            m_helpFilename = GetHelpFilename(type);
+            SetInfoText(std::string(token), true);
         }
     }
 

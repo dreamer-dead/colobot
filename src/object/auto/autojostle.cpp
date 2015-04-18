@@ -60,7 +60,7 @@ void CAutoJostle::Init()
 
 void CAutoJostle::Start(int param, float force)
 {
-    ObjectType  type;
+    CObjectType*  type;
 
     if ( force < 0.0f )  force = 0.0f;
     if ( force > 1.0f )  force = 1.0f;

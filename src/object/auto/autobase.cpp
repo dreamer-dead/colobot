@@ -1304,7 +1304,7 @@ Error CAutoBase::CheckCloseDoor()
 {
     CObject*    pObj;
     Math::Vector    oPos;
-    ObjectType  type;
+    CObjectType*  type;
     float       oRad, dist;
     int         j;
     

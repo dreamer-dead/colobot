@@ -68,7 +68,7 @@ void CMotionAnt::DeleteObject(bool bAll)
 
 // Creates a vehicle poses some rolling on the floor.
 
-bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
+bool CMotionAnt::Create(Math::Vector pos, float angle, CObjectType* type,
                         float power)
 {
     Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();

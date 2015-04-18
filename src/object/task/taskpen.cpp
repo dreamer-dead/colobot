@@ -133,7 +133,7 @@ Error CTaskPen::Start(bool bDown, int color)
 {
     Math::Vector    pos;
     Math::Matrix*   mat;
-    ObjectType  type;
+    CObjectType*  type;
     int         i;
 
     m_bError = true;  // operation impossible

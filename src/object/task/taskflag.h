@@ -51,8 +51,8 @@ public:
 protected:
     Error       CreateFlag(int rank);
     Error       DeleteFlag();
-    CObject*    SearchNearest(Math::Vector pos, ObjectType type);
-    int         CountObject(ObjectType type);
+    CObject*    SearchNearest(Math::Vector pos, CObjectType* type);
+    int         CountObject(CObjectType* type);
 
 protected:
     TaskFlagOrder   m_order;

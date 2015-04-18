@@ -325,7 +325,7 @@ bool CTaskBuild::EventProcess(const Event &event)
 
 // Assigns the goal was achieved.
 
-Error CTaskBuild::Start(ObjectType type)
+Error CTaskBuild::Start(CObjectType* type)
 {
     Math::Vector    pos, speed, pv, pm;
     Error       err;
@@ -555,7 +555,7 @@ bool CTaskBuild::Abort()
 Error CTaskBuild::FlatFloor()
 {
     CObject     *pObj;
-    ObjectType  type;
+    CObjectType*  type;
     Math::Vector    center, pos, oPos, bPos;
     Math::Point     c, p;
     float       radius, max, oRadius, bRadius = 0.0f, angle, dist;
@@ -701,7 +701,7 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
 {
     CObject     *pObj, *pBest;
     Math::Vector    iPos, oPos;
-    ObjectType  type;
+    CObjectType*  type;
     float       min, iAngle, a, aa, aBest, distance, magic;
     bool        bMetal;
 
@@ -768,7 +768,7 @@ void CTaskBuild::DeleteMark(Math::Vector pos, float radius)
 {
     CObject*    pObj;
     Math::Vector    oPos;
-    ObjectType  type;
+    CObjectType*  type;
     float       distance;
     
     for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())

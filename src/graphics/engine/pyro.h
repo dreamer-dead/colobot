@@ -136,7 +136,7 @@ protected:
     void        DeleteObject(bool primary, bool secondary);
 
     //! Creates an explosion with triangular form of particles
-    void        CreateTriangle(CObject* obj, ObjectType type, int part);
+    void        CreateTriangle(CObject* obj, CObjectType* type, int part);
 
     //! Starts the explosion of a vehicle
     void        ExploStart();
@@ -198,7 +198,7 @@ protected:
     PyroLightOper   m_lightOper[10];
     float           m_lightHeight;
 
-    ObjectType      m_burnType;
+    CObjectType*      m_burnType;
     int             m_burnPartTotal;
     PyroBurnPart    m_burnPart[10];
     int             m_burnKeepPart[10];

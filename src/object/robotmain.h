@@ -79,6 +79,7 @@ class CEventQueue;
 class CSoundInterface;
 class CLevelParserLine;
 class CInput;
+class CTypeRegistry;
 
 namespace Gfx {
 class CEngine;
@@ -104,7 +105,7 @@ struct EndTake
 {
     Math::Vector  pos;
     float         dist;
-    ObjectType    type;
+    CObjectType*    type;
     int           min;        // wins if >
     int           max;        // wins if <
     int           lost;       // lost if <=
@@ -121,7 +122,7 @@ struct AudioChange
 {
     Math::Vector  pos;
     float         dist;
-    ObjectType    type;
+    CObjectType*    type;
     int           min;        // change if >
     int           max;        // change if <
     float         powermin;   // change if energy cell >=
@@ -139,7 +140,7 @@ const int MAXNEWSCRIPTNAME = 20;
 struct NewScriptName
 {
     bool        used;
-    ObjectType  type;
+    CObjectType*  type;
     char        name[40];
 };
 
@@ -322,8 +323,8 @@ public:
     bool        ReadFileStack(CObject *pObj, FILE *file, int objRank);
 
     bool        FlushNewScriptName();
-    bool        AddNewScriptName(ObjectType type, char *name);
-    char*       GetNewScriptName(ObjectType type, int rank);
+    bool        AddNewScriptName(CObjectType* type, char *name);
+    char*       GetNewScriptName(CObjectType* type, int rank);
 
     void        WriteFreeParam();
     void        ReadFreeParam();
@@ -380,7 +381,7 @@ protected:
     bool        DeselectObject();
     void        DeleteAllObjects();
     void        UpdateInfoText();
-    CObject*    SearchObject(ObjectType type);
+    CObject*    SearchObject(CObjectType* type);
     void        StartDisplayVisit(EventType event);
     void        FrameVisit(float rTime);
     void        StopDisplayVisit();
@@ -415,6 +416,7 @@ protected:
     CSoundInterface*    m_sound;
     CPauseManager*      m_pause;
     CInput*             m_input;
+    CTypeRegistry*      m_typereg;
 
 
     float           m_time;

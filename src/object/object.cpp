@@ -120,7 +120,7 @@ void uObject(CBotVar* botThis, void* user)
     CObject*    fret;
     CPhysics*   physics;
     CBotVar     *pVar, *pSub;
-    ObjectType  type;
+    CObjectType*  type;
     Math::Vector    pos;
     float       value;
     int         iValue;
@@ -132,7 +132,7 @@ void uObject(CBotVar* botThis, void* user)
     // Updates the object's type.
     pVar = botThis->GetItemList();  // "category"
     type = object->GetType();
-    pVar->SetValInt(type, object->GetName());
+    pVar->SetValInt(type->GetUniqueID(), object->GetName());
 
     // Updates the position of the object.
     pVar = pVar->GetNext();  // "position"
@@ -919,10 +919,10 @@ void CObject::SetObjectParent(int part, int parent)
 
 // Specifies the type of the object.
 
-void CObject::SetType(ObjectType type)
+void CObject::SetType(CObjectType* type)
 {
     m_type = type;
-    strcpy(m_name, GetObjectName(m_type));
+    strcpy(m_name, m_type->GetScriptableName().c_str());
 
     if ( m_type == OBJECT_MOBILErs )
     {
@@ -952,7 +952,7 @@ void CObject::SetType(ObjectType type)
     }
 }
 
-ObjectType CObject::GetType()
+CObjectType* CObject::GetType()
 {
     return m_type;
 }
@@ -2037,7 +2037,7 @@ void CObject::SetDrawFront(bool bDraw)
 
 // Creates a vehicle traveling any pose on the floor.
 
-bool CObject::CreateVehicle(Math::Vector pos, float angle, ObjectType type,
+bool CObject::CreateVehicle(Math::Vector pos, float angle, CObjectType* type,
                             float power, bool bTrainer, bool bToy)
 {
     m_type = type;
@@ -2134,7 +2134,7 @@ bool CObject::CreateVehicle(Math::Vector pos, float angle, ObjectType type,
 
 // Creates an insect lands on any ground.
 
-bool CObject::CreateInsect(Math::Vector pos, float angle, ObjectType type)
+bool CObject::CreateInsect(Math::Vector pos, float angle, CObjectType* type)
 {
     m_type = type;
 
@@ -2295,7 +2295,7 @@ bool CObject::CreateShadowCircle(float radius, float intensity,
 // Creates a building laying on the ground.
 
 bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
-                             ObjectType type, float power)
+                             CObjectType* type, float power)
 {
     Math::Point     p;
     int         rank, i;
@@ -3119,7 +3119,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
 // Creates a small resource set on the ground.
 
-bool CObject::CreateResource(Math::Vector pos, float angle, ObjectType type,
+bool CObject::CreateResource(Math::Vector pos, float angle, CObjectType* type,
                              float power)
 {
     int         rank;
@@ -3237,7 +3237,7 @@ bool CObject::CreateResource(Math::Vector pos, float angle, ObjectType type,
 
 // Creates a flag placed on the ground.
 
-bool CObject::CreateFlag(Math::Vector pos, float angle, ObjectType type)
+bool CObject::CreateFlag(Math::Vector pos, float angle, CObjectType* type)
 {
     int         rank, i;
 
@@ -3296,7 +3296,7 @@ bool CObject::CreateFlag(Math::Vector pos, float angle, ObjectType type)
 // Creates a barrier placed on the ground.
 
 bool CObject::CreateBarrier(Math::Vector pos, float angle, float height,
-                            ObjectType type)
+                            CObjectType* type)
 {
     int         rank;
 
@@ -3391,7 +3391,7 @@ bool CObject::CreateBarrier(Math::Vector pos, float angle, float height,
 // Creates a plant placed on the ground.
 
 bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
-                          ObjectType type)
+                          CObjectType* type)
 {
     int         rank;
 
@@ -3630,7 +3630,7 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
 // Creates a mushroom placed on the ground.
 
 bool CObject::CreateMushroom(Math::Vector pos, float angle, float height,
-                             ObjectType type)
+                             CObjectType* type)
 {
     int         rank;
 
@@ -3686,7 +3686,7 @@ bool CObject::CreateMushroom(Math::Vector pos, float angle, float height,
 // Creates a toy placed on the ground.
 
 bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height,
-                         ObjectType type)
+                         CObjectType* type)
 {
     Math::Matrix*       mat;
     Gfx::Color          color;
@@ -4516,7 +4516,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
 // Creates a crystal placed on the ground.
 
 bool CObject::CreateQuartz(Math::Vector pos, float angle, float height,
-                           ObjectType type)
+                           CObjectType* type)
 {
     float       radius;
     int         rank;
@@ -4621,7 +4621,7 @@ bool CObject::CreateQuartz(Math::Vector pos, float angle, float height,
 // Creates a root placed on the ground.
 
 bool CObject::CreateRoot(Math::Vector pos, float angle, float height,
-                         ObjectType type)
+                         CObjectType* type)
 {
     int         rank;
 
@@ -4787,7 +4787,7 @@ bool CObject::CreateRoot(Math::Vector pos, float angle, float height,
 // Creates a small home.
 
 bool CObject::CreateHome(Math::Vector pos, float angle, float height,
-                         ObjectType type)
+                         CObjectType* type)
 {
     int         rank;
 
@@ -4826,7 +4826,7 @@ bool CObject::CreateHome(Math::Vector pos, float angle, float height,
 // Creates ruin placed on the ground.
 
 bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
-                         ObjectType type)
+                         CObjectType* type)
 {
     int         rank;
 
@@ -5239,7 +5239,7 @@ bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
 
 // Creates a gadget apollo.
 
-bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
+bool CObject::CreateApollo(Math::Vector pos, float angle, CObjectType* type)
 {
     int         rank, i;
 
@@ -5416,7 +5416,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
 
 // Creates all sub-objects for managing the object.
 
-void CObject::CreateOtherObject(ObjectType type)
+void CObject::CreateOtherObject(CObjectType* type)
 {
     if ( type == OBJECT_BASE )
     {
@@ -7208,7 +7208,7 @@ int  CObject::GetDefRank()
 
 bool CObject::GetTooltipName(std::string& name)
 {
-    GetResource(RES_OBJECT, m_type, name);
+    name = m_type->GetDisplayName();
     return !name.empty();
 }
 
@@ -7333,70 +7333,20 @@ void CObject::SetTraceWidth(float width)
     mv->SetTraceWidth(width);
 }
 
-DriveType CObject::GetDriveFromObject(ObjectType type)
+DriveType CObject::GetDriveFromObject(CObjectType* type)
 {
-    switch(type) {
-        case OBJECT_MOBILEwt:
-        case OBJECT_MOBILEwa:
-        case OBJECT_MOBILEwc:
-        case OBJECT_MOBILEwi:
-        case OBJECT_MOBILEws:
-            return DRIVE_WHEELED;
-            
-        case OBJECT_MOBILEtt:
-        case OBJECT_MOBILEta:
-        case OBJECT_MOBILEtc:
-        case OBJECT_MOBILEti:
-        case OBJECT_MOBILEts:
-            return DRIVE_TRACKED;
-            
-        case OBJECT_MOBILEft:
-        case OBJECT_MOBILEfa:
-        case OBJECT_MOBILEfc:
-        case OBJECT_MOBILEfi:
-        case OBJECT_MOBILEfs:
-            return DRIVE_WINGED;
-            
-        case OBJECT_MOBILEit:
-        case OBJECT_MOBILEia:
-        case OBJECT_MOBILEic:
-        case OBJECT_MOBILEii:
-        case OBJECT_MOBILEis:
-            return DRIVE_LEGGED;
-            
-        default:
-            return DRIVE_OTHER;
-    }
+    if(type->HasCapability(CAP_WHEELED)) return DRIVE_WHEELED;
+    if(type->HasCapability(CAP_TRACKED)) return DRIVE_TRACKED;
+    if(type->HasCapability(CAP_WINGED)) return DRIVE_WINGED;
+    if(type->HasCapability(CAP_LEGGED)) return DRIVE_LEGGED;
+    return DRIVE_OTHER;
 }
 
-ToolType CObject::GetToolFromObject(ObjectType type)
+ToolType CObject::GetToolFromObject(CObjectType* type)
 {
-    switch(type) {
-        case OBJECT_MOBILEwa:
-        case OBJECT_MOBILEta:
-        case OBJECT_MOBILEfa:
-        case OBJECT_MOBILEia:
-            return TOOL_GRABBER;
-            
-        case OBJECT_MOBILEws:
-        case OBJECT_MOBILEts:
-        case OBJECT_MOBILEfs:
-        case OBJECT_MOBILEis:
-            return TOOL_SNIFFER;
-            
-        case OBJECT_MOBILEwc:
-        case OBJECT_MOBILEtc:
-        case OBJECT_MOBILEfc:
-        case OBJECT_MOBILEic:
-            return TOOL_SHOOTER;
-            
-        case OBJECT_MOBILEwi:
-        case OBJECT_MOBILEti:
-        case OBJECT_MOBILEfi:
-        case OBJECT_MOBILEii:
-            return TOOL_ORGASHOOTER;
-            
-        default:
-            return TOOL_OTHER;
-    }
+    if(type->HasCapability(CAP_GRAB) && type->HasCapability(CAP_GRAB_EX)) return TOOL_GRABBER;
+    if(type->HasCapability(CAP_SNIFF)) return TOOL_SNIFFER;
+    if(type->HasCapability(CAP_SHOOT) && !type->HasCapability(CAP_SHOOT_ORGA) && !type->HasCapability(CAP_SHOOT_PHAZER)) return TOOL_SHOOTER;
+    if(type->HasCapability(CAP_SHOOT) && type->HasCapability(CAP_SHOOT_ORGA)) return TOOL_ORGASHOOTER;
+    return TOOL_OTHER;
 }

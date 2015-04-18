@@ -65,7 +65,7 @@ public:
 
     virtual Error   StartAction(int param);
 
-    virtual bool    SetType(ObjectType type);
+    virtual bool    SetType(CObjectType* type);
     virtual bool    SetValue(int rank, float value);
     virtual bool    SetString(char *string);
 
@@ -106,7 +106,7 @@ protected:
     CObject*            m_object;
     CSoundInterface*    m_sound;
 
-    ObjectType  m_type;
+    CObjectType*  m_type;
     bool        m_bBusy;
     bool        m_bMotor;
     float       m_time;

@@ -421,7 +421,7 @@ Math::Point CMap::MapInter(Math::Point pos, float dir)
 
 // Draw the field of vision of the selected object.
 
-void CMap::DrawFocus(Math::Point pos, float dir, ObjectType type, MapColor color)
+void CMap::DrawFocus(Math::Point pos, float dir, CObjectType* type, MapColor color)
 {
     Math::Point p0, p1, p2, uv1, uv2, rel;
     float   aMin, aMax, aOct, focus, a;
@@ -503,7 +503,7 @@ void CMap::DrawFocus(Math::Point pos, float dir, ObjectType type, MapColor color
 
 // Draw an object.
 
-void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor color,
+void CMap::DrawObject(Math::Point pos, float dir, CObjectType* type, MapColor color,
                       bool bSelect, bool bHilite)
 {
     Math::Point     p1, p2, p3, p4, p5, dim, uv1, uv2;
@@ -775,7 +775,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
 // Draws the icon of an object.
 
 void CMap::DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color,
-                          ObjectType type, bool bHilite)
+                          CObjectType* type, bool bHilite)
 {
     Math::Point ppos, ddim, uv1, uv2;
     float   dp;
@@ -1145,7 +1145,7 @@ void CMap::FlushObject()
 
 void CMap::UpdateObject(CObject* pObj)
 {
-    ObjectType      type;
+    CObjectType*      type;
     MapColor        color;
     Math::Vector        pos;
     Math::Point         ppos;

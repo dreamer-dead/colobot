@@ -396,11 +396,11 @@ bool CAutoConvert::Read(CLevelParserLine* line)
 
 // Searches for the object before or during processing.
 
-CObject* CAutoConvert::SearchStone(ObjectType type)
+CObject* CAutoConvert::SearchStone(CObjectType* type)
 {
     CObject*    pObj;
     Math::Vector    cPos, oPos;
-    ObjectType  oType;
+    CObjectType*  oType;
     float       dist;
 
     cPos = m_object->GetPosition(0);
@@ -428,7 +428,7 @@ bool CAutoConvert::SearchVehicle()
 {
     CObject*    pObj;
     Math::Vector    cPos, oPos;
-    ObjectType  type;
+    CObjectType*  type;
     float       oRadius, dist;
 
     cPos = m_object->GetPosition(0);

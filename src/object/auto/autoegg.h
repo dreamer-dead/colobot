@@ -50,7 +50,7 @@ public:
     Error       IsEnded();
     Error       GetError();
 
-    bool        SetType(ObjectType type);
+    bool        SetType(CObjectType* type);
     bool        SetValue(int rank, float value);
     bool        SetString(char *string);
 
@@ -61,7 +61,7 @@ protected:
     CObject*    SearchAlien();
 
 protected:
-    ObjectType      m_type;
+    CObjectType*      m_type;
     float           m_value;
     char            m_string[100];
     int             m_param;

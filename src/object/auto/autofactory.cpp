@@ -119,7 +119,7 @@ void CAutoFactory::Init()
 Error CAutoFactory::StartAction(int param)
 {
     CObject*   fret;
-    ObjectType type = static_cast<ObjectType>(param);
+    CObjectType* type = CTypeRegistry::GetInstancePointer()->GetByUniqueID(param);
 
     if ( type != OBJECT_NULL )
     {
@@ -169,7 +169,7 @@ void CAutoFactory::SetProgram(const char* program)
 
 bool CAutoFactory::EventProcess(const Event &event)
 {
-    ObjectType  type;
+    CObjectType*  type;
     CObject*    fret;
     CObject*    vehicle;
     Math::Matrix*   mat;
@@ -213,7 +213,7 @@ bool CAutoFactory::EventProcess(const Event &event)
         if ( event.type == EVENT_OBJECT_FACTORYrs )  type = OBJECT_MOBILErs;
         if ( event.type == EVENT_OBJECT_FACTORYsa )  type = OBJECT_MOBILEsa;
 
-        Error err = StartAction(type);
+        Error err = StartAction(type->GetUniqueID());
         if( err != ERR_OK && err != ERR_GENERIC )
             m_main->DisplayError(err, m_object);
 
@@ -555,7 +555,7 @@ CObject* CAutoFactory::SearchFret()
 {
     CObject*    pObj;
     Math::Vector    oPos;
-    ObjectType  type;
+    CObjectType*  type;
     float       dist;
     
     for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
@@ -581,7 +581,7 @@ bool CAutoFactory::NearestVehicle()
 {
     CObject*    pObj;
     Math::Vector    cPos, oPos;
-    ObjectType  type;
+    CObjectType*  type;
     float       oRadius, dist;
 
     cPos = m_object->GetPosition(0);
@@ -701,7 +701,7 @@ CObject* CAutoFactory::SearchVehicle()
 {    
     CObject*    pObj;
     Math::Vector    oPos;
-    ObjectType  type;
+    CObjectType*  type;
     float       dist;
     
     for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())

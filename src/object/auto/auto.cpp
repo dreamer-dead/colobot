@@ -115,7 +115,7 @@ Error CAuto::StartAction(int param)
 
 // Gete a type.
 
-bool CAuto::SetType(ObjectType type)
+bool CAuto::SetType(CObjectType* type)
 {
     return false;
 }

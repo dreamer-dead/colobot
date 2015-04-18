@@ -17,41 +17,40 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// motionmother.h
+#include "object/typeregistry.h"
 
-#pragma once
+#include <gtest/gtest.h>
 
-
-#include "object/motion/motion.h"
-
-
-
-class CMotionMother : public CMotion
+class CTypeRegistryTest : public testing::Test
 {
 public:
-    CMotionMother(CObject* object);
-    ~CMotionMother();
+	virtual void SetUp() {
+		typereg = new CTypeRegistry();
+	}
 
-    void    DeleteObject(bool bAll=false);
-    bool    Create(Math::Vector pos, float angle, CObjectType* type, float power);
-    bool    EventProcess(const Event &event);
+	virtual void TearDown() {
+		delete typereg;
+	}
 
-protected:
-    void    CreatePhysics();
-    bool    EventFrame(const Event &event);
-
-protected:
-    float       m_armMember;
-    float       m_armTimeAbs;
-    float       m_armTimeMarch;
-    float       m_armTimeAction;
-    short       m_armAngles[3*3*3*3*10];
-    int         m_armTimeIndex;
-    int         m_armPartIndex;
-    int         m_armMemberIndex;
-    int         m_armLastAction;
-    int         m_specAction;
-    float       m_specTime;
-    bool        m_bArmStop;
+private:
+	CTypeRegistry* typereg;
 };
 
+TEST_F(CTypeRegistryTest, TestLegacyInterface)
+{
+	EXPECT_EQ(OBJECT_PORTICO, OBJECT_PORTICO);
+	EXPECT_NE(OBJECT_PORTICO, OBJECT_BASE);
+}
+
+TEST_F(CTypeRegistryTest, TestCapabilities)
+{
+	EXPECT_TRUE(OBJECT_BASE->HasCapability(CAP_BUILDING));
+	EXPECT_FALSE(OBJECT_HUMAN->HasCapability(CAP_BUILDING));
+}
+
+TEST_F(CTypeRegistryTest, TestGetByName)
+{
+	EXPECT_EQ(CTypeRegistry::GetInstancePointer()->GetByName("Portico"), OBJECT_PORTICO);
+	EXPECT_EQ(CTypeRegistry::GetInstancePointer()->GetByName("SpaceShip"), OBJECT_BASE);
+	EXPECT_EQ(CTypeRegistry::GetInstancePointer()->GetByName("SomeBadObject"), nullptr);
+}

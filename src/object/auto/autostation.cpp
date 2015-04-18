@@ -243,7 +243,7 @@ CObject* CAutoStation::SearchVehicle()
 {
     CObject*    pObj;
     Math::Vector    sPos, oPos;
-    ObjectType  type;
+    CObjectType*  type;
     float       dist;
 
     sPos = m_object->GetPosition(0);

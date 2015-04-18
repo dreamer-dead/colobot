@@ -84,7 +84,7 @@ bool CTaskTake::EventProcess(const Event &event)
 
 Error CTaskTake::Start()
 {
-    ObjectType  type;
+    CObjectType*  type;
     CObject*    other;
     float       iAngle, oAngle, h;
     Math::Vector    pos;
@@ -301,7 +301,7 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
 {
     CObject     *pObj, *pBest;
     Math::Vector    iPos, oPos;
-    ObjectType  type;
+    CObjectType*  type;
     float       min, iAngle, bAngle, a, distance;
 
     iPos   = m_object->GetPosition(0);
@@ -368,7 +368,7 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
     CObject*    pPower;
     Math::Matrix*   mat;
     Math::Vector    iPos, oPos;
-    ObjectType  type, powerType;
+    CObjectType  *type, *powerType;
     float       iAngle, iRad, distance;
 
     if ( !m_object->GetCrashSphere(0, iPos, iRad) )  return 0;

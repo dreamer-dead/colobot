@@ -103,7 +103,7 @@ bool CLightning::EventFrame(const Event &event)
                 m_pos = obj->GetPosition(0);
                 m_terrain->AdjustToFloor(m_pos, true);
 
-                ObjectType type = obj->GetType();
+                CObjectType* type = obj->GetType();
                 if (type == OBJECT_BASE)
                 {
                     m_pos.y += 120.0f;  // top of the rocket
@@ -324,7 +324,7 @@ CObject* CLightning::SearchObject(Math::Vector pos)
         if (!obj->GetActif()) continue;  // inactive object?
         if (obj->GetTruck() != nullptr) continue;  // object transported?
 
-        ObjectType type = obj->GetType();
+        CObjectType* type = obj->GetType();
         if ( type == OBJECT_BASE ||
              type == OBJECT_PARA )  // building a lightning effect?
         {

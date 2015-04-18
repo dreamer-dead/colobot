@@ -185,7 +185,7 @@ bool CTarget::GetTooltip(Math::Point pos, std::string &name)
 
 CObject* CTarget::DetectFriendObject(Math::Point pos)
 {
-    ObjectType  type;
+    CObjectType*  type;
     CObject     *pObj, *pTarget;
     int         objRank, j, rank;
 

@@ -266,7 +266,7 @@ void CTaskManip::InitAngle()
 
 // Tests whether an object is compatible with the operation TMA_OTHER.
 
-bool TestFriend(ObjectType oType, ObjectType fType)
+bool TestFriend(CObjectType* oType, CObjectType* fType)
 {
     if ( oType == OBJECT_ENERGY )
     {
@@ -289,7 +289,7 @@ bool TestFriend(ObjectType oType, ObjectType fType)
 
 Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 {
-    ObjectType   type;
+    CObjectType*   type;
     CObject      *front, *other, *power;
     Gfx::CPyro   *pyro;
     float        iAngle, dist, len;
@@ -726,7 +726,7 @@ CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
 {
     CObject     *pObj, *pBest;
     Math::Vector    iPos, oPos;
-    ObjectType  type;
+    CObjectType*  type;
     float       min, distance;
 
     iPos   = m_object->GetPosition(0);
@@ -780,7 +780,7 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
 {
     CObject     *pObj, *pBest;
     Math::Vector    iPos, oPos;
-    ObjectType  type;
+    CObjectType*  type;
     float       min, iAngle, bAngle, aLimit, dLimit, f;
 
     iPos   = m_object->GetPosition(0);
@@ -870,7 +870,7 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
 {
     CObject     *pObj, *pBest;
     Math::Vector    iPos, oPos;
-    ObjectType  type;
+    CObjectType*  type;
     float       min, iAngle, bAngle, aLimit, dLimit, f;
 
     iPos   = m_object->GetPosition(0);
@@ -963,7 +963,7 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
     CObject*    pPower;
     Math::Matrix*   mat;
     Math::Vector    iPos, oPos;
-    ObjectType  type, powerType;
+    CObjectType  *type, *powerType;
     float       iAngle, iRad, oAngle, oLimit, aLimit, dLimit;
 
     distance = 1000000.0f;

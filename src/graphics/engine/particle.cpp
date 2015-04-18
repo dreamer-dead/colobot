@@ -50,7 +50,7 @@ const float FOG_HINF    = 100.0f;
 
 
 //! Check if an object can be destroyed, but is not an enemy
-bool IsSoft(ObjectType type)
+bool IsSoft(CObjectType* type)
 {
     return ( type == OBJECT_HUMAN    ||
              type == OBJECT_MOBILEfa ||
@@ -99,7 +99,7 @@ bool IsSoft(ObjectType type)
 }
 
 //! Check if an object is a destroyable enemy
-bool IsAlien(ObjectType type)
+bool IsAlien(CObjectType* type)
 {
     return ( type == OBJECT_ANT      ||
              type == OBJECT_SPIDER   ||
@@ -115,7 +115,7 @@ bool IsAlien(ObjectType type)
 }
 
 //! Returns the damping factor for friendly fire
-float GetDecay(ObjectType type)
+float GetDecay(CObjectType* type)
 {
     if (IsSoft(type))  return 0.004f;
     return 1.0f;
@@ -3665,7 +3665,7 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
         if (!obj->GetActif()) continue;  // inactive?
         if (obj == father) continue;
 
-        ObjectType oType = obj->GetType();
+        CObjectType* oType = obj->GetType();
 
         if (oType == OBJECT_TOTO)  continue;
 
@@ -3790,7 +3790,7 @@ CObject* CParticle::SearchObjectRay(Math::Vector pos, Math::Vector goal,
         if (!obj->GetActif()) continue;  // inactive?
         if (obj == father) continue;
 
-        ObjectType oType = obj->GetType();
+        CObjectType* oType = obj->GetType();
 
         if (oType == OBJECT_TOTO)  continue;
 

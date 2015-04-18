@@ -391,7 +391,7 @@ int CAutoSafe::CountKeys()
     CObject*    pObj;
     Math::Vector    cPos, oPos;
     Math::Point     rot;
-    ObjectType  oType;
+    CObjectType*  oType;
     float       dist, angle, limit = 0.0f, cAngle, oAngle = 0.0f;
     int         i, index;
 
@@ -474,7 +474,7 @@ void CAutoSafe::LockKeys()
 {
     CObject*    pObj;
     Math::Vector    cPos, oPos;
-    ObjectType  oType;
+    CObjectType*  oType;
     float       dist;
 
     cPos = m_object->GetPosition(0);
@@ -505,7 +505,7 @@ void CAutoSafe::DownKeys(float progress)
 {
     CObject*    pObj;
     Math::Vector    cPos, oPos;
-    ObjectType  oType;
+    CObjectType*  oType;
     float       dist;
 
     cPos = m_object->GetPosition(0);
@@ -537,7 +537,7 @@ void CAutoSafe::DeleteKeys()
 {
     CObject*    pObj;
     Math::Vector    cPos, oPos;
-    ObjectType  oType;
+    CObjectType*  oType;
     float       dist;
     bool        bDelete;
 

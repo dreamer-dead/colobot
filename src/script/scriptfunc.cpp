@@ -580,7 +580,7 @@ bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     Error err;
     
     CBotVar* classVars = thisclass->GetItemList();  // "category"
-    ObjectType thisType = static_cast<ObjectType>(classVars->GetValInt());
+    CObjectType* thisType = CTypeRegistry::GetInstancePointer()->GetByUniqueID(classVars->GetValInt());
     classVars = classVars->GetNext();  // "position"
     classVars = classVars->GetNext();  // "orientation"
     classVars = classVars->GetNext();  // "pitch"
@@ -644,7 +644,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     
     exception = 0;
     
-    ObjectType type = static_cast<ObjectType>(var->GetValInt());
+    CObjectType* type = CTypeRegistry::GetInstancePointer()->GetByUniqueID(var->GetValInt());
     var = var->GetNext();
     CBotString cbs;
     const char* program;
@@ -657,7 +657,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
         program = "";
     
     CBotVar* classVars = thisclass->GetItemList();  // "category"
-    ObjectType thisType = static_cast<ObjectType>(classVars->GetValInt());
+    CObjectType* thisType = CTypeRegistry::GetInstancePointer()->GetByUniqueID(classVars->GetValInt());
     classVars = classVars->GetNext();  // "position"
     classVars = classVars->GetNext();  // "orientation"
     classVars = classVars->GetNext();  // "pitch"
@@ -799,7 +799,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
         {
             if ( automat != nullptr )
             {
-                err = automat->StartAction(type);
+                err = automat->StartAction(type->GetUniqueID());
                 if ( err == ERR_OK ) automat->SetProgram(program);
             }
             else
@@ -837,7 +837,7 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
     ResearchType type = static_cast<ResearchType>(var->GetValInt());
     
     CBotVar* classVars = thisclass->GetItemList();  // "category"
-    ObjectType thisType = static_cast<ObjectType>(classVars->GetValInt());
+    CObjectType* thisType = CTypeRegistry::GetInstancePointer()->GetByUniqueID(classVars->GetValInt());
     classVars = classVars->GetNext();  // "position"
     classVars = classVars->GetNext();  // "orientation"
     classVars = classVars->GetNext();  // "pitch"
@@ -917,7 +917,7 @@ bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     exception = 0;
     
     CBotVar* classVars = thisclass->GetItemList();  // "category"
-    ObjectType thisType = static_cast<ObjectType>(classVars->GetValInt());
+    CObjectType* thisType = CTypeRegistry::GetInstancePointer()->GetByUniqueID(classVars->GetValInt());
     classVars = classVars->GetNext();  // "position"
     classVars = classVars->GetNext();  // "orientation"
     classVars = classVars->GetNext();  // "pitch"
@@ -1059,7 +1059,7 @@ bool CScriptFunctions::rSearch(CBotVar* var, CBotVar* result, int& exception, vo
     CBotVar*    array;
     Math::Vector    pos, oPos;
     bool        bArray;
-    int         type;
+    CObjectType*  type;
     
     if ( var->GetType() == CBotTypArrayPointer )
     {
@@ -1068,7 +1068,7 @@ bool CScriptFunctions::rSearch(CBotVar* var, CBotVar* result, int& exception, vo
     }
     else
     {
-        type = var->GetValInt();
+        type = CTypeRegistry::GetInstancePointer()->GetByUniqueID(var->GetValInt());
         bArray = false;
     }
     var = var->GetNext();
@@ -1079,18 +1079,20 @@ bool CScriptFunctions::rSearch(CBotVar* var, CBotVar* result, int& exception, vo
         pos = pThis->GetPosition(0);
     }
     
-    std::vector<ObjectType> type_v;
+    std::vector<CObjectType*> type_v;
     if(bArray)
     {
         while ( array != 0 )
         {
-            type_v.push_back(static_cast<ObjectType>(array->GetValInt()));
+            type_v.push_back(CTypeRegistry::GetInstancePointer()->GetByUniqueID(array->GetValInt()));
             array = array->GetNext();
         }
-    } else {
+    }
+    else
+    {
         if(type != OBJECT_NULL)
         {
-            type_v.push_back(static_cast<ObjectType>(type));
+            type_v.push_back(type);
         }
     }
     
@@ -1155,7 +1157,7 @@ bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, voi
     Math::Vector    oPos;
     RadarFilter filter;
     float       minDist, maxDist, sens, angle, focus;
-    int         type;
+    CObjectType*  type;
     bool        bArray = false;
     
     type    = OBJECT_NULL;
@@ -1176,7 +1178,7 @@ bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, voi
         }
         else
         {
-            type = var->GetValInt();
+            type = CTypeRegistry::GetInstancePointer()->GetByUniqueID(var->GetValInt());
             bArray = false;
         }
         
@@ -1217,18 +1219,20 @@ bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, voi
         }
     }
     
-    std::vector<ObjectType> type_v;
+    std::vector<CObjectType*> type_v;
     if(bArray)
     {
         while ( array != 0 )
         {
-            type_v.push_back(static_cast<ObjectType>(array->GetValInt()));
+            type_v.push_back(CTypeRegistry::GetInstancePointer()->GetByUniqueID(array->GetValInt()));
             array = array->GetNext();
         }
-    } else {
+    }
+    else
+    {
         if(type != OBJECT_NULL)
         {
-            type_v.push_back(static_cast<ObjectType>(type));
+            type_v.push_back(type);
         }
     }
     
@@ -1310,7 +1314,7 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
     CObject*    pThis = static_cast<CObject *>(user);
     CObject     *pBest;
     CBotVar*    array;
-    int         type;
+    CObjectType*  type;
     bool        bArray = false;
     Error       err;
     
@@ -1330,23 +1334,23 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
             }
             else
             {
-                type = var->GetValInt();
+                type = CTypeRegistry::GetInstancePointer()->GetByUniqueID(var->GetValInt());
                 bArray = false;
             }
         }
         
-        std::vector<ObjectType> type_v;
+        std::vector<CObjectType*> type_v;
         if(bArray)
         {
             while ( array != 0 )
             {
-                type_v.push_back(static_cast<ObjectType>(array->GetValInt()));
+                type_v.push_back(CTypeRegistry::GetInstancePointer()->GetByUniqueID(array->GetValInt()));
                 array = array->GetNext();
             }
         } else {
             if(type != OBJECT_NULL)
             {
-                type_v.push_back(static_cast<ObjectType>(type));
+                type_v.push_back(type);
             }
         }
         
@@ -1433,7 +1437,7 @@ CBotTypResult CScriptFunctions::cCanBuild(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rCanBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    ObjectType category  = static_cast<ObjectType>(var->GetValInt()); //get category parameter
+    CObjectType* category  = CTypeRegistry::GetInstancePointer()->GetByUniqueID(var->GetValInt()); //get category parameter
     exception = 0;
     
     bool can = false;
@@ -1481,8 +1485,8 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
 {
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     CObject*    pThis = static_cast<CObject *>(user);
-    ObjectType  oType;
-    ObjectType  category;
+    CObjectType*  oType;
+    CObjectType*  category;
     Error       err = ERR_BUILD_DISABLED;
     
     exception = 0;
@@ -1500,7 +1504,7 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
     }
     else
     {
-        category = static_cast<ObjectType>(var->GetValInt()); // get category parameter
+        category = CTypeRegistry::GetInstancePointer()->GetByUniqueID(var->GetValInt()); // get category parameter
         if ( (category == OBJECT_DERRICK   && (g_build & BUILD_DERRICK))   ||
             (category == OBJECT_FACTORY   && (g_build & BUILD_FACTORY))   ||
             (category == OBJECT_STATION   && (g_build & BUILD_STATION))   ||
@@ -1626,12 +1630,12 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
     const char* name;
     Math::Vector    pos;
     float       angle;
-    ObjectType  type;
+    CObjectType*  type;
     float       power;
     
     if ( var->GetType() <= CBotTypDouble )
     {
-        type = static_cast<ObjectType>(var->GetValInt());
+        type = CTypeRegistry::GetInstancePointer()->GetByUniqueID(var->GetValInt());
         var = var->GetNext();
         
         pos = me->GetPosition(0);
@@ -1653,7 +1657,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
         angle = var->GetValFloat()*Math::PI/180.0f;
         var = var->GetNext();
         
-        type = static_cast<ObjectType>(var->GetValInt());
+        type = CTypeRegistry::GetInstancePointer()->GetByUniqueID(var->GetValInt());
         var = var->GetNext();
         
         if ( var != 0 )
@@ -2091,7 +2095,7 @@ bool CScriptFunctions::rGrab(CBotVar* var, CBotVar* result, int& exception, void
 {
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     CObject*    pThis = static_cast<CObject *>(user);
-    ObjectType  oType;
+    CObjectType*  oType;
     TaskManipArm type;
     Error       err;
     
@@ -2142,7 +2146,7 @@ bool CScriptFunctions::rDrop(CBotVar* var, CBotVar* result, int& exception, void
 {
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     CObject*    pThis = static_cast<CObject *>(user);
-    ObjectType  oType;
+    CObjectType*  oType;
     TaskManipArm type;
     Error       err;
     
@@ -2624,7 +2628,7 @@ bool CScriptFunctions::rShield(CBotVar* var, CBotVar* result, int& exception, vo
 CBotTypResult CScriptFunctions::cFire(CBotVar* &var, void* user)
 {
     CObject*    pThis = static_cast<CObject *>(user);
-    ObjectType  type;
+    CObjectType*  type;
     
     type = pThis->GetType();
     
@@ -2660,7 +2664,7 @@ bool CScriptFunctions::rFire(CBotVar* var, CBotVar* result, int& exception, void
     float       delay;
     Math::Vector    impact;
     Error       err;
-    ObjectType  type;
+    CObjectType*  type;
     
     exception = 0;
     
@@ -3701,16 +3705,9 @@ void CScriptFunctions::Init()
     CBotProgram::SetTimer(100);
     CBotProgram::Init();
     
-    for (int i = 0; i < OBJECT_MAX; i++)
+    for(CObjectType* type : CTypeRegistry::GetInstancePointer()->GetAll())
     {
-        ObjectType type = static_cast<ObjectType>(i);
-        const char* token = GetObjectName(type);
-        if (token[0] != 0)
-            CBotProgram::DefineNum(token, type);
-        
-        token = GetObjectAlias(type);
-        if (token[0] != 0)
-            CBotProgram::DefineNum(token, type);
+        CBotProgram::DefineNum(type->GetScriptableName().c_str(), type->GetUniqueID());
     }
     
     CBotProgram::DefineNum("White",      0);

@@ -271,7 +271,7 @@ CObject* CAutoTower::SearchTarget(Math::Vector &impact)
     CObject*    pBest = 0;
     CPhysics*   physics;
     Math::Vector    iPos, oPos;
-    ObjectType  oType;
+    CObjectType*  oType;
     float       distance, min, radius, speed;
 
     iPos = m_object->GetPosition(0);

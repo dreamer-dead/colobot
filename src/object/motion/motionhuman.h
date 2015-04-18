@@ -65,7 +65,7 @@ public:
     ~CMotionHuman();
 
     void    DeleteObject(bool bAll=false);
-    bool    Create(Math::Vector pos, float angle, ObjectType type, float power);
+    bool    Create(Math::Vector pos, float angle, CObjectType* type, float power);
     bool    EventProcess(const Event &event);
     Error   SetAction(int action, float time=0.2f);
 
@@ -73,7 +73,7 @@ public:
     void    StopDisplayPerso();
 
 protected:
-    void    CreatePhysics(ObjectType type);
+    void    CreatePhysics(CObjectType* type);
     bool    EventFrame(const Event &event);
 
 protected:

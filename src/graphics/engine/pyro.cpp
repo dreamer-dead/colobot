@@ -79,7 +79,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     m_object = obj;
     m_force = force;
 
-    ObjectType oType = obj->GetType();
+    CObjectType* oType = obj->GetType();
     int objRank = obj->GetObjectRank(0);
     if (objRank == -1) return false;
 
@@ -1247,7 +1247,7 @@ void CPyro::CutObjectLink(CObject* obj)
 
 void CPyro::DisplayError(PyroType type, CObject* obj)
 {
-    ObjectType oType = obj->GetType();
+    CObjectType* oType = obj->GetType();
 
     if ( type == PT_FRAGT  ||
          type == PT_FRAGO  ||
@@ -1365,7 +1365,7 @@ void CPyro::DeleteObject(bool primary, bool secondary)
         return;
     }
 
-    ObjectType type = m_object->GetType();
+    CObjectType* type = m_object->GetType();
     if ( secondary              &&
          type != OBJECT_FACTORY &&
          type != OBJECT_NUCLEAR &&
@@ -1407,7 +1407,7 @@ void CPyro::DeleteObject(bool primary, bool secondary)
     }
 }
 
-void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
+void CPyro::CreateTriangle(CObject* obj, CObjectType* oType, int part)
 {
     int objRank = obj->GetObjectRank(part);
     if (objRank == -1) return;
@@ -2222,7 +2222,7 @@ CObject* CPyro::FallSearchBeeExplo()
     {
         CObject* pObj = it.second;
 
-        ObjectType oType = pObj->GetType();
+        CObjectType* oType = pObj->GetType();
         if ( oType != OBJECT_HUMAN    &&
              oType != OBJECT_MOBILEfa &&
              oType != OBJECT_MOBILEta &&
