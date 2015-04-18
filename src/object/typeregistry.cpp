@@ -324,11 +324,12 @@ void CTypeRegistry::InitStandardTypes()
 	OBJECT_BULLET = RegisterType(CObjectTypeHardcoded::Create("OrgaMatter", TR("Organic matter"), { CAP_TRANSPORTABLE }));
 	OBJECT_BBOX = RegisterType(CObjectTypeHardcoded::Create("BlackBox", TR("Black box"), { CAP_TRANSPORTABLE }));
 	OBJECT_TNT = RegisterType(CObjectTypeHardcoded::Create("TNT", TR("Explosive"), { CAP_TRANSPORTABLE }));
-	OBJECT_SCRAP1 = RegisterType(CObjectTypeHardcoded::Create("Scrap1", "", { CAP_TRANSPORTABLE })); // (metal)
-	OBJECT_SCRAP2 = RegisterType(CObjectTypeHardcoded::Create("Scrap2", "", { CAP_TRANSPORTABLE })); // (metal)
-	OBJECT_SCRAP3 = RegisterType(CObjectTypeHardcoded::Create("Scrap3", "", { CAP_TRANSPORTABLE })); // (metal)
-	OBJECT_SCRAP4 = RegisterType(CObjectTypeHardcoded::Create("Scrap4", "", { CAP_TRANSPORTABLE })); // (plastic)
-	OBJECT_SCRAP5 = RegisterType(CObjectTypeHardcoded::Create("Scrap5", "", { CAP_TRANSPORTABLE })); // (plastic)
+	CObjectType* scrap = RegisterType(new CObjectTypeVirtual("Scrap"));
+	OBJECT_SCRAP1 = RegisterType(CObjectTypeHardcoded::Create("Scrap1", "", { CAP_TRANSPORTABLE }, scrap)); // (metal)
+	OBJECT_SCRAP2 = RegisterType(CObjectTypeHardcoded::Create("Scrap2", "", { CAP_TRANSPORTABLE }, scrap)); // (metal)
+	OBJECT_SCRAP3 = RegisterType(CObjectTypeHardcoded::Create("Scrap3", "", { CAP_TRANSPORTABLE }, scrap)); // (metal)
+	OBJECT_SCRAP4 = RegisterType(CObjectTypeHardcoded::Create("Scrap4", "", { CAP_TRANSPORTABLE }, scrap)); // (plastic)
+	OBJECT_SCRAP5 = RegisterType(CObjectTypeHardcoded::Create("Scrap5", "", { CAP_TRANSPORTABLE }, scrap)); // (plastic)
 	OBJECT_KEYa = RegisterType(CObjectTypeHardcoded::Create("KeyA", TR("Key A"), { CAP_TRANSPORTABLE }));
 	OBJECT_KEYb = RegisterType(CObjectTypeHardcoded::Create("KeyB", TR("Key B"), { CAP_TRANSPORTABLE }));
 	OBJECT_KEYc = RegisterType(CObjectTypeHardcoded::Create("KeyC", TR("Key C"), { CAP_TRANSPORTABLE }));
@@ -422,10 +423,11 @@ void CTypeRegistry::InitStandardTypes()
 	OBJECT_TOTO = RegisterType(CObjectTypeHardcoded::Create("Robby", TR("Robbie"))); // (toto) - should not be created directly
 	OBJECT_TECH = RegisterType(CObjectTypeHardcoded::Create("Tech", TR("Engineer"), { CAP_MOTOR, CAP_PROGRAM, CAP_BUILD, CAP_FLY }));
 
-	OBJECT_BARRIER0 = RegisterType(CObjectTypeHardcoded::Create("Barrier0"));
-	OBJECT_BARRIER1 = RegisterType(CObjectTypeHardcoded::Create("Barrier1"));
-	OBJECT_BARRIER2 = RegisterType(CObjectTypeHardcoded::Create("Barrier2"));
-	OBJECT_BARRIER3 = RegisterType(CObjectTypeHardcoded::Create("Barrier3"));
+	CObjectType* barrier = RegisterType(new CObjectTypeVirtual("Barrier"));
+	OBJECT_BARRIER0 = RegisterType(CObjectTypeHardcoded::Create("Barrier0", "", {}, barrier));
+	OBJECT_BARRIER1 = RegisterType(CObjectTypeHardcoded::Create("Barrier1", "", {}, barrier));
+	OBJECT_BARRIER2 = RegisterType(CObjectTypeHardcoded::Create("Barrier2", "", {}, barrier));
+	OBJECT_BARRIER3 = RegisterType(CObjectTypeHardcoded::Create("Barrier3", "", {}, barrier));
 
 	OBJECT_MOTHER = RegisterType(CObjectTypeHardcoded::Create("AlienQueen", TR("Alien Queen"), { CAP_MOTOR, CAP_PROGRAM }));
 	OBJECT_EGG = RegisterType(CObjectTypeHardcoded::Create("AlienEgg", TR("Egg")));
@@ -434,19 +436,22 @@ void CTypeRegistry::InitStandardTypes()
 	OBJECT_BEE = RegisterType(CObjectTypeHardcoded::Create("AlienWasp", TR("Wasp"), { CAP_MOTOR, CAP_PROGRAM, CAP_FLY, CAP_GRAB, CAP_GRAB_FLY }));
 	OBJECT_WORM = RegisterType(CObjectTypeHardcoded::Create("AlienWorm", TR("Worm"), { CAP_MOTOR, CAP_PROGRAM }));
 
-	OBJECT_RUINmobilew1 = RegisterType(CObjectTypeHardcoded::Create("WreckBotw1", TR("Wreckage"), { CAP_WRECK }));
-	OBJECT_RUINmobilew2 = RegisterType(CObjectTypeHardcoded::Create("WreckBotw2", TR("Wreckage"), { CAP_WRECK }));
-	OBJECT_RUINmobilet1 = RegisterType(CObjectTypeHardcoded::Create("WreckBott1", TR("Wreckage"), { CAP_WRECK }));
-	OBJECT_RUINmobilet2 = RegisterType(CObjectTypeHardcoded::Create("WreckBott2", TR("Wreckage"), { CAP_WRECK }));
-	OBJECT_RUINmobiler1 = RegisterType(CObjectTypeHardcoded::Create("WreckBotr1", TR("Wreckage"), { CAP_WRECK }));
-	OBJECT_RUINmobiler2 = RegisterType(CObjectTypeHardcoded::Create("WreckBotr2", TR("Wreckage"), { CAP_WRECK }));
-	OBJECT_RUINfactory = RegisterType(CObjectTypeHardcoded::Create("RuinBotFactory", TR("Ruin"), { CAP_RUIN }));
-	OBJECT_RUINdoor = RegisterType(CObjectTypeHardcoded::Create("RuinDoor", TR("Ruin"), { CAP_RUIN }));
-	OBJECT_RUINsupport = RegisterType(CObjectTypeHardcoded::Create("RuinSupport", TR("Waste"), { CAP_RUIN }));
-	OBJECT_RUINradar = RegisterType(CObjectTypeHardcoded::Create("RuinRadar", TR("Ruin"), { CAP_RUIN }));
-	OBJECT_RUINconvert = RegisterType(CObjectTypeHardcoded::Create("RuinConvert", TR("Ruin"), { CAP_RUIN }));
-	OBJECT_RUINbase = RegisterType(CObjectTypeHardcoded::Create("RuinBaseCamp", TR("Spaceship ruin"), { CAP_RUIN }));
-	OBJECT_RUINhead = RegisterType(CObjectTypeHardcoded::Create("RuinHeadCamp", TR("Spaceship ruin"), { CAP_RUIN }));
+	CObjectType* wreck = RegisterType(new CObjectTypeVirtual("Wreck"));
+	OBJECT_RUINmobilew1 = RegisterType(CObjectTypeHardcoded::Create("WreckBotw1", TR("Wreckage"), { CAP_WRECK }, wreck));
+	OBJECT_RUINmobilew2 = RegisterType(CObjectTypeHardcoded::Create("WreckBotw2", TR("Wreckage"), { CAP_WRECK }, wreck));
+	OBJECT_RUINmobilet1 = RegisterType(CObjectTypeHardcoded::Create("WreckBott1", TR("Wreckage"), { CAP_WRECK }, wreck));
+	OBJECT_RUINmobilet2 = RegisterType(CObjectTypeHardcoded::Create("WreckBott2", TR("Wreckage"), { CAP_WRECK }, wreck));
+	OBJECT_RUINmobiler1 = RegisterType(CObjectTypeHardcoded::Create("WreckBotr1", TR("Wreckage"), { CAP_WRECK }, wreck));
+	OBJECT_RUINmobiler2 = RegisterType(CObjectTypeHardcoded::Create("WreckBotr2", TR("Wreckage"), { CAP_WRECK }, wreck));
+
+	CObjectType* ruin = RegisterType(new CObjectTypeVirtual("Ruin"));
+	OBJECT_RUINfactory = RegisterType(CObjectTypeHardcoded::Create("RuinBotFactory", TR("Ruin"), { CAP_RUIN }, ruin));
+	OBJECT_RUINdoor = RegisterType(CObjectTypeHardcoded::Create("RuinDoor", TR("Ruin"), { CAP_RUIN }, ruin));
+	OBJECT_RUINsupport = RegisterType(CObjectTypeHardcoded::Create("RuinSupport", TR("Waste"), { CAP_RUIN }, ruin));
+	OBJECT_RUINradar = RegisterType(CObjectTypeHardcoded::Create("RuinRadar", TR("Ruin"), { CAP_RUIN }, ruin));
+	OBJECT_RUINconvert = RegisterType(CObjectTypeHardcoded::Create("RuinConvert", TR("Ruin"), { CAP_RUIN }, ruin));
+	OBJECT_RUINbase = RegisterType(CObjectTypeHardcoded::Create("RuinBaseCamp", TR("Spaceship ruin"), { CAP_RUIN }, ruin));
+	OBJECT_RUINhead = RegisterType(CObjectTypeHardcoded::Create("RuinHeadCamp", TR("Spaceship ruin"), { CAP_RUIN }, ruin));
 
 	OBJECT_TEEN0 = RegisterType(CObjectTypeHardcoded::Create("Teen0"));
 	OBJECT_TEEN1 = RegisterType(CObjectTypeHardcoded::Create("Teen1"));

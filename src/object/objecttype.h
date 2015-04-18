@@ -86,6 +86,18 @@ protected:
 	std::map<ObjectCapability, bool> m_capabilities;
 };
 
+class CObjectTypeVirtual : public CObjectType
+{
+public:
+	CObjectTypeVirtual(const std::string& name);
+	
+	const std::string& GetName();
+	const std::string& GetUnlocalizedDisplayName();
+
+protected:
+	std::string m_name;
+};
+
 class CObjectTypeHardcoded : public CObjectType
 {
 public:

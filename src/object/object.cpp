@@ -132,7 +132,7 @@ void uObject(CBotVar* botThis, void* user)
     // Updates the object's type.
     pVar = botThis->GetItemList();  // "category"
     type = object->GetType();
-    pVar->SetValInt(type->GetUniqueID(), object->GetName());
+    pVar->SetValInt(type->GetBaseType()->GetUniqueID(), object->GetName());
 
     // Updates the position of the object.
     pVar = pVar->GetNext();  // "position"

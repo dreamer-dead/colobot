@@ -454,30 +454,7 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
         if ( oType == OBJECT_TOTO || oType == OBJECT_CONTROLLER )  continue;
         
         if(cbotTypes) {
-            // TODO: handle this differently (new class describing types? CObjectType::GetBaseType()?)
-            if ( oType == OBJECT_RUINmobilew2 ||
-                oType == OBJECT_RUINmobilet1 ||
-                oType == OBJECT_RUINmobilet2 ||
-                oType == OBJECT_RUINmobiler1 ||
-                oType == OBJECT_RUINmobiler2 )
-            {
-                oType = OBJECT_RUINmobilew1;  // any ruin
-            }
-            
-            if ( oType == OBJECT_SCRAP2 ||
-                oType == OBJECT_SCRAP3 ||
-                oType == OBJECT_SCRAP4 ||
-                oType == OBJECT_SCRAP5 )  // wastes?
-            {
-                oType = OBJECT_SCRAP1;  // any waste
-            }
-            
-            if ( oType == OBJECT_BARRIER2 ||
-                oType == OBJECT_BARRIER3 )  // barriers?
-            {
-                oType = OBJECT_BARRIER1;  // any barrier
-            }
-            // END OF TODO
+            oType = oType->GetBaseType();
         }
         
         if ( filter == FILTER_ONLYLANDING )

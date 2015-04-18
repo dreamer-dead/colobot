@@ -62,9 +62,9 @@ std::string GetHelpFilename(CObjectType* type)
     if ( type == OBJECT_KEYc        )  x = "object/key.txt";
     if ( type == OBJECT_KEYd        )  x = "object/key.txt";
     if ( type == OBJECT_TNT         )  x = "object/tnt.txt";
-    if ( type == OBJECT_SCRAP1      )  x = "object/scrap.txt";
+    if ( type->GetName() == "Scrap" )  x = "object/scrap.txt";
     if ( type == OBJECT_BOMB        )  x = "object/mine.txt";
-    if ( type == OBJECT_BARRIER1    )  x = "object/barrier.txt";
+    if ( type->GetName() == "Barrier" )  x = "object/barrier.txt";
     if ( type == OBJECT_WAYPOINT    )  x = "object/waypoint.txt";
     if ( type == OBJECT_FLAGb       )  x = "object/flag.txt";
     if ( type == OBJECT_FLAGr       )  x = "object/flag.txt";
@@ -106,7 +106,8 @@ std::string GetHelpFilename(CObjectType* type)
     if ( type == OBJECT_SPIDER      )  x = "object/spider.txt";
     if ( type == OBJECT_BEE         )  x = "object/wasp.txt";
     if ( type == OBJECT_WORM        )  x = "object/worm.txt";
-    if ( type == OBJECT_RUINmobilew1)  x = "object/wreck.txt";
+    if ( type->GetName() == "Ruin"  )  x = "object/ruin.txt";
+    if ( type->GetName() == "Wreck" )  x = "object/wreck.txt";
 
     if(!x.empty())
         return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + "/" + x;

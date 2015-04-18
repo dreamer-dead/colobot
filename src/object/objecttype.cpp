@@ -70,6 +70,23 @@ int CObjectType::GetUniqueID()
 }
 
 
+CObjectTypeVirtual::CObjectTypeVirtual(const std::string& name)
+: CObjectType()
+, m_name(name)
+{
+}
+
+const std::string& CObjectTypeVirtual::GetName()
+{
+	return m_name;
+}
+
+const std::string& CObjectTypeVirtual::GetUnlocalizedDisplayName()
+{
+	return m_name;
+}
+
+
 CObjectTypeHardcoded::CObjectTypeHardcoded(const std::string& name, const std::string& displayName, CObjectType* baseType)
 : CObjectType()
 , m_name(name)
